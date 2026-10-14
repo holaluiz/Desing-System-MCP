@@ -1,0 +1,83 @@
+/**
+ * Texturas e Linguagem Tátil — Um Cara Caramelo (Manual V1 2026)
+ * Halftone, Print Grain, Misregistration e Bordas Gráficas
+ */
+
+/* Retícula Halftone / Ben-Day pontilhada */
+.caramelo-halftone {
+  background-image: radial-gradient(
+    rgba(255, 112, 26, 0.15) 1px,
+    transparent 1px
+  );
+  background-size: 8px 8px;
+}
+
+.caramelo-halftone-subtle {
+  background-image: radial-gradient(
+    rgba(255, 244, 232, 0.07) 1px,
+    transparent 1px
+  );
+  background-size: 6px 6px;
+}
+
+.caramelo-halftone-dense {
+  background-image: radial-gradient(
+    rgba(16, 16, 20, 0.25) 1.5px,
+    transparent 1.5px
+  );
+  background-size: 5px 5px;
+}
+
+/* Grão Fino Analógico (Print Grain) */
+.caramelo-grain {
+  position: relative;
+}
+.caramelo-grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+  z-index: 1;
+}
+
+/* Registro de Impressão / Misregistration (CMYK Desalinhamento) */
+.caramelo-misregistration {
+  transition: transform 180ms var(--caramelo-ease-kinetic);
+  position: relative;
+}
+
+.caramelo-misregistration:hover {
+  text-shadow: 
+    -1.5px -0.5px 0px rgba(37, 191, 255, 0.75),
+    1.5px 0.5px 0px rgba(255, 61, 141, 0.75);
+}
+
+/* Borda Gráfica / Hard Edge */
+.caramelo-border-graphic {
+  border: 2px solid var(--caramelo-color-ink);
+  box-shadow: var(--caramelo-shadow-md);
+}
+
+.caramelo-border-graphic-light {
+  border: 2px solid var(--caramelo-color-cream);
+  box-shadow: 4px 4px 0px var(--caramelo-color-cream);
+}
+
+/* Separação de Camadas (Stillness -> Movement) */
+.caramelo-layer-split {
+  position: relative;
+  transition: transform 220ms var(--caramelo-ease-split), box-shadow 220ms var(--caramelo-ease-split);
+}
+
+.caramelo-layer-split:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 5px 5px 0px var(--caramelo-color-caramel);
+}
+
+.caramelo-layer-split:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px var(--caramelo-color-caramel);
+}

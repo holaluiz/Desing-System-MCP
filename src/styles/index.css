@@ -1,0 +1,8 @@
+/**
+ * Estilos Canônicos Unificados — Um Cara Caramelo
+ * @caramelo/design-system/styles.css
+ */
+
+@import './variables.css';
+@import './typography.css';
+@import './textures.css';
