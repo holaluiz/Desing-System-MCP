@@ -1,0 +1,13 @@
+{
+  "name": "caramelo-design-system-mcp",
+  "version": "1.0.0",
+  "description": "Configurações prontas para plugar este Design System MCP no Claude Desktop, Cursor, Windsurf ou Antigravity",
+  "mcpServers": {
+    "caramelo-design-system": {
+      "command": "node",
+      "args": [
+        "d:/meus documentos/Design System/dist/mcp/index.js"
+      ]
+    }
+  }
+}

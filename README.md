@@ -187,8 +187,59 @@ Se você estiver em um projeto sem React ou precisar dos tokens em outra platafo
 
 ---
 
-## 07. Comandos de Manutenção
+## 07. Servidor MCP de UX/UI (Model Context Protocol)
 
-- `npm run build`: Compila a biblioteca (`tsup`) gerando ESM, CJS, `.d.ts` e CSS.
+Este repositório também funciona como um **Servidor MCP nativo**, permitindo que assistentes de IA (Cursor, Windsurf, Claude Desktop, Antigravity) auditem e elevem o UX e a UI de qualquer aplicação conectada.
+
+### Ferramentas MCP Disponíveis:
+1. `audit_ux_ui`: Audita código JSX/HTML/Tailwind contra os 12 critérios canônicos, identifica clichês de UI corporativa, falhas de contraste WCAG, falta de física nos botões e retorna pontuação (0-100) e orientações técnicas.
+2. `transform_to_caramelo`: Converte qualquer componente genérico de UI (shadcn, Bootstrap, MUI) para a estética e física tátil Caramelo.
+3. `generate_caramelo_component`: Gera componentes inteiros sob medida (Button, Hero, Card, LayerSplit, Input, Badge).
+4. `check_contrast_wcag`: Calcula e valida a razão de contraste entre duas cores hexadecimais (AA/AAA).
+5. `get_design_tokens`: Retorna a especificação completa de tokens em JSON, CSS ou formato Tailwind.
+
+### Recursos & Prompts Expostos:
+- **Recursos:** `caramelo://guidelines/manual`, `caramelo://tokens/json`, `caramelo://components/catalog`.
+- **Prompts:** `audit-ux-ui`, `transform-to-caramelo`.
+
+### Como Configurar nos Seus Editores e IAs:
+
+#### No Cursor (`.cursor/mcp.json` ou Configurações de MCP):
+```json
+{
+  "mcpServers": {
+    "caramelo-design-system": {
+      "command": "node",
+      "args": [
+        "d:/meus documentos/Design System/dist/mcp/index.js"
+      ]
+    }
+  }
+}
+```
+
+#### No Claude Desktop (`claude_desktop_config.json`):
+```json
+{
+  "mcpServers": {
+    "caramelo-design-system": {
+      "command": "node",
+      "args": [
+        "d:/meus documentos/Design System/dist/mcp/index.js"
+      ]
+    }
+  }
+}
+```
+
+#### No Windsurf / VS Code / Antigravity:
+Aponte o executável para `node "d:/meus documentos/Design System/dist/mcp/index.js"`.
+
+---
+
+## 08. Comandos de Manutenção
+
+- `npm run build`: Compila a biblioteca (`tsup`) gerando ESM, CJS, `.d.ts`, `dist/styles.css` e o binário MCP.
+- `npm run mcp`: Inicia o servidor MCP diretamente via stdio.
 - `npm run dev`: Executa a compilação em modo watch contínuo.
 - `npm run showcase`: Inicia o app Vite de documentação viva em `http://localhost:3000`.
