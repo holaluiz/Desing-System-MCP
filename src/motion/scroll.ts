@@ -28,6 +28,7 @@ export interface ScrollSceneOptions {
   /**
    * Medição própria (topo no documento + altura). Use em elementos sticky: meça a posição
    * de fluxo, não a "grudada" — o LP remove o sticky por um instante no refresh.
+   * Se a cena transforma o próprio elemento medido, use `measureUntransformed`.
    */
   measure?: () => { top: number; height: number };
 }
@@ -177,6 +178,23 @@ function unlisten() {
   window.removeEventListener('resize', queueRefresh);
   resizeObserver?.disconnect();
   resizeObserver = null;
+}
+
+const TRANSFORM_PROPS = ['transform', 'translate', 'rotate', 'scale'] as const;
+
+/**
+ * Mede o elemento sem as próprias transformações (transform e translate/rotate/scale),
+ * anuladas por um instante. Para `measure` de cenas que movem o elemento que medem
+ * (parallax, `--cm-p` num transform): sem isso, um refresh no meio do caminho desloca
+ * start/end pelo deslocamento atual e a cena salta.
+ */
+export function measureUntransformed(el: HTMLElement): { top: number; height: number } {
+  const { style } = el;
+  const saved = TRANSFORM_PROPS.map((p) => [p, style.getPropertyValue(p), style.getPropertyPriority(p)] as const);
+  TRANSFORM_PROPS.forEach((p) => style.setProperty(p, 'none', 'important'));
+  const r = el.getBoundingClientRect();
+  saved.forEach(([p, value, priority]) => (value ? style.setProperty(p, value, priority) : style.removeProperty(p)));
+  return { top: r.top + window.scrollY, height: r.height };
 }
 
 export function createScrollScene(el: HTMLElement, options: ScrollSceneOptions = {}): ScrollScene {

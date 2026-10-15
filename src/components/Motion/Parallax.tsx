@@ -1,5 +1,5 @@
 import React from 'react';
-import { mix } from '../../motion/scroll';
+import { measureUntransformed, mix } from '../../motion/scroll';
 import { cn } from '../../utils/cn';
 import { useMotionEnv, useScrollScene } from './hooks';
 
@@ -58,6 +58,8 @@ export const Parallax: React.FC<ParallaxProps> = ({
       start,
       end,
       scrub,
+      // Mede sem o próprio transform, senão um refresh no meio do caminho faz a cena saltar
+      measure: () => measureUntransformed(ref.current!),
       onUpdate: (p) => {
         const el = ref.current;
         if (!el) return;

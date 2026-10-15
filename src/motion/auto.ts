@@ -16,7 +16,7 @@
 import { syncMotionAttribute } from './env';
 import { createPointerTrail, createTilt } from './pointer';
 import { observeReveal } from './reveal';
-import { createScrollScene } from './scroll';
+import { createScrollScene, measureUntransformed } from './scroll';
 import { createSmoothScroll, type SmoothScrollOptions } from './smooth-scroll';
 import { observeVideo } from './video';
 
@@ -83,6 +83,8 @@ export function initCaramelMotion(options: InitMotionOptions = {}): () => void {
       start: el.dataset.cmStart ?? 'top bottom',
       end: el.dataset.cmEnd ?? 'bottom top',
       scrub: Number(el.dataset.cmScrub) || 0,
+      // O CSS do autor costuma transformar o próprio elemento com --cm-p (receita do MCP)
+      measure: () => measureUntransformed(el),
       onUpdate: (p) => el.style.setProperty('--cm-p', p.toFixed(4)),
     });
     cleanups.push(() => scene.destroy());
