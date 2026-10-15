@@ -18,8 +18,10 @@ export const Badge: React.FC<BadgeProps> = ({
   const solidColors = {
     caramel: 'bg-[#FF701A] text-[#101014] border-[#101014]',
     sky: 'bg-[#25BFFF] text-[#101014] border-[#101014]',
-    pink: 'bg-[#FF3D8D] text-[#FFF4E8] border-[#101014]',
-    violet: 'bg-[#7657FF] text-[#FFF4E8] border-[#101014]',
+    // Ink sobre Pink = 5.70:1 (Cream sobre Pink = 3.07:1, reprovado)
+    pink: 'bg-[#FF3D8D] text-[#101014] border-[#101014]',
+    // Violet puro não atinge 4.5:1 com nenhuma base → preenchimento em violet.hover (Cream = 5.91:1)
+    violet: 'bg-[#5D3CE8] text-[#FFF4E8] border-[#101014]',
     yellow: 'bg-[#FFD52A] text-[#101014] border-[#101014]',
     ink: 'bg-[#101014] text-[#FFF4E8] border-[#27272F]',
     cream: 'bg-[#FFF4E8] text-[#101014] border-[#101014]',
@@ -29,7 +31,7 @@ export const Badge: React.FC<BadgeProps> = ({
     caramel: 'border-[#FF701A] text-[#FF701A] bg-[#FF701A]/10',
     sky: 'border-[#25BFFF] text-[#25BFFF] bg-[#25BFFF]/10',
     pink: 'border-[#FF3D8D] text-[#FF3D8D] bg-[#FF3D8D]/10',
-    violet: 'border-[#7657FF] text-[#7657FF] bg-[#7657FF]/10',
+    violet: 'border-[#7657FF] text-[#9A85FF] bg-[#7657FF]/10',
     yellow: 'border-[#FFD52A] text-[#FFD52A] bg-[#FFD52A]/10',
     ink: 'border-[#101014] text-[#101014] bg-[#101014]/10',
     cream: 'border-[#FFF4E8] text-[#FFF4E8] bg-[#FFF4E8]/10',

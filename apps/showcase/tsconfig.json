@@ -18,7 +18,11 @@
     "baseUrl": ".",
     "paths": {
       "@caramelo/design-system": ["../../src/index.ts"],
-      "@caramelo/design-system/*": ["../../src/*"]
+      "@caramelo/design-system/engine": ["../../src/mcp/engine/index.ts"],
+      "@caramelo/design-system/motion": ["../../src/motion/index.ts"],
+      "@caramelo/design-system/*": ["../../src/*"],
+      "react": ["./node_modules/@types/react"],
+      "react/*": ["./node_modules/@types/react/*"]
     }
   },
   "include": ["src"]

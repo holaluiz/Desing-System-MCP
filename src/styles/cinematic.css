@@ -1,0 +1,416 @@
+/**
+ * Motion cinematográfico — Um Cara Caramelo (V2 2026)
+ * Portado dos sites do Luiz (LP, workshop, biblioteca de prompts, aula-head).
+ *
+ * Regras:
+ *  - Estados "antes" só valem com html[data-motion="full"] (definido por JS):
+ *    sem JS, com movimento reduzido ou ?motion=off, todo conteúdo fica legível.
+ *  - Uma única dona de transform por superfície (cena externa × ponteiro interno).
+ *  - [data-cm-instant] pula a transição (foco de teclado chegou, ou quem rola rápido).
+ */
+
+:root {
+  --cm-ease-power1-out: cubic-bezier(0.5, 1, 0.89, 1);
+  --cm-ease-power2-out: cubic-bezier(0.33, 1, 0.68, 1);
+  --cm-ease-power2-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --cm-ease-power3-out: cubic-bezier(0.25, 1, 0.5, 1);
+  --cm-ease-power3-in-out: cubic-bezier(0.76, 0, 0.24, 1);
+  --cm-ease-power4-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --cm-ease-editorial: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --cm-ease-kinetic: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --cm-ease-trail: cubic-bezier(0.2, 0.65, 0.3, 1);
+}
+
+/* Lenis */
+html[data-cm-smooth] { scroll-behavior: auto !important; }
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-stopped { overflow: hidden; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+
+[data-cm-instant],
+[data-cm-instant] * { transition: none !important; }
+
+/* =====================================================================
+   1. ENTRADAS NO SCROLL
+   ===================================================================== */
+
+/* lines — título linha a linha por máscara (yPercent 105 → 0, 900ms, 90ms entre linhas) */
+[data-cm-reveal="lines"] { display: flex; flex-direction: column; }
+.cm-line { display: block; overflow: clip; padding: 0.18em 0; margin: -0.18em 0; }
+.cm-line__inner {
+  display: block;
+  transition: transform 900ms var(--cm-ease-power4-out);
+  transition-delay: calc(var(--cm-line, 0) * 90ms + var(--cm-delay, 0ms));
+}
+html[data-motion="full"] [data-cm-reveal="lines"]:not([data-cm-shown]) .cm-line__inner { transform: translateY(105%); }
+
+/* rise — entrada leve que já começa LEGÍVEL (opacidade .65, 18px) */
+[data-cm-reveal="rise"] {
+  transition: transform 550ms var(--cm-ease-power2-out), opacity 550ms var(--cm-ease-power2-out);
+  transition-delay: calc(var(--cm-i, 0) * 80ms + var(--cm-delay, 0ms));
+}
+html[data-motion="full"] [data-cm-reveal="rise"]:not([data-cm-shown]) { transform: translateY(18px); opacity: 0.65; }
+
+/* tilt — cartões que chegam girados (portas: 45px, ±1.1°, 850ms, 130ms) */
+[data-cm-reveal="tilt"] {
+  transition: transform 850ms var(--cm-ease-power3-out), opacity 850ms var(--cm-ease-power3-out);
+  transition-delay: calc(var(--cm-i, 0) * 130ms + var(--cm-delay, 0ms));
+}
+html[data-motion="full"] [data-cm-reveal="tilt"]:not([data-cm-shown]) {
+  transform: translateY(45px) rotate(var(--cm-tilt-from, -1.1deg));
+  opacity: 0.45;
+}
+[data-cm-reveal="tilt"]:nth-child(even) { --cm-tilt-from: 1.1deg; }
+
+/* clip — mídia revelada de baixo para cima (inset 100% → 0, 950ms) */
+[data-cm-reveal="clip"] {
+  transition: clip-path 950ms var(--cm-ease-power3-in-out);
+  transition-delay: calc(var(--cm-i, 0) * 90ms + var(--cm-delay, 0ms));
+}
+html[data-motion="full"] [data-cm-reveal="clip"]:not([data-cm-shown]) { clip-path: inset(var(--cm-clip-from, 100% 0% 0% 0%)); }
+[data-cm-reveal="clip"][data-cm-from="top"] { --cm-clip-from: 0% 0% 100% 0%; }
+[data-cm-reveal="clip"][data-cm-from="left"] { --cm-clip-from: 0% 100% 0% 0%; }
+[data-cm-reveal="clip"][data-cm-from="right"] { --cm-clip-from: 0% 0% 0% 100%; }
+
+/* calm — listas longas: 16px, 400ms (quem rola rápido recebe instantâneo via JS) */
+[data-cm-reveal="calm"] { transition: transform 400ms var(--cm-ease-power3-out); }
+html[data-motion="full"] [data-cm-reveal="calm"]:not([data-cm-shown]) { transform: translateY(16px); }
+
+/* =====================================================================
+   2. ENTRADAS EM CASCATA SÓ COM CSS (aula-head) — ao carregar, sem JS
+   <div class="cm-enter cm-enter--headline" style="--cm-delay:.28s">
+   ===================================================================== */
+@keyframes cm-enter-rise { from { opacity: 0; translate: 0 18px; } }
+@keyframes cm-enter-headline { from { opacity: 0; translate: -28px 12px; scale: 0.98; } }
+@keyframes cm-enter-card { from { opacity: 0; translate: 0 24px; scale: 0.97; } }
+@keyframes cm-enter-pop { from { opacity: 0; scale: 0.65; } }
+@keyframes cm-enter-media { from { opacity: 0; } }
+@keyframes cm-enter-bg { from { scale: 1.035; } }
+@keyframes cm-enter-side { from { opacity: 0; translate: 20px 0; } }
+.cm-enter { animation: cm-enter-rise 650ms var(--cm-ease-kinetic) var(--cm-delay, 0s) backwards; }
+.cm-enter--headline { animation-name: cm-enter-headline; animation-duration: 800ms; }
+.cm-enter--card { animation-name: cm-enter-card; }
+.cm-enter--pop { animation-name: cm-enter-pop; animation-duration: 500ms; }
+.cm-enter--side { animation-name: cm-enter-side; animation-duration: 700ms; }
+.cm-enter--media { animation: cm-enter-media 900ms ease-out var(--cm-delay, 0s) backwards; }
+.cm-enter--bg { animation: cm-enter-bg 1.2s var(--cm-ease-editorial) var(--cm-delay, 0s) backwards; }
+
+/* Diálogos: painel lateral (x 70px) e modal (scale .97 + 12px) */
+@keyframes cm-sheet-in { from { opacity: 0; transform: translateX(70px); } }
+@keyframes cm-modal-in { from { opacity: 0; transform: scale(0.97) translateY(12px); } }
+@keyframes cm-overlay-in { from { opacity: 0; } }
+.cm-sheet-in { animation: cm-sheet-in 400ms var(--cm-ease-power3-out) both; }
+.cm-modal-in { animation: cm-modal-in 300ms var(--cm-ease-kinetic) both; }
+.cm-overlay-in { animation: cm-overlay-in 250ms ease-out both; }
+
+/* =====================================================================
+   3. HOVER / PONTEIRO
+   ===================================================================== */
+
+/* Cartão que sobe e gira levemente; a seta avança na diagonal (portas do LP) */
+.cm-lift {
+  transition: transform 420ms var(--cm-ease-power2-out), background-color 250ms, border-color 250ms, box-shadow 250ms;
+}
+.cm-lift__arrow { display: inline-block; transition: transform 420ms var(--cm-ease-power2-out); }
+.cm-lift:focus-within { transform: translateY(-7px) rotate(var(--cm-lift-rotate, -0.4deg)); }
+.cm-lift:focus-within .cm-lift__arrow { transform: translate(4px, -4px); }
+@media (hover: hover) and (pointer: fine) {
+  .cm-lift:hover { transform: translateY(-7px) rotate(var(--cm-lift-rotate, -0.4deg)); }
+  .cm-lift:hover .cm-lift__arrow { transform: translate(4px, -4px); }
+}
+.cm-lift:nth-child(even) { --cm-lift-rotate: 0.4deg; }
+
+/* Mídia: zoom de 2.5% no hover */
+.cm-media-zoom { overflow: hidden; }
+.cm-media-zoom :is(img, video) { transition: transform 500ms var(--cm-ease-editorial); }
+@media (hover: hover) and (pointer: fine) {
+  .cm-media-zoom:hover :is(img, video),
+  :is(a, .cm-media-host):hover .cm-media-zoom :is(img, video) { transform: scale(1.025); }
+}
+
+/* Tilt pelo ponteiro (JS escreve --cm-tilt-x/y; aqui fica o easing do quickTo) */
+.cm-tilt-space { perspective: var(--cm-tilt-perspective, 1100px); }
+.cm-tilt {
+  transform: rotateX(var(--cm-tilt-x, 0deg)) rotateY(var(--cm-tilt-y, 0deg));
+  transition: transform 400ms var(--cm-ease-power2-out);
+  transform-style: preserve-3d;
+}
+
+/* Rastro de imagens */
+.cm-trail { position: relative; }
+.cm-trail__layer {
+  position: absolute;
+  inset: 0;
+  z-index: var(--cm-trail-z, 2);
+  overflow: hidden;
+  pointer-events: none !important;
+  contain: layout style paint;
+}
+.cm-trail__slot {
+  position: absolute;
+  display: block;
+  overflow: hidden;
+  border: 1px solid rgb(var(--cm-fg) / 0.3);
+  border-radius: 9px;
+  background: rgb(var(--cm-surface-2));
+  box-shadow: 0 14px 32px rgb(0 0 0 / 0.25);
+  opacity: 0;
+  pointer-events: none !important;
+  user-select: none;
+}
+.cm-trail__slot > img { width: 100%; height: 100%; object-fit: cover; -webkit-user-drag: none; }
+.cm-trail__slot[data-active="true"] { will-change: transform, opacity; }
+
+/* =====================================================================
+   4. SCROLL DIRIGIDO
+   ===================================================================== */
+
+/* Barra de progresso fixa (2px, acento) */
+.cm-progress {
+  position: fixed;
+  top: var(--cm-header-height, 0px);
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 42;
+  pointer-events: none;
+}
+.cm-progress__fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: rgb(var(--cm-accent));
+  transform: scaleX(var(--cm-progress, 0));
+  transform-origin: left;
+}
+
+/* Navegação lateral por cenas (o ponto ativo alonga de 4px para 18px) */
+.cm-scene-nav {
+  display: none;
+  position: fixed;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 35;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+@media (min-width: 1000px) and (hover: hover) and (pointer: fine) { .cm-scene-nav { display: flex; } }
+.cm-scene-nav::before {
+  content: '';
+  position: absolute;
+  top: 14px;
+  bottom: 14px;
+  left: 50%;
+  width: 1px;
+  background: rgb(var(--cm-fg) / 0.12);
+  pointer-events: none;
+}
+.cm-scene-dot { display: grid; place-items: center; position: relative; width: 22px; height: 24px; border-radius: 6px; }
+.cm-scene-dot i {
+  display: block;
+  position: relative;
+  z-index: 1;
+  width: 4px;
+  height: 4px;
+  border-radius: 9px;
+  background: rgb(var(--cm-fg-faint));
+  transition: height 300ms var(--cm-ease-power2-out), background-color 300ms;
+}
+.cm-scene-dot[aria-current="location"] i { height: 18px; background: rgb(var(--cm-accent)); }
+.cm-scene-dot:hover i { background: rgb(var(--cm-fg)); }
+.cm-scene-dot:focus-visible { outline: none; box-shadow: var(--cm-focus-ring); }
+.cm-scene-name {
+  position: absolute;
+  right: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 7px 11px;
+  border: 1px solid rgb(var(--cm-line));
+  border-radius: 4px;
+  background: rgb(var(--cm-surface-1));
+  color: rgb(var(--cm-fg));
+  font: 500 11px/1 var(--caramelo-font-sans);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms;
+}
+.cm-scene-dot:is(:hover, :focus-visible) .cm-scene-name { opacity: 1; }
+
+/* Cabeçalho que ganha borda depois de 40px (data-scrolled via useScrolled) */
+.cm-header { border-bottom: 1px solid transparent; transition: border-color 200ms, background-color 200ms; }
+.cm-header[data-scrolled] { border-color: rgb(var(--cm-line)); }
+
+/* Pilha de cartões sticky (Work): um por vez, troca espacial 300ms */
+.cm-deck { position: relative; --cm-deck-count: 4; }
+.cm-deck[data-mode="scrub"] { height: calc(var(--cm-deck-count) * 100svh); }
+.cm-deck__stage { position: relative; }
+.cm-deck[data-mode="scrub"] .cm-deck__stage {
+  position: sticky;
+  top: var(--cm-header-height, 0px);
+  height: calc(100svh - var(--cm-header-height, 0px));
+  padding: 22px 0 18px;
+  display: flex;
+  flex-direction: column;
+}
+.cm-deck__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 36px;
+  margin-bottom: 18px;
+  font: 500 11px/1.4 var(--caramelo-font-sans);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgb(var(--cm-fg-dim));
+}
+.cm-deck__counter { color: rgb(var(--cm-fg)); font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: 0.04em; }
+.cm-deck__steps { display: flex; gap: 6px; }
+.cm-deck__steps button {
+  width: 40px;
+  height: 34px;
+  border: 1px solid rgb(var(--cm-line));
+  border-radius: 4px;
+  background: transparent;
+  color: rgb(var(--cm-fg-muted));
+  font: 600 11px/1 var(--caramelo-font-sans);
+  transition: background-color 200ms, color 200ms, border-color 200ms;
+  cursor: pointer;
+}
+.cm-deck__steps button[aria-pressed="true"] { background: rgb(var(--cm-accent)); border-color: rgb(var(--cm-accent)); color: rgb(var(--cm-accent-contrast)); }
+.cm-deck__steps button:focus-visible { outline: none; box-shadow: var(--cm-focus-ring); }
+/* Fluxo (touch, telas baixas, movimento reduzido): lista simples, sem contador nem passos (LP) */
+.cm-deck:not([data-mode="scrub"]) .cm-deck__toolbar,
+.cm-deck:not([data-mode="scrub"]) .cm-deck__timeline { display: none; }
+.cm-deck__cards { display: grid; gap: 56px; }
+.cm-deck[data-mode="scrub"] .cm-deck__cards { position: relative; display: block; flex: 1; min-height: 0; }
+/* Duas bordas silenciosas sugerem o baralho sem carregar outra mídia */
+.cm-deck[data-mode="scrub"] .cm-deck__cards::before,
+.cm-deck[data-mode="scrub"] .cm-deck__cards::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 72px;
+  border: 1px solid rgb(var(--cm-fg) / 0.16);
+  border-radius: var(--cm-radius-lg);
+  background: rgb(var(--cm-surface-1));
+  pointer-events: none;
+}
+.cm-deck[data-mode="scrub"] .cm-deck__cards::before { transform: translateY(17px) scaleX(0.982); opacity: 0.8; }
+.cm-deck[data-mode="scrub"] .cm-deck__cards::after { transform: translateY(29px) scaleX(0.962); opacity: 0.5; }
+.cm-deck__card { display: flex; flex-direction: column; min-width: 0; }
+.cm-deck__media { position: relative; overflow: hidden; border-radius: var(--cm-radius-lg); aspect-ratio: 16 / 9; background: rgb(var(--cm-surface-2)); }
+.cm-deck__caption { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; padding-top: 18px; }
+.cm-deck[data-mode="scrub"] .cm-deck__card {
+  position: absolute;
+  inset: 0;
+  z-index: var(--cm-z, 1);
+  height: 100%;
+  pointer-events: none;
+  transform-origin: 50% 48%;
+  transition: transform 300ms var(--cm-ease-power2-in-out), opacity 150ms var(--cm-ease-power1-out);
+}
+.cm-deck[data-mode="scrub"] .cm-deck__media { flex: 1; min-height: 0; aspect-ratio: auto; }
+.cm-deck[data-mode="scrub"] .cm-deck__caption { flex: none; min-height: 72px; padding-top: 32px; transition: opacity 100ms linear 200ms; }
+.cm-deck[data-mode="scrub"] .cm-deck__card[data-state="active"] { pointer-events: auto; z-index: 20; }
+.cm-deck[data-mode="scrub"] .cm-deck__card[data-state="after"] { opacity: 0; transform: translateY(7%); }
+.cm-deck[data-mode="scrub"] .cm-deck__card[data-state="before"] {
+  opacity: 0;
+  z-index: 21;
+  transform: translate(calc(var(--cm-exit-dir, 1) * 72%), -10%);
+  transition: transform 300ms var(--cm-ease-power2-in-out), opacity 120ms linear 180ms;
+}
+.cm-deck[data-mode="scrub"] .cm-deck__card:not([data-state="active"]) .cm-deck__caption { opacity: 0; transition-delay: 0ms; }
+.cm-deck__timeline { height: 2px; margin-top: 18px; overflow: hidden; background: rgb(var(--cm-line)); }
+.cm-deck__timeline > i { display: block; height: 100%; background: rgb(var(--cm-accent)); transform: scaleX(var(--cm-deck-progress, 0)); transform-origin: left; }
+
+/* Cartões sticky que chegam (ofertas): --cm-p 0 → 1 vem do scroll */
+.cm-stack { display: grid; gap: 24px; }
+.cm-stack__card {
+  position: sticky;
+  top: calc(var(--cm-header-height, 0px) + var(--cm-stack-inset, 24px));
+}
+html[data-motion="full"] .cm-stack[data-mode="stack"] .cm-stack__card {
+  transform: translateY(calc((1 - var(--cm-p, 1)) * 22px)) scale(calc(0.97 + 0.03 * var(--cm-p, 1)))
+    rotate(calc((1 - var(--cm-p, 1)) * var(--cm-stack-rotate, -0.8deg)));
+  opacity: calc(0.88 + 0.12 * var(--cm-p, 1));
+}
+.cm-stack__card:nth-child(even) { --cm-stack-rotate: 1deg; --cm-stack-inset: 42px; }
+
+/* Palavras que acendem com o scroll (manifesto) */
+.cm-scrub-words__w {
+  display: inline-block;
+  --cm-wp: clamp(0, calc((var(--cm-p, 1) * (var(--cm-n, 1) * 0.07 + 0.2) - var(--cm-i, 0) * 0.07) / 0.2), 1);
+}
+html[data-motion="full"] .cm-scrub-words[data-active] .cm-scrub-words__w {
+  opacity: calc(0.42 + 0.58 * var(--cm-wp));
+  transform: translateY(calc((1 - var(--cm-wp)) * 22px));
+}
+
+/* Comparador antes/depois */
+.cm-compare { position: relative; overflow: hidden; border-radius: var(--cm-radius-xl); isolation: isolate; --split: 50%; }
+.cm-compare__layer { position: absolute; inset: 0; }
+.cm-compare__layer--after { position: relative; }
+.cm-compare__layer--before { clip-path: inset(0 var(--split) 0 0); z-index: 1; }
+.cm-compare__handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(100% - var(--split));
+  z-index: 2;
+  width: 2px;
+  margin-left: -1px;
+  background: rgb(var(--cm-fg));
+  pointer-events: none;
+}
+.cm-compare__handle::after {
+  content: '↔';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+  background: rgb(var(--cm-fg));
+  color: rgb(var(--cm-stage));
+  font: 700 16px/1 var(--caramelo-font-sans);
+  box-shadow: 0 8px 20px rgb(0 0 0 / 0.35);
+}
+.cm-compare__range {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: ew-resize;
+}
+.cm-compare:has(.cm-compare__range:focus-visible) .cm-compare__handle::after { box-shadow: var(--cm-focus-ring); }
+
+/* Divulgação (FAQ): o "+" gira 45° ao abrir */
+.cm-disclosure-icon { display: inline-block; transition: transform 300ms var(--cm-ease-power2-out); }
+details[open] > summary .cm-disclosure-icon { transform: rotate(45deg); }
+
+/* Barra de rolagem oculta sem bloquear roda, toque ou teclado (LP) */
+.cm-no-scrollbar { scrollbar-width: none; }
+.cm-no-scrollbar::-webkit-scrollbar { display: none; width: 0; height: 0; }
+
+/* =====================================================================
+   5. MOVIMENTO REDUZIDO / DESLIGADO — tudo legível, nada se move
+   ===================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .cm-enter, .cm-enter--headline, .cm-enter--card, .cm-enter--pop, .cm-enter--side, .cm-enter--bg,
+  .cm-sheet-in, .cm-modal-in { animation: cm-overlay-in 160ms linear both; }
+  .cm-lift:is(:hover, :focus-within), .cm-lift:is(:hover, :focus-within) .cm-lift__arrow,
+  .cm-media-zoom:hover :is(img, video) { transform: none; }
+  .cm-tilt { transform: none; }
+  .cm-trail__layer, .cm-progress, .cm-scene-nav { display: none !important; }
+}
+html:is([data-motion="reduced"], [data-motion="off"]) :is(.cm-trail__layer, .cm-progress) { display: none !important; }
+html:is([data-motion="reduced"], [data-motion="off"]) .cm-tilt { transform: none; }

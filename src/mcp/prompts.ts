@@ -1,75 +1,84 @@
 /**
- * Prompts Oficiais expostos via MCP — Um Cara Caramelo
+ * Prompts Oficiais expostos via MCP — Um Cara Caramelo (V2 2026)
+ * Cada prompt orienta o cliente a usar as ferramentas do motor (medição real),
+ * não a "opinar" sobre o código.
  */
 
-export const mcpPrompts = [
+import { z } from 'zod';
+
+export interface CarameloPrompt {
+  name: string;
+  title: string;
+  description: string;
+  args: Record<string, z.ZodType<string | undefined>>;
+  // método (bivariante): cada prompt declara só os argumentos que usa
+  text(args: Record<string, string | undefined>): string;
+}
+
+export const mcpPrompts: CarameloPrompt[] = [
   {
     name: 'audit-ux-ui',
-    description: 'Audita e eleva a experiência de uma página inteira para o padrão Caramelo V1 2026.',
-    arguments: [
-      {
-        name: 'code',
-        description: 'Código da página ou componente a ser auditado.',
-        required: true,
-      },
-    ],
-    generate: (args: { code: string }) => ({
-      description: 'Auditoria de UX/UI com os 12 critérios canônicos Caramelo',
-      messages: [
-        {
-          role: 'user' as const,
-          content: {
-            type: 'text' as const,
-            text: `Por favor, atue como o Diretor de Arte e Head de Interação do ecossistema Um Cara Caramelo.
-Analise o seguinte código de interface e realize uma auditoria rigorosa contra os 12 critérios canônicos:
+    title: 'Auditar UX/UI',
+    description: 'Audita uma tela ou componente com o motor Caramelo e propõe a versão elevada.',
+    args: { code: z.string().describe('Código da página ou componente.') },
+    text: ({ code }: { code: string }) => `Atue como Head de Interação do Laboratório Um Cara Caramelo.
 
-${args.code}
+1. Rode \`audit_ux_ui\` neste código e leia a nota por categoria.
+2. Rode \`transform_to_caramelo\` (material lumen) e compare a nota antes/depois.
+3. Para cada item em "Precisa de decisão humana", proponha a correção concreta.
+4. Sugira no máximo 2 microinterações do catálogo (\`get_interaction\`) que resolvam um problema de UX real desta tela — explique qual comportamento cada uma provoca.
 
-Critérios essenciais a auditar:
-1. Contraste e WCAG (Cream sobre Ink 17.5:1, Sky sobre Ink 9.02:1).
-2. Disciplina cromática: apenas 1 cor de destaque elétrico por cena.
-3. Física de botões: resposta cinética imediata no clique e sombra sólida.
-4. Tipografia em 3 vozes: Grotesca pesada em títulos, Sans funcional no corpo, Manuscrita em anotações (nunca em botões).
-5. Texturas e materialidade: retículas halftone e bordas gráficas sem esterilidade digital.
-
-Retorne:
-- Diagnóstico técnico detalhado.
-- Pontuação de 0 a 100.
-- Código completamente refatorado pronto para copiar e colar.`,
-          },
-        },
-      ],
-    }),
+\`\`\`
+${code}
+\`\`\``,
   },
   {
     name: 'transform-to-caramelo',
-    description: 'Transforma qualquer componente genérico de startup no padrão autoral Caramelo.',
-    arguments: [
-      {
-        name: 'componentCode',
-        description: 'Código do componente a transformar.',
-        required: true,
-      },
-    ],
-    generate: (args: { componentCode: string }) => ({
-      description: 'Transformação para Caramelo Design System',
-      messages: [
-        {
-          role: 'user' as const,
-          content: {
-            type: 'text' as const,
-            text: `Transforme o seguinte componente genérico em uma peça autoral no padrão Um Cara Caramelo:
+    title: 'Transformar para Caramelo',
+    description: 'Converte um componente ou sistema inteiro para a identidade visual e a interatividade Caramelo.',
+    args: {
+      code: z.string().describe('Código do componente, página ou folha de estilo/tema.'),
+      material: z.string().optional().describe('lumen (padrão) ou print.'),
+    },
+    text: ({ code, material }: { code: string; material?: string }) => `Transforme este código para a identidade Um Cara Caramelo.
 
-${args.componentCode}
+1. Chame \`transform_to_caramelo\` com material "${material === 'print' ? 'print' : 'lumen'}".
+2. Revise o relatório: confirme os aria-labels inferidos e resolva os itens de decisão humana.
+3. Se houver um CTA principal, troque-o pelo componente de assinatura (MagneticButton fill ou GlowButton).
+4. Entregue o código final completo e a lista de setup (preset Tailwind + styles.css).
 
-Aplique:
-- Fundo Ink Black (#101014) ou Warm Cream (#FFF4E8).
-- Sombras gráficas sólidas (ex: 4px 4px 0px #101014 ou #FF701A).
-- Princípio Stillness = Camadas alinhadas / Movement = Camadas se separam.
-- Tipografia na Voz 1 (Grotesca Pesada) e Voz 2 (Sans Funcional).`,
-          },
-        },
-      ],
-    }),
+\`\`\`
+${code}
+\`\`\``,
+  },
+  {
+    name: 'convert-design-system',
+    title: 'Converter design system',
+    description: 'Migra o tema de outro design system (shadcn, Bootstrap, MUI, Material 3…) para os tokens Caramelo.',
+    args: { theme: z.string().describe('CSS de variáveis do tema (globals.css, _variables.css…).') },
+    text: ({ theme }: { theme: string }) => `Migre este tema para Caramelo sem quebrar os componentes existentes.
+
+1. Chame \`transform_to_caramelo\` com o CSS abaixo (o motor mantém o formato de cada variável).
+2. Chame \`map_colors\` com as cores de marca da origem para mostrar o de→para.
+3. Liste o que mudou por papel (fundo, texto, acento, status, foco, bordas) e o contraste final.
+
+\`\`\`css
+${theme}
+\`\`\``,
+  },
+  {
+    name: 'elevate-interaction',
+    title: 'Elevar interação',
+    description: 'Escolhe e aplica as microinterações certas para uma tela, com justificativa de UX.',
+    args: { code: z.string().describe('Código da tela.'), goal: z.string().optional().describe('Objetivo de negócio/UX da tela.') },
+    text: ({ code, goal }: { code: string; goal?: string }) => `Objetivo da tela: ${goal ?? 'não informado — deduza pelo conteúdo'}.
+
+1. Chame \`list_interactions\` e escolha no máximo 3 receitas — cada uma precisa resolver um problema de UX desta tela (feedback, orientação, continuidade espacial, confiança).
+2. Para cada escolhida, chame \`get_interaction\` e aplique o código.
+3. Respeite: 1 ponto focal por cena, nada acima de 400ms em controles, prefers-reduced-motion.
+
+\`\`\`
+${code}
+\`\`\``,
   },
 ];

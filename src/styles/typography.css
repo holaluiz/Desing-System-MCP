@@ -1,34 +1,108 @@
 /**
- * Tipografia em Três Vozes — Um Cara Caramelo
+ * Tipografia — Um Cara Caramelo (V2 2026)
+ * Montserrat (display) · Inter (texto) · Covered By Your Grace (mão) — auto-hospedadas.
+ * Arquivos WOFF2 latin/latin-ext do Google Fonts com licença OFL em ./fonts.
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Syne:wght@700;800&display=swap');
-
-.font-caramelo-display {
-  font-family: var(--caramelo-font-display);
-  font-weight: 800;
-  letter-spacing: -0.02em;
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url('./fonts/montserrat-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
-
-.font-caramelo-sans {
-  font-family: var(--caramelo-font-sans);
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url('./fonts/montserrat-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('./fonts/inter-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('./fonts/inter-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Covered By Your Grace';
+  font-style: normal;
   font-weight: 400;
-  letter-spacing: -0.01em;
+  font-display: swap;
+  src: url('./fonts/covered-by-your-grace-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Covered By Your Grace';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./fonts/covered-by-your-grace-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-.font-caramelo-handwriting {
-  font-family: var(--caramelo-font-handwriting);
-  font-weight: 700;
-  letter-spacing: 0;
-}
+/* ——— Vozes ——— */
+.font-caramelo-display { font-family: var(--caramelo-font-display); font-weight: 900; letter-spacing: -0.065em; }
+.font-caramelo-sans { font-family: var(--caramelo-font-sans); font-weight: 400; letter-spacing: 0; }
+.font-caramelo-handwriting { font-family: var(--caramelo-font-handwriting); font-weight: 400; letter-spacing: 0; }
+.font-caramelo-mono { font-family: var(--caramelo-font-mono); font-weight: 500; letter-spacing: 0; }
 
-/* Wordmark Style */
+/* ——— Escala do LP (classes prontas, também disponíveis como text-cm-* no preset) ——— */
+.cm-type-hero,
+.cm-type-display,
+.cm-type-display-sm,
+.cm-type-title {
+  font-family: var(--caramelo-font-display);
+  font-weight: 900;
+  text-wrap: balance;
+}
+.cm-type-hero { font-size: clamp(72px, 12.9vw, 184px); line-height: 0.88; letter-spacing: -0.073em; }
+.cm-type-display { font-size: clamp(44px, 6.7vw, 96px); line-height: 0.98; letter-spacing: -0.065em; text-transform: uppercase; }
+.cm-type-display-sm { font-size: clamp(40px, 5.4vw, 76px); line-height: 1.03; letter-spacing: -0.065em; }
+.cm-type-title { font-size: clamp(30px, 3.7vw, 53px); line-height: 1.02; letter-spacing: -0.065em; }
+.cm-type-subtitle { font: 700 clamp(19px, 2.15vw, 30px)/1.25 var(--caramelo-font-display); letter-spacing: -0.045em; }
+.cm-type-heading { font: 800 24px/1.1 var(--caramelo-font-display); letter-spacing: -0.04em; }
+.cm-type-lead { font: 400 15px/1.65 var(--caramelo-font-sans); color: rgb(var(--cm-fg-muted)); text-wrap: pretty; }
+.cm-type-support { font: 400 13px/1.6 var(--caramelo-font-sans); color: rgb(var(--cm-fg-muted)); }
+.cm-type-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  font: 500 11px/1.4 var(--caramelo-font-sans);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.cm-type-hand {
+  display: inline-block;
+  font: 400 clamp(23px, 2.2vw, 32px)/1.15 var(--caramelo-font-handwriting);
+  color: rgb(var(--cm-accent-ink));
+  transform: rotate(-3deg);
+}
+/* Destaque de palavra dentro do título (LP: .accent) */
+.cm-type-accent { color: rgb(var(--cm-accent-ink)); }
+/* Expoente de marca registrada no título (LP: hero sup) */
+.cm-type-hero sup,
+.cm-type-display sup { font-size: 0.2em; vertical-align: top; position: relative; top: 0.24em; margin-left: 0.1em; letter-spacing: 0; }
+
+/* Wordmark */
 .caramelo-wordmark {
   font-family: var(--caramelo-font-display);
   font-weight: 900;
   text-transform: uppercase;
-  line-height: 0.92;
-  letter-spacing: -0.035em;
+  line-height: 0.95;
+  letter-spacing: -0.055em;
   display: inline-flex;
   flex-direction: column;
 }

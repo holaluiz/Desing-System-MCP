@@ -2,8 +2,8 @@ import React from 'react';
 import { cn } from '../../utils/cn';
 
 /**
- * 1. VOZ PRINCIPAL — Grotesca Pesada (Display / Editorial)
- * Larga, pesada, impactante. Usada em títulos, números e chamadas.
+ * 1. VOZ PRINCIPAL — Montserrat 900 (Display / Editorial)
+ * Massa de cartaz: entrelinha compacta e tracking negativo forte (escala do LP).
  */
 export interface DisplayHeadingProps extends React.HTMLAttributes<HTMLHeadingElement> {
   as?: 'h1' | 'h2' | 'h3' | 'h4' | 'div';
@@ -20,15 +20,15 @@ export const DisplayHeading: React.FC<DisplayHeadingProps> = ({
   ...props
 }) => {
   const sizeStyles = {
-    xl: 'text-4xl md:text-6xl lg:text-7xl leading-[0.92] tracking-[-0.035em]',
-    lg: 'text-3xl md:text-5xl leading-[0.96] tracking-[-0.03em]',
-    md: 'text-2xl md:text-3xl leading-[1.05] tracking-[-0.02em]',
+    xl: 'text-cm-display',
+    lg: 'text-cm-display-sm',
+    md: 'text-cm-title',
   }[size];
 
   return (
     <Component
       className={cn(
-        'font-display font-black font-extrabold',
+        'font-display font-black text-balance',
         uppercase && 'uppercase',
         sizeStyles,
         className
@@ -41,8 +41,8 @@ export const DisplayHeading: React.FC<DisplayHeadingProps> = ({
 };
 
 /**
- * 2. VOZ SECUNDÁRIA — Sans Funcional (Interface / Corpo)
- * Limpa, regular/medium. Leitura confortável para textos e navegação.
+ * 2. VOZ DE TEXTO — Inter (Interface / Corpo)
+ * Leitura confortável para textos, navegação e controles.
  */
 export interface TextProps extends React.HTMLAttributes<HTMLParagraphElement> {
   as?: 'p' | 'span' | 'div';
@@ -80,17 +80,17 @@ export const Text: React.FC<TextProps> = ({
 };
 
 /**
- * 3. VOZ MANUSCRITA — Intervenção Humana (Anotações, rabiscos, pensamentos)
- * REGRA CANÔNICA: NUNCA usar em parágrafos longos, menus, preços ou botões.
+ * 3. VOZ MANUSCRITA — Covered By Your Grace (anotações, rabiscos, pensamentos)
+ * Peso único (400) e sempre levemente girada. NUNCA em parágrafos longos, menus, preços ou botões.
  */
 export interface HandwrittenNoteProps extends React.HTMLAttributes<HTMLSpanElement> {
   color?: 'caramel' | 'sky' | 'pink' | 'yellow' | 'cream';
-  rotate?: '-2' | '-1' | '0' | '1' | '2';
+  rotate?: '-4' | '-3' | '-2' | '-1' | '0' | '1' | '2' | '5' | '8';
 }
 
 export const HandwrittenNote: React.FC<HandwrittenNoteProps> = ({
   color = 'caramel',
-  rotate = '-1',
+  rotate = '-3',
   className,
   children,
   ...props
@@ -104,17 +104,21 @@ export const HandwrittenNote: React.FC<HandwrittenNoteProps> = ({
   }[color];
 
   const rotateStyles = {
+    '-4': '-rotate-[4deg]',
+    '-3': '-rotate-3',
     '-2': '-rotate-2',
     '-1': '-rotate-1',
     '0': 'rotate-0',
     '1': 'rotate-1',
     '2': 'rotate-2',
+    '5': 'rotate-[5deg]',
+    '8': 'rotate-[8deg]',
   }[rotate];
 
   return (
     <span
       className={cn(
-        'font-handwriting inline-block text-xl md:text-2xl font-bold select-none',
+        'font-handwriting inline-block text-cm-hand font-normal select-none',
         colorStyles,
         rotateStyles,
         className
@@ -152,7 +156,7 @@ export const Eyebrow: React.FC<EyebrowProps> = ({
   return (
     <span
       className={cn(
-        'font-sans text-[0.6875rem] font-black uppercase tracking-[0.09em] inline-flex items-center gap-1.5',
+        'font-sans text-cm-meta uppercase inline-flex items-center gap-1.5',
         colorStyles,
         className
       )}
