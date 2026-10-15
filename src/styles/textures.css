@@ -74,12 +74,12 @@
 
 .caramelo-layer-split:hover {
   transform: translate(-3px, -3px);
-  box-shadow: 5px 5px 0px var(--caramelo-color-caramel);
+  box-shadow: 2px 2px 0 #FF701A, -2px 2px 0 #25BFFF, 4px 4px 0 #FF3D8D, -4px 3px 0 #7657FF, 5px 5px 0 #FFD52A;
 }
 
 .caramelo-layer-split:active {
   transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0px var(--caramelo-color-caramel);
+  box-shadow: 1px 0 0 #FF701A, -1px 0 0 #25BFFF, 0 1px 0 #FF3D8D, 1px 1px 0 #7657FF, -1px 1px 0 #FFD52A;
 }
 
 /* Movimento reduzido: camadas permanecem alinhadas, apenas a sombra responde */

@@ -2,49 +2,61 @@ import React from 'react';
 import { createPointerTrail, createTilt } from '../../motion/pointer';
 import { motion } from '../../tokens/motion';
 import { cn } from '../../utils/cn';
+import { resolveTrailStickers } from '../../brand/stickers';
+import { useMotionEnv } from './hooks';
 
 export interface PointerTrailProps extends React.HTMLAttributes<HTMLElement> {
   as?: 'div' | 'section' | 'header' | 'footer';
   /** Imagens (URLs) ou cartões (nós React) que surgem atrás do cursor, em rodízio */
-  items: Array<string | React.ReactNode>;
-  /** Tamanho do pool (LP: 8) */
+  items?: Array<string | React.ReactNode>;
+  /** Caminho público das figurinhas canônicas (copie os assets do pacote). */
+  assetBasePath?: string;
+  appearance?: 'stickers' | 'cards';
+  /** Pool finito; por padrão inclui o conjunto completo de figurinhas. */
   pool?: number;
   /** Proporção do cartão (padrão 16/10) */
   aspect?: number;
 }
 
 /**
- * Rastro de imagens do mouse — `pointer-trail` (LP: hero, contato e rodapé).
- * Cartões surgem a cada 64px/85ms, giram alternando o lado e caem em 1.1s.
+ * Rastro das figurinhas canônicas — `pointer-trail` (hero, contato e rodapé).
+ * Surgem a cada 64px/85ms, giram alternando o lado e caem em 1.1s.
  * Nunca cobrem CTAs, nunca viram alvo de clique, somem ao rolar/clicar/focar.
  * Só existe com mouse e movimento completo — em touch é apenas o conteúdo.
  */
 export const PointerTrail: React.FC<PointerTrailProps> = ({
   as = 'div',
   items,
-  pool = motion.cinematic.pointerTrail.pool,
+  assetBasePath = '/caramelo/stickers',
+  appearance = items ? 'cards' : 'stickers',
+  pool,
   aspect,
   className,
   children,
   ...props
 }) => {
+  const trailItems = items ?? resolveTrailStickers(assetBasePath);
+  const slotCount = pool ?? Math.max(motion.cinematic.pointerTrail.pool, trailItems.length);
+  const ratio = aspect ?? (appearance === 'stickers' ? 1 : 16 / 10);
+  const env = useMotionEnv();
+  const enabled = env.fine && env.full;
   const containerRef = React.useRef<HTMLElement>(null);
   const layerRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     const container = containerRef.current;
     const layer = layerRef.current;
-    if (!container || !layer) return;
-    return createPointerTrail({ container, layer, slots: Array.from(layer.children) as HTMLElement[], aspect });
-  }, [items.length, pool, aspect]);
+    if (!container || !layer || !enabled) return;
+    return createPointerTrail({ container, layer, slots: Array.from(layer.children) as HTMLElement[], aspect: ratio });
+  }, [trailItems.length, slotCount, ratio, enabled]);
 
   return React.createElement(
     as,
-    { ref: containerRef, className: cn('cm-trail', className), ...props },
+    { ref: containerRef, className: cn('cm-trail', appearance === 'stickers' && 'cm-trail--stickers', className), ...props },
     children,
     <div ref={layerRef} className="cm-trail__layer" aria-hidden="true" key="cm-trail-layer">
-      {Array.from({ length: pool }, (_, i) => {
-        const item = items[i % Math.max(1, items.length)];
+      {enabled && Array.from({ length: slotCount }, (_, i) => {
+        const item = trailItems[i % Math.max(1, trailItems.length)];
         return (
           <div key={i} className="cm-trail__slot" data-active="false">
             {typeof item === 'string' ? <img src={item} alt="" draggable={false} decoding="async" /> : item}

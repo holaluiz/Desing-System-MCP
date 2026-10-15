@@ -207,7 +207,6 @@ function auditMarkup(
   let fieldsTotal = 0;
   let fieldsLabelled = 0;
   let focusIndicators = 0;
-  const families = new Set<string>();
 
   els.forEach((el, idx) => {
     const st = styles[idx];
@@ -223,18 +222,6 @@ function auditMarkup(
     const buttonLike = interactive && (st.plain.some((t) => /^(bg-|border|h-\d|size-)/.test(t)) || (st.plain.some((t) => /^px-/.test(t)) && st.plain.some((t) => /^py-/.test(t))));
     const hasFocusIndicator = has(FOCUS_INDICATOR_RE);
     if (hasFocusIndicator) focusIndicators++;
-
-    // Acento por cena
-    for (const t of st.plain) {
-      const cu = splitColorUtility(t);
-      if (!cu || cu.family === 'neutral' || cu.family === 'red' || cu.family === 'green') continue;
-      const n = cu.shade === 'white' ? 0 : cu.shade === 'black' ? 1000 : cu.shade;
-      if ((cu.kind === 'bg' && n > 200 && n < 900) || cu.kind === 'gradient') families.add(cu.family);
-    }
-    for (const t of st.plain) {
-      const m = /^(?:bg|from)-(caramel|sky|pink|violet|yellow)(?:-(?:hover|bright|deep))?$/.exec(t);
-      if (m) families.add(`marca:${m[1]}`);
-    }
 
     // ——— Acessibilidade ———
     if (lower === 'img' && !hasAttr(el, 'alt')) {
@@ -427,22 +414,11 @@ function auditMarkup(
   });
 
   // ——— Regras de cena ———
-  const accentFamilies = Array.from(families);
-  if (accentFamilies.length >= 2) {
-    add({
-      rule: 'ID-ACCENT-DISCIPLINE',
-      severity: accentFamilies.length >= 3 ? 'warning' : 'suggestion',
-      category: 'identidade',
-      line: 1,
-      issue: `${accentFamilies.length} acentos cromáticos competindo (${accentFamilies.join(', ')}).`,
-      fix: 'Regra de ouro: 1 acento dominante por cena. Status (erro/sucesso) usam papéis próprios; o resto vira bg-accent.',
-      autoFix: true,
-    });
-  }
+  // Combinar as cinco cores é identidade. Contraste e hierarquia são avaliados por regras próprias.
   if (stats.literalColors >= 4 && stats.semanticTokens === 0) {
-    add({ rule: 'ID-TOKEN-DEBT', severity: 'warning', category: 'identidade', line: 1, issue: `${stats.literalColors} cores literais e nenhum papel semântico — a interface não troca de tema nem de acento.`, fix: 'Papéis Caramelo (bg-surface-1, text-fg-muted, bg-accent…).', autoFix: true });
+    add({ rule: 'ID-TOKEN-DEBT', severity: 'warning', category: 'identidade', line: 1, issue: `${stats.literalColors} cores literais e nenhum papel semântico — superfícies e textos não acompanham o tema.`, fix: 'Use papéis Caramelo para superfície e leitura; preserve a composição espectral em gradientes.', autoFix: true });
   } else if (stats.literalColors > stats.semanticTokens && stats.literalColors >= 4) {
-    add({ rule: 'ID-TOKEN-DEBT', severity: 'suggestion', category: 'identidade', line: 1, issue: `${stats.literalColors} cores literais contra ${stats.semanticTokens} papéis semânticos.`, fix: 'Migre o restante para papéis.', autoFix: true });
+    add({ rule: 'ID-TOKEN-DEBT', severity: 'suggestion', category: 'identidade', line: 1, issue: `${stats.literalColors} cores literais contra ${stats.semanticTokens} papéis semânticos.`, fix: 'Use papéis para superfícies e leitura; preserve as cores da marca nos gradientes.', autoFix: true });
   }
   const darkVariants = allTokens.filter((t) => t.startsWith('dark:')).length;
   if (darkVariants >= 4) {
@@ -465,7 +441,7 @@ function auditMarkup(
   for (const el of els) if (el.tag === 'style' && el.close !== null) auditCss(code, parseCss(code, el.end, el.close), lines, add, stats, strengths);
 
   // ——— Pontos fortes ———
-  if (stats.semanticTokens > stats.literalColors && stats.semanticTokens > 0) strengths.push(`Usa papéis semânticos (${stats.semanticTokens}) — pronto para tema e acento de cena.`);
+  if (stats.semanticTokens > stats.literalColors && stats.semanticTokens > 0) strengths.push(`Usa papéis semânticos (${stats.semanticTokens}) — pronto para tema e cores funcionais.`);
   if (focusIndicators > 0) strengths.push(`${focusIndicators} elemento(s) com indicador de foco visível.`);
   if (hasReduced) strengths.push('Respeita prefers-reduced-motion.');
   if (fieldsTotal > 0 && fieldsLabelled === fieldsTotal) strengths.push('Todos os campos têm rótulo acessível.');
@@ -600,7 +576,7 @@ function auditCss(code: string, rules: CssRule[], lines: LineIndex, add: (f: Fin
   }
   if (reduced) strengths.push('Respeita prefers-reduced-motion.');
   if (stats.literalColors >= 6 && stats.semanticTokens === 0) {
-    add({ rule: 'ID-TOKEN-DEBT', severity: 'warning', category: 'identidade', line: 1, issue: `${stats.literalColors} cores literais e nenhuma variável de papel.`, fix: 'rgb(var(--cm-*)) — segue tema e acento.', autoFix: true });
+    add({ rule: 'ID-TOKEN-DEBT', severity: 'warning', category: 'identidade', line: 1, issue: `${stats.literalColors} cores literais e nenhuma variável de papel.`, fix: 'Papéis rgb(var(--cm-*)) para superfícies e leitura; preserve o espectro da marca em gradientes.', autoFix: true });
   }
 }
 

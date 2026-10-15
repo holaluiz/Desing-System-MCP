@@ -5,10 +5,12 @@
  * Camadas:
  *  1. --caramelo-*  → paleta de marca e tokens V1 (valores literais)
  *  2. --cm-*        → papéis semânticos V2 (triplets RGB: use rgb(var(--cm-fg)))
- *                     que mudam com o tema e com o acento da cena.
+ *                     que mudam com o tema e com a cor funcional de base.
+ *  3. --cm-spectrum-* → composição das cinco cores, definida em chromatic.css.
  */
 
-:root {
+:root,
+[data-caramelo-theme="dark"] {
   /* ============ 1. MARCA (V1, inalterado) ============ */
   --caramelo-color-ink: #101014;
   --caramelo-color-ink-muted: #18181D;
@@ -36,7 +38,7 @@
   --caramelo-bg: var(--caramelo-color-ink);
   --caramelo-text: var(--caramelo-color-cream);
   --caramelo-text-muted: #A3A3B0;
-  --caramelo-accent: var(--caramelo-color-caramel);
+  --caramelo-accent: rgb(var(--cm-fg));
   --caramelo-accent-sky: var(--caramelo-color-sky);
   --caramelo-border: var(--caramelo-color-ink-border);
 
@@ -75,10 +77,11 @@
   --cm-fg-dim: 139 139 152;
   --cm-fg-faint: 90 90 102;
 
-  --cm-accent: 255 112 26;
-  --cm-accent-bright: 255 138 61;
-  --cm-accent-ink: 255 112 26;
-  --cm-accent-soft: 43 22 8;
+  /* Base neutra: cor de marca aparece como composição --cm-spectrum-*. */
+  --cm-accent: 255 244 232;
+  --cm-accent-bright: 255 255 255;
+  --cm-accent-ink: 255 244 232;
+  --cm-accent-soft: 24 24 29;
   --cm-accent-contrast: 16 16 20;
 
   --cm-focus: 37 191 255;
@@ -99,8 +102,8 @@
   --cm-elev-3: inset 0 1px 0 rgba(255, 244, 232, 0.06), 0 16px 34px -8px rgba(0, 0, 0, 0.6);
   --cm-elev-4: inset 0 1px 0 rgba(255, 244, 232, 0.06), 0 0 0 1px rgba(255, 244, 232, 0.06), 0 24px 60px -12px rgba(0, 0, 0, 0.72);
   --cm-pressed: inset 0 2px 4px rgba(0, 0, 0, 0.6), inset 0 -1px 1px rgba(255, 244, 232, 0.05);
-  --cm-glow-sm: 0 0 0 1px rgb(var(--cm-accent) / 0.35), 0 0 14px rgb(var(--cm-accent) / 0.35);
-  --cm-glow: 0 0 0 1px rgb(var(--cm-accent-bright) / 0.5), 0 0 11px 3px rgb(var(--cm-accent) / 0.8), 0 0 28px 8px rgb(var(--cm-accent) / 0.4), 0 0 44px 14px rgb(var(--cm-accent) / 0.14);
+  --cm-glow-sm: var(--cm-spectrum-glow);
+  --cm-glow: var(--cm-spectrum-glow-strong);
   --cm-focus-ring: 0 0 0 2px rgb(var(--cm-stage)), 0 0 0 4px rgb(var(--cm-focus));
 
   /* Raios Lumen (concêntricos) */
@@ -146,6 +149,7 @@
   --caramelo-bg: var(--caramelo-color-cream);
   --caramelo-text: var(--caramelo-color-ink);
   --caramelo-text-muted: #6B6862;
+  --caramelo-accent: rgb(var(--cm-fg));
   --caramelo-border: var(--caramelo-color-cream-border);
 
   --cm-stage: 255 244 232;
@@ -163,10 +167,10 @@
   --cm-fg-dim: 107 104 98;
   --cm-fg-faint: 163 156 147;
 
-  --cm-accent: 255 112 26;
-  --cm-accent-bright: 229 94 13;
-  --cm-accent-ink: 178 63 0;
-  --cm-accent-soft: 255 230 211;
+  --cm-accent: 255 244 232;
+  --cm-accent-bright: 255 255 255;
+  --cm-accent-ink: 16 16 20;
+  --cm-accent-soft: 245 230 212;
   --cm-accent-contrast: 16 16 20;
 
   --cm-focus: 11 110 153;
@@ -186,12 +190,13 @@
   --cm-elev-3: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 16px 34px -10px rgba(16, 16, 20, 0.22);
   --cm-elev-4: 0 0 0 1px rgba(16, 16, 20, 0.06), 0 24px 60px -16px rgba(16, 16, 20, 0.28);
   --cm-pressed: inset 0 2px 4px rgba(16, 16, 20, 0.12);
-  --cm-glow-sm: 0 0 0 1px rgb(var(--cm-accent) / 0.4), 0 6px 16px -4px rgb(var(--cm-accent) / 0.45);
-  --cm-glow: 0 0 0 1px rgb(var(--cm-accent) / 0.5), 0 8px 24px -4px rgb(var(--cm-accent) / 0.55), 0 0 40px 4px rgb(var(--cm-accent) / 0.18);
+  --cm-glow-sm: var(--cm-spectrum-glow);
+  --cm-glow: var(--cm-spectrum-glow-strong);
 }
 
-/* ============ ACENTOS DE CENA (regra: 1 acento dominante) ============
-   <section data-cm-accent="sky"> troca o acento de tudo dentro dela. */
+/* ============ BASES FUNCIONAIS (compatibilidade data-cm-accent) ============
+   <section data-cm-accent="sky"> altera papéis sólidos; o espectro combinado permanece. */
+[data-cm-accent="neutral"] { --cm-accent: 255 244 232; --cm-accent-bright: 255 255 255; --cm-accent-ink: var(--cm-fg); --cm-accent-soft: var(--cm-surface-2); --cm-accent-contrast: 16 16 20; --caramelo-accent: rgb(var(--cm-fg)); }
 [data-cm-accent="caramel"] { --cm-accent: 255 112 26; --cm-accent-bright: 255 138 61; --cm-accent-ink: 255 112 26; --cm-accent-soft: 43 22 8; --cm-accent-contrast: 16 16 20; }
 [data-cm-accent="sky"] { --cm-accent: 37 191 255; --cm-accent-bright: 92 208 255; --cm-accent-ink: 37 191 255; --cm-accent-soft: 10 37 51; --cm-accent-contrast: 16 16 20; }
 [data-cm-accent="pink"] { --cm-accent: 255 61 141; --cm-accent-bright: 255 107 168; --cm-accent-ink: 255 61 141; --cm-accent-soft: 51 11 28; --cm-accent-contrast: 16 16 20; }
@@ -204,19 +209,13 @@
 [data-caramelo-theme="light"] [data-cm-accent="violet"], [data-caramelo-theme="light"][data-cm-accent="violet"] { --cm-accent-ink: 91 63 224; --cm-accent-soft: 241 239 255; }
 [data-caramelo-theme="light"] [data-cm-accent="yellow"], [data-caramelo-theme="light"][data-cm-accent="yellow"] { --cm-accent-bright: 230 189 21; --cm-accent-ink: 122 86 0; --cm-accent-soft: 255 251 230; }
 
-/* Tokens DERIVADOS do acento/tema: custom properties resolvem var() onde são
-   declaradas, então precisam ser redeclarados no escopo da cena/tema —
-   senão o glow de um <section data-cm-accent="sky"> continuaria Caramel. */
+/* A iluminação expressiva sempre combina a paleta, inclusive em bases opt-in.
+   O anel funcional de foco continua a acompanhar o contraste do tema local. */
 [data-cm-accent],
 [data-caramelo-theme] {
-  --cm-glow-sm: 0 0 0 1px rgb(var(--cm-accent) / 0.35), 0 0 14px rgb(var(--cm-accent) / 0.35);
-  --cm-glow: 0 0 0 1px rgb(var(--cm-accent-bright) / 0.5), 0 0 11px 3px rgb(var(--cm-accent) / 0.8), 0 0 28px 8px rgb(var(--cm-accent) / 0.4), 0 0 44px 14px rgb(var(--cm-accent) / 0.14);
+  --cm-glow-sm: var(--cm-spectrum-glow);
+  --cm-glow: var(--cm-spectrum-glow-strong);
   --cm-focus-ring: 0 0 0 2px rgb(var(--cm-stage)), 0 0 0 4px rgb(var(--cm-focus));
-}
-[data-caramelo-theme="light"],
-[data-caramelo-theme="light"] [data-cm-accent] {
-  --cm-glow-sm: 0 0 0 1px rgb(var(--cm-accent) / 0.4), 0 6px 16px -4px rgb(var(--cm-accent) / 0.45);
-  --cm-glow: 0 0 0 1px rgb(var(--cm-accent) / 0.5), 0 8px 24px -4px rgb(var(--cm-accent) / 0.55), 0 0 40px 4px rgb(var(--cm-accent) / 0.18);
 }
 
 /* ============ MOVIMENTO REDUZIDO ============ */

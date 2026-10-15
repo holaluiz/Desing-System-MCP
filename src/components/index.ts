@@ -1,5 +1,6 @@
 // Material PRINT (V1) — editorial, cartaz, sombras sólidas
 export * from './Wordmark';
+export * from './Isotype';
 export * from './Lockup';
 export * from './Button';
 export * from './Typography';

@@ -6,7 +6,7 @@ import { motion } from '../tokens/motion';
 import { typography } from '../tokens/typography';
 import type { SemanticRole } from '../tokens/semantic';
 
-/** Papel semântico → cor Tailwind que respeita tema, acento de cena e modificador de opacidade (bg-fg/10) */
+/** Papel semântico → cor Tailwind que respeita tema e modificador de opacidade (bg-fg/10). A assinatura usa o espectro combinado. */
 const role = (name: SemanticRole) => `rgb(var(--cm-${name}) / <alpha-value>)`;
 
 export const carameloPreset: Partial<Config> = {
@@ -71,6 +71,10 @@ export const carameloPreset: Partial<Config> = {
         handwriting: ['"Covered By Your Grace"', 'cursive'],
         mono: ['ui-monospace', 'SFMono-Regular', 'Consolas', '"Liberation Mono"', 'Menlo', 'monospace'],
       },
+      backgroundImage: {
+        spectrum: 'var(--cm-spectrum-gradient)',
+        'spectrum-soft': 'var(--cm-spectrum-soft)',
+      },
       // Escala do LP: text-cm-hero, text-cm-display… (tamanho + entrelinha + tracking + peso)
       fontSize: Object.fromEntries(
         Object.entries(typography.sizes).map(([name, s]) => [
@@ -96,6 +100,8 @@ export const carameloPreset: Partial<Config> = {
         highlight: 'var(--cm-highlight)',
         glow: 'var(--cm-glow)',
         'glow-sm': 'var(--cm-glow-sm)',
+        spectrum: 'var(--cm-spectrum-glow)',
+        'spectrum-print': 'var(--cm-spectrum-print)',
         'glow-sky': shadows['glow-sky'],
         focus: 'var(--cm-focus-ring)',
       },

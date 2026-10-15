@@ -32,6 +32,7 @@ export default defineConfig([
       'tailwind/index': 'src/tailwind/index.ts',
       'engine/index': 'src/mcp/engine/index.ts',
       'motion/index': 'src/motion/index.ts',
+      'brand/index': 'src/brand/index.ts',
     },
     format: ['cjs', 'esm'],
     dts: true,
@@ -55,6 +56,11 @@ export default defineConfig([
       if (fs.existsSync(fontsSource)) {
         fs.cpSync(fontsSource, path.resolve(distDir, 'fonts'), { recursive: true });
         console.log('Copied fonts → dist/fonts');
+      }
+      const assetsSource = path.resolve(__dirname, 'src/assets');
+      if (fs.existsSync(assetsSource)) {
+        fs.cpSync(assetsSource, path.resolve(distDir, 'assets'), { recursive: true });
+        console.log('Copied canonical brand assets → dist/assets');
       }
     },
   },

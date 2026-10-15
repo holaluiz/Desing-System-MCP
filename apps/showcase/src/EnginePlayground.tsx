@@ -1,6 +1,5 @@
 import { useDeferredValue, useMemo, useState } from 'react';
 import { Chip, CopyButton, SpotlightTabs, Surface } from '@caramelo/design-system';
-import type { SceneAccent } from '@caramelo/design-system';
 import { audit, transform, type AuditReport, type Material } from '@caramelo/design-system/engine';
 
 const SAMPLES: Record<string, { label: string; code: string }> = {
@@ -69,7 +68,7 @@ function Score({ label, report, highlight }: { label: string; report: AuditRepor
   return (
     <div className="flex flex-col gap-1">
       <span className="font-mono text-[11px] uppercase tracking-wider text-fg-dim">{label}</span>
-      <span className={`font-display text-5xl font-extrabold tabular-nums tracking-tight ${highlight ? 'text-accent-ink' : 'text-fg-2'}`}>
+      <span className={`font-display text-5xl font-extrabold tabular-nums tracking-tight ${highlight ? 'cm-spectrum-text' : 'text-fg-2'}`}>
         {report.score}
         <span className="ml-1 text-2xl text-fg-dim">{report.grade}</span>
       </span>
@@ -77,7 +76,7 @@ function Score({ label, report, highlight }: { label: string; report: AuditRepor
   );
 }
 
-export function EnginePlayground({ accent }: { accent: SceneAccent }) {
+export function EnginePlayground() {
   const [sample, setSample] = useState('card');
   const [code, setCode] = useState(SAMPLES.card.code);
   const [material, setMaterial] = useState<Material>('lumen');
@@ -86,13 +85,13 @@ export function EnginePlayground({ accent }: { accent: SceneAccent }) {
   const result = useMemo(() => {
     try {
       const before = audit(deferred);
-      const t = transform(deferred, { material, accent });
+      const t = transform(deferred, { material });
       const after = audit(t.code);
       return { before, t, after, error: null as string | null };
     } catch (e) {
       return { error: e instanceof Error ? e.message : String(e) };
     }
-  }, [deferred, material, accent]);
+  }, [deferred, material]);
 
   const pickSample = (id: string) => {
     setSample(id);
@@ -174,7 +173,7 @@ export function EnginePlayground({ accent }: { accent: SceneAccent }) {
                     <span className="relative h-1.5 overflow-hidden rounded-pill bg-surface-3">
                       <span className="absolute inset-y-0 left-0 rounded-pill bg-fg-faint" style={{ width: `${before}%` }} />
                       <span
-                        className="absolute inset-y-0 left-0 rounded-pill bg-accent transition-[width] duration-smooth ease-out-expo motion-reduce:transition-none"
+                        className="cm-brand-meter absolute inset-y-0 left-0 rounded-pill transition-[width] duration-smooth ease-out-expo motion-reduce:transition-none"
                         style={{ width: `${v.score}%` }}
                       />
                     </span>
@@ -198,7 +197,7 @@ export function EnginePlayground({ accent }: { accent: SceneAccent }) {
                     <span className="font-mono text-fg-faint">L{c.line}</span>
                     <code className="rounded-cm-xs bg-surface-3 px-1.5 py-0.5 font-mono text-fg-dim line-through decoration-fg-faint/60">{c.from}</code>
                     <span className="text-fg-faint" aria-hidden="true">→</span>
-                    <code className="max-w-full break-all rounded-cm-xs bg-accent-soft px-1.5 py-0.5 font-mono text-accent-ink">{c.to}</code>
+                    <code className="cm-brand-badge max-w-full break-all rounded-cm-xs px-1.5 py-0.5 font-mono">{c.to}</code>
                     <span className="text-fg-dim">{c.reason}</span>
                   </li>
                 ))}

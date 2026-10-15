@@ -5,5 +5,6 @@
 
 export * from './components';
 export * from './tokens';
+export * from './brand';
 export * from './utils/cn';
 export * from './tailwind/preset';

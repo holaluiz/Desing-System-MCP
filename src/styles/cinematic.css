@@ -165,7 +165,7 @@ html[data-motion="full"] [data-cm-reveal="calm"]:not([data-cm-shown]) { transfor
    4. SCROLL DIRIGIDO
    ===================================================================== */
 
-/* Barra de progresso fixa (2px, acento) */
+/* Barra de progresso fixa (2px, paleta combinada) */
 .cm-progress {
   position: fixed;
   top: var(--cm-header-height, 0px);
@@ -179,7 +179,7 @@ html[data-motion="full"] [data-cm-reveal="calm"]:not([data-cm-shown]) { transfor
   display: block;
   width: 100%;
   height: 100%;
-  background: rgb(var(--cm-accent));
+  background: var(--cm-spectrum-gradient);
   transform: scaleX(var(--cm-progress, 0));
   transform-origin: left;
 }
@@ -218,8 +218,8 @@ html[data-motion="full"] [data-cm-reveal="calm"]:not([data-cm-shown]) { transfor
   background: rgb(var(--cm-fg-faint));
   transition: height 300ms var(--cm-ease-power2-out), background-color 300ms;
 }
-.cm-scene-dot[aria-current="location"] i { height: 18px; background: rgb(var(--cm-accent)); }
-.cm-scene-dot:hover i { background: rgb(var(--cm-fg)); }
+.cm-scene-dot[aria-current="location"] i { height: 18px; background: var(--cm-spectrum-vertical); }
+.cm-scene-dot:is(:hover, :focus-visible):not([aria-current="location"]) i { background: rgb(var(--cm-fg)); }
 .cm-scene-dot:focus-visible { outline: none; box-shadow: var(--cm-focus-ring); }
 .cm-scene-name {
   position: absolute;
@@ -280,7 +280,7 @@ html[data-motion="full"] [data-cm-reveal="calm"]:not([data-cm-shown]) { transfor
   transition: background-color 200ms, color 200ms, border-color 200ms;
   cursor: pointer;
 }
-.cm-deck__steps button[aria-pressed="true"] { background: rgb(var(--cm-accent)); border-color: rgb(var(--cm-accent)); color: rgb(var(--cm-accent-contrast)); }
+.cm-deck__steps button[aria-pressed="true"] { background: var(--cm-spectrum-soft); border-color: transparent; color: #101014; }
 .cm-deck__steps button:focus-visible { outline: none; box-shadow: var(--cm-focus-ring); }
 /* Fluxo (touch, telas baixas, movimento reduzido): lista simples, sem contador nem passos (LP) */
 .cm-deck:not([data-mode="scrub"]) .cm-deck__toolbar,
@@ -324,7 +324,7 @@ html[data-motion="full"] [data-cm-reveal="calm"]:not([data-cm-shown]) { transfor
 }
 .cm-deck[data-mode="scrub"] .cm-deck__card:not([data-state="active"]) .cm-deck__caption { opacity: 0; transition-delay: 0ms; }
 .cm-deck__timeline { height: 2px; margin-top: 18px; overflow: hidden; background: rgb(var(--cm-line)); }
-.cm-deck__timeline > i { display: block; height: 100%; background: rgb(var(--cm-accent)); transform: scaleX(var(--cm-deck-progress, 0)); transform-origin: left; }
+.cm-deck__timeline > i { display: block; height: 100%; background: var(--cm-spectrum-gradient); transform: scaleX(var(--cm-deck-progress, 0)); transform-origin: left; }
 
 /* Cartões sticky que chegam (ofertas): --cm-p 0 → 1 vem do scroll */
 .cm-stack { display: grid; gap: 24px; }
@@ -362,7 +362,7 @@ html[data-motion="full"] .cm-scrub-words[data-active] .cm-scrub-words__w {
   z-index: 2;
   width: 2px;
   margin-left: -1px;
-  background: rgb(var(--cm-fg));
+  background: var(--cm-spectrum-vertical);
   pointer-events: none;
 }
 .cm-compare__handle::after {
@@ -376,8 +376,9 @@ html[data-motion="full"] .cm-scrub-words[data-active] .cm-scrub-words__w {
   height: 40px;
   transform: translate(-50%, -50%);
   border-radius: 999px;
-  background: rgb(var(--cm-fg));
-  color: rgb(var(--cm-stage));
+  border: 1px solid transparent;
+  background: linear-gradient(rgb(var(--cm-surface-1)), rgb(var(--cm-surface-1))) padding-box, var(--cm-spectrum-gradient) border-box;
+  color: rgb(var(--cm-fg));
   font: 700 16px/1 var(--caramelo-font-sans);
   box-shadow: 0 8px 20px rgb(0 0 0 / 0.35);
 }

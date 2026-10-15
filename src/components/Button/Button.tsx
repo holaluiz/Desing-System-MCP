@@ -37,12 +37,12 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     const variantStyles = {
       primary: [
-        'bg-[#FF701A] text-[#101014] border-[#101014]',
+        'cm-brand-action',
         !disabled && 'shadow-[3px_3px_0px_#101014] hover:shadow-[5px_5px_0px_#101014] hover:-translate-x-[2px] hover:-translate-y-[2px] active:shadow-[1px_1px_0px_#101014]',
       ].join(' '),
       ink: [
         'bg-[#101014] text-[#FFF4E8] border-[#FFF4E8]',
-        !disabled && 'shadow-[3px_3px_0px_#FF701A] hover:shadow-[5px_5px_0px_#FF701A] hover:-translate-x-[2px] hover:-translate-y-[2px] active:shadow-[1px_1px_0px_#FF701A]',
+        !disabled && 'cm-print-interactive hover:-translate-x-[2px] hover:-translate-y-[2px]',
       ].join(' '),
       cream: [
         'bg-[#FFF4E8] text-[#101014] border-[#101014]',

@@ -62,7 +62,7 @@ function findingLine(f: Finding): string {
 export function renderTransform(t: TransformReport, original: string, before?: AuditReport, after?: AuditReport): string {
   const out: string[] = [];
   const themeLabel = t.target.theme === 'dark' ? 'tema escuro' : 'tema claro';
-  out.push(`## Transformação Caramelo · ${t.target.material === 'lumen' ? 'Lumen' : 'Print'} · ${themeLabel} · acento ${t.target.accent}`);
+  out.push(`## Transformação Caramelo · ${t.target.material === 'lumen' ? 'Lumen' : 'Print'} · ${themeLabel} · base funcional ${t.target.accent}`);
   if (before && after) {
     const delta = after.score - before.score;
     out.push(`**Auditoria:** ${before.score}/${before.grade} → **${after.score}/${after.grade}** (${delta >= 0 ? '+' : ''}${delta})`);

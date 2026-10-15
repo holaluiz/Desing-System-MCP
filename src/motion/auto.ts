@@ -19,6 +19,7 @@ import { observeReveal } from './reveal';
 import { createScrollScene, measureUntransformed } from './scroll';
 import { createSmoothScroll, type SmoothScrollOptions } from './smooth-scroll';
 import { observeVideo } from './video';
+import { resolveTrailStickers } from '../brand/stickers';
 
 export interface InitMotionOptions {
   /** Smooth scroll do LP (padrão: ligado) */
@@ -104,9 +105,41 @@ export function initCaramelMotion(options: InitMotionOptions = {}): () => void {
   });
 
   root.querySelectorAll<HTMLElement>('[data-cm-trail]').forEach((container) => {
-    const layer = container.querySelector<HTMLElement>('.cm-trail__layer');
-    if (!layer) return;
-    cleanups.push(createPointerTrail({ container, layer, slots: Array.from(layer.children) as HTMLElement[] }));
+    let layer = container.querySelector<HTMLElement>('.cm-trail__layer');
+    const generated = !layer;
+    if (!layer) {
+      layer = document.createElement('div');
+      layer.className = 'cm-trail__layer';
+      layer.setAttribute('aria-hidden', 'true');
+      container.append(layer);
+    }
+    const filled = layer.children.length === 0;
+    const hadTrailClass = container.classList.contains('cm-trail');
+    const hadStickerClass = container.classList.contains('cm-trail--stickers');
+    container.classList.add('cm-trail');
+    if (filled) {
+      container.classList.add('cm-trail--stickers');
+      resolveTrailStickers(container.dataset.cmAssetsBase || '/caramelo/stickers').forEach((src) => {
+        const slot = document.createElement('div');
+        slot.className = 'cm-trail__slot';
+        slot.dataset.active = 'false';
+        const image = document.createElement('img');
+        image.src = src;
+        image.alt = '';
+        image.draggable = false;
+        image.decoding = 'async';
+        slot.append(image);
+        layer!.append(slot);
+      });
+    }
+    const destroy = createPointerTrail({ container, layer, slots: Array.from(layer.children) as HTMLElement[], aspect: container.classList.contains('cm-trail--stickers') ? 1 : undefined });
+    cleanups.push(() => {
+      destroy();
+      if (generated) layer.remove();
+      else if (filled) layer.replaceChildren();
+      if (!hadTrailClass) container.classList.remove('cm-trail');
+      if (!hadStickerClass) container.classList.remove('cm-trail--stickers');
+    });
   });
 
   root.querySelectorAll<HTMLVideoElement>('video[data-cm-autoplay]').forEach((v) => cleanups.push(observeVideo(v)));

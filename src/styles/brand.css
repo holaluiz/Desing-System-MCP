@@ -1,0 +1,33 @@
+/* Isotipo vetorial: o gesto revela o espectro sem deformar a silhueta. */
+.cm-isotype { display: inline-block; flex: none; overflow: visible; vertical-align: middle; }
+.cm-isotype__echo { opacity: 0; transform: translate(0); transition: opacity 160ms ease-out, transform 240ms var(--cm-ease-out); }
+.cm-isotype--interactive:is(:hover, :focus-visible) .cm-isotype__echo,
+:is(a, button):is(:hover, :focus-visible) .cm-isotype--interactive .cm-isotype__echo {
+  opacity: .6;
+  transform: translate(12px, -6px);
+}
+.cm-isotype--interactive:is(:hover, :focus-visible),
+:is(a, button):is(:hover, :focus-visible) .cm-isotype--interactive {
+  filter: drop-shadow(-1px 0 #25BFFF80) drop-shadow(1px 0 #FF3D8D80);
+}
+.cm-hero-isotype { width: auto; height: 78%; max-width: 80%; }
+
+/* As figurinhas mantêm alpha, proporção e recorte; sem moldura de cartão. */
+.cm-trail--stickers .cm-trail__slot {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
+}
+.cm-trail--stickers .cm-trail__slot > img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 0;
+  filter: drop-shadow(0 5px 5px #10101438);
+}
+@media (prefers-reduced-motion: reduce) {
+  .cm-isotype__echo { transition: none; transform: none !important; }
+}
+html[data-motion="off"] .cm-isotype__echo { transition: none; transform: none !important; }
