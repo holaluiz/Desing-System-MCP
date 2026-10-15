@@ -13,6 +13,9 @@ export default defineConfig({
       '@caramelo/design-system/engine': path.resolve(__dirname, '../../src/mcp/engine/index.ts'),
       '@caramelo/design-system': path.resolve(__dirname, '../../src/index.ts'),
     },
+    // O código de ../../src resolve estas dependências daqui, não da raiz: o build funciona
+    // só com o node_modules do showcase (Vercel) e o React nunca vem em duas cópias
+    dedupe: ['react', 'react-dom', 'clsx', 'tailwind-merge', 'lenis', 'lucide-react'],
   },
   server: {
     port: 3000,

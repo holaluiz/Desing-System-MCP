@@ -22,7 +22,11 @@
       "@caramelo/design-system/motion": ["../../src/motion/index.ts"],
       "@caramelo/design-system/*": ["../../src/*"],
       "react": ["./node_modules/@types/react"],
-      "react/*": ["./node_modules/@types/react/*"]
+      "react/*": ["./node_modules/@types/react/*"],
+      "clsx": ["./node_modules/clsx"],
+      "tailwind-merge": ["./node_modules/tailwind-merge"],
+      "tailwindcss": ["./node_modules/tailwindcss"],
+      "lenis": ["./node_modules/lenis"]
     }
   },
   "include": ["src"]
