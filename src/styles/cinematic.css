@@ -350,10 +350,10 @@ html[data-motion="full"] .cm-scrub-words[data-active] .cm-scrub-words__w {
 }
 
 /* Comparador antes/depois */
-.cm-compare { position: relative; overflow: hidden; border-radius: var(--cm-radius-xl); isolation: isolate; --split: 50%; }
-.cm-compare__layer { position: absolute; inset: 0; }
-.cm-compare__layer--after { position: relative; }
-.cm-compare__layer--before { clip-path: inset(0 var(--split) 0 0); z-index: 1; }
+.cm-compare { position: relative; display: grid; overflow: hidden; border-radius: var(--cm-radius-xl); isolation: isolate; --split: 50%; }
+/* As duas camadas dividem a mesma célula: sempre com a altura do comparador */
+.cm-compare__layer { grid-area: 1 / 1; min-width: 0; }
+.cm-compare__layer--after { clip-path: inset(0 var(--split) 0 0); z-index: 1; }
 .cm-compare__handle {
   position: absolute;
   top: 0;

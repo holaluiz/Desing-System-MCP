@@ -13,7 +13,8 @@ export interface StickyStackProps extends React.HTMLAttributes<HTMLDivElement> {
 /**
  * Cartões sticky que chegam — `sticky-stack` (ofertas do LP).
  * Cada filho gruda abaixo do cabeçalho; ao chegar ele vem de scale .97, 22px abaixo,
- * girado ±1° e opacidade .88. Posição medida no fluxo (sem sticky) só no refresh.
+ * girado ±1° e opacidade .88, e termina no ponto em que gruda.
+ * Posição medida no fluxo (sem sticky) só no refresh.
  * Foco dentro de um cartão completa a chegada na hora.
  */
 export const StickyStack: React.FC<StickyStackProps> = ({ className, children, ...props }) => {
@@ -25,17 +26,22 @@ export const StickyStack: React.FC<StickyStackProps> = ({ className, children, .
     const root = ref.current;
     if (!root || !stack) return;
     const cards = Array.from(root.children) as HTMLElement[];
+    // Mede sem o sticky e sem a própria chegada (translate/scale/rotate), senão a cena
+    // atrasa ~22px quando o refresh acontece com o cartão ainda por chegar
     const flowTop = (card: HTMLElement) => {
-      const prev = card.style.position;
+      const { position, transform } = card.style;
       card.style.position = 'static';
+      card.style.transform = 'none';
       const r = card.getBoundingClientRect();
-      card.style.position = prev;
+      card.style.position = position;
+      card.style.transform = transform;
       return { top: r.top + window.scrollY, height: r.height };
     };
-    const scenes = cards.map((card, i) =>
+    // A chegada termina onde o cartão gruda: cabeçalho + recuo, lidos do próprio `top` sticky
+    const scenes = cards.map((card) =>
       createScrollScene(card, {
         start: 'top 88%',
-        end: `top top+=${i % 2 ? 42 : 24}`,
+        end: `top top+=${parseFloat(getComputedStyle(card).top) || 0}`,
         scrub: 0.32,
         measure: () => flowTop(card),
         onUpdate: (p) => card.style.setProperty('--cm-p', p.toFixed(4)),
@@ -124,8 +130,9 @@ export interface CompareSliderProps {
 
 /**
  * Comparador antes/depois — `compare-slider` (workshop do LP).
- * Range nativo e acessível (setas, Home/End). Com scrollDriven, a cena empurra o valor
- * de 0 a 100 enquanto atravessa a tela; quando a pessoa usa o controle, ele é dela.
+ * Range nativo e acessível (setas, Home/End). O valor é a fatia do "depois", aberta da
+ * esquerda até a alça. Com scrollDriven, a cena empurra o valor de 0 a 100 enquanto
+ * atravessa a tela; quando a pessoa usa o controle, ele é dela.
  */
 export const CompareSlider: React.FC<CompareSliderProps> = ({
   before,
@@ -162,10 +169,10 @@ export const CompareSlider: React.FC<CompareSliderProps> = ({
 
   return (
     <div ref={ref} className={cn('cm-compare', className)} style={{ '--split': `${100 - value}%` } as React.CSSProperties}>
-      <div className="cm-compare__layer cm-compare__layer--after">{after}</div>
       <div className="cm-compare__layer cm-compare__layer--before" aria-hidden="true">
         {before}
       </div>
+      <div className="cm-compare__layer cm-compare__layer--after">{after}</div>
       <span className="cm-compare__handle" aria-hidden="true" />
       <input
         ref={rangeRef}
