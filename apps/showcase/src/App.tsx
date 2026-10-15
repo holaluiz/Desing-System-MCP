@@ -150,7 +150,7 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
               onClick={onSwitchToLumen}
               className="ml-2 border-2 border-[#FF701A] px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#FF701A] transition-[transform,box-shadow] duration-150 ease-kinetic hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[3px_3px_0px_#FF701A] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none focus-visible:outline-none focus-visible:shadow-focus"
             >
-              Lumen V2 →
+              Lumen V1 →
             </button>
           </div>
         </div>

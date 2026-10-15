@@ -127,7 +127,7 @@ export function LumenLab({ onSwitchToPrint }: { onSwitchToPrint: () => void }) {
           <a href="#topo" className="flex items-center gap-2.5 rounded-cm-sm focus-visible:outline-none focus-visible:shadow-focus">
             <span className="grid size-7 place-items-center rounded-cm-sm bg-accent font-display text-[11px] font-extrabold text-accent-contrast">UC</span>
             <span className="hidden font-display text-sm font-black tracking-title sm:inline">Caramelo DS</span>
-            <Chip>V2 · Lumen</Chip>
+            <Chip>V1 · Lumen</Chip>
           </a>
           <GlideGroup as="nav" aria-label="Seções" className="hidden items-center gap-1 md:flex">
             <GlideItem as="a" href="#interacoes" className="px-3 py-1.5 text-sm text-fg-muted">Interações</GlideItem>
@@ -138,13 +138,6 @@ export function LumenLab({ onSwitchToPrint }: { onSwitchToPrint: () => void }) {
           <div className="flex items-center gap-2">
             <AccentPicker value={accent} onChange={setAccent} />
             <ThemeToggle />
-            <button
-              type="button"
-              onClick={onSwitchToPrint}
-              className="hidden h-8 items-center rounded-pill border border-line px-3 text-xs font-medium text-fg-muted transition-[color,border-color] duration-micro hover:border-line-strong hover:text-fg focus-visible:outline-none focus-visible:shadow-focus sm:inline-flex"
-            >
-              Print V1
-            </button>
           </div>
         </div>
       </header>
@@ -395,7 +388,7 @@ export function LumenLab({ onSwitchToPrint }: { onSwitchToPrint: () => void }) {
             onClick={onSwitchToPrint}
             className="inline-flex items-center gap-1 rounded-cm-xs text-fg-muted hover:text-fg focus-visible:outline-none focus-visible:shadow-focus"
           >
-            Catálogo Print (V1) <span className="cm-arrow" aria-hidden="true">→</span>
+            Catálogo Print <span className="cm-arrow" aria-hidden="true">→</span>
           </button>
         </div>
       </footer>
