@@ -78,13 +78,23 @@ design-system/
 
 ## 04. Tipografia em Três Vozes
 
-1. **Voz Principal — Grotesca Pesada (Display / Editorial):**  
-   - Larga, impactante, caixa alta em títulos, números e CTAs (`Inter Display`, `Syne`, `Impact`).
-2. **Voz Secundária — Sans Funcional (Interface / Corpo):**  
-   - Limpa, leitura confortável para textos, navegação, legendas e labels (`Inter`).
-3. **Voz Manuscrita — Intervenção Humana:**  
-   - Irregular, espontânea (`Caveat`, `Kalam`). Usada para pensamentos, ironias, correções e rabiscos.  
+As mesmas fontes do LP (ADR-006), auto-hospedadas em WOFF2 com licença OFL dentro do `styles.css`:
+
+1. **Display — Montserrat 800–900:** títulos de cena, números, wordmark. Entrelinha 0.88–1.03 e tracking −0.065em (hero −0.073em).  
+   Escala pronta: `text-cm-hero`, `text-cm-display`, `text-cm-display-sm`, `text-cm-title`, `text-cm-subtitle`, `text-cm-heading` (ou classes `.cm-type-*`).
+2. **Texto — Inter 400–600:** leitura, interface e navegação; apoio 13–15px; meta 11px em caixa alta com tracking 0.1em (`text-cm-meta`).
+3. **Mão — Covered By Your Grace 400:** notas curtas, giradas −3°/−4°, na cor do acento (`.cm-type-hand`).  
    - **Proibição:** NUNCA usar em parágrafos longos, menus, preços ou botões.
+4. **Técnica — mono do sistema** (`ui-monospace`): comandos, tokens, atalhos.
+
+### Motion cinematográfico (dos sites do Luiz)
+Smooth scroll Lenis (lerp 0.075, só mouse), títulos linha a linha por máscara, mídia por recorte, entradas que já começam legíveis, profundidade ao rolar, barra de progresso + navegação por cenas, pilha de cartões sticky, ofertas sticky que chegam, palavras que acendem, comparador antes/depois, rastro de imagens e tilt no mouse, cascata só com CSS e vídeo que só toca visível.
+
+```tsx
+import { SmoothScroll, LineReveal, Reveal, Parallax, PointerTrail, StickyDeck } from '@caramelo/design-system';
+// HTML puro: import { initCaramelMotion } from '@caramelo/design-system/motion' + atributos data-cm-*
+```
+Tudo respeita `prefers-reduced-motion`, funciona sem JS e desliga com `?motion=off`. `lenis` é dependência opcional (`npm i lenis`).
 
 ---
 
@@ -189,18 +199,32 @@ Se você estiver em um projeto sem React ou precisar dos tokens em outra platafo
 
 ## 07. Servidor MCP de UX/UI (Model Context Protocol)
 
-Este repositório também funciona como um **Servidor MCP nativo**, permitindo que assistentes de IA (Cursor, Windsurf, Claude Desktop, Antigravity) auditem e elevem o UX e a UI de qualquer aplicação conectada.
+Este repositório também funciona como um **Servidor MCP nativo (v2)**: assistentes de IA (Cursor, Windsurf, Claude Desktop, Claude Code, Antigravity) auditam e **transformam qualquer interface ou design system** na identidade visual e na interatividade Caramelo. O motor mede — contraste WCAG, foco, física de clique, motion — em vez de opinar.
 
-### Ferramentas MCP Disponíveis:
-1. `audit_ux_ui`: Audita código JSX/HTML/Tailwind contra os 12 critérios canônicos, identifica clichês de UI corporativa, falhas de contraste WCAG, falta de física nos botões e retorna pontuação (0-100) e orientações técnicas.
-2. `transform_to_caramelo`: Converte qualquer componente genérico de UI (shadcn, Bootstrap, MUI) para a estética e física tátil Caramelo.
-3. `generate_caramelo_component`: Gera componentes inteiros sob medida (Button, Hero, Card, LayerSplit, Input, Badge).
-4. `check_contrast_wcag`: Calcula e valida a razão de contraste entre duas cores hexadecimais (AA/AAA).
-5. `get_design_tokens`: Retorna a especificação completa de tokens em JSON, CSS ou formato Tailwind.
+### Ferramentas MCP
+| Tool | O que faz |
+|---|---|
+| `transform_to_caramelo` | Converte JSX/TSX, HTML, Vue ou CSS. Cores viram **papéis semânticos** (funcionam nos dois temas e com qualquer acento de cena); temas por variáveis (shadcn, Bootstrap, MUI, Material 3, Chakra) recebem valores Caramelo **no mesmo formato**; sombras, raios e motion viram tokens; adiciona só a interação que falta (press 80ms, hover luminoso, foco Electric Sky, halo em campos, reduced-motion) e corrige a11y segura. Devolve nota de auditoria antes → depois, cada mudança por linha e o que exige decisão humana. Opções: `material` (lumen/print), `theme`, `accent`, `strategy` (unify/preserve). |
+| `audit_ux_ui` | Nota 0–100 por categoria (acessibilidade, contraste, interação, motion, identidade, tipografia, UX), com contraste calculado por herança de fundo e achados por linha marcados como `auto` quando o transform resolve. |
+| `map_colors` | Cores de qualquer formato (hex, rgb, hsl, oklch, triplets shadcn) → tinta da marca mais próxima (ΔE OKLab), papel semântico equivalente e contraste. |
+| `check_contrast_wcag` | Contraste WCAG em qualquer formato; se falhar, sugere as tintas/papéis Caramelo mais próximos que passam. |
+| `list_interactions` / `get_interaction` | Catálogo de microinterações (problema de UX, quando usar/evitar, motion, a11y) e o código pronto: componente React + HTML com classes `cm-*` + JS mínimo. |
+| `get_design_tokens` | `json`, `css` (variáveis `--cm-*` com temas e acentos), `tailwind`, `semantic` ou `all`. |
+| `generate_caramelo_component` | Componentes prontos — Lumen (MagneticButton, Surface, FocusField, SpotlightTabs, GlideMenu, Reveal…) ou Print. |
 
-### Recursos & Prompts Expostos:
-- **Recursos:** `caramelo://guidelines/manual`, `caramelo://tokens/json`, `caramelo://components/catalog`.
-- **Prompts:** `audit-ux-ui`, `transform-to-caramelo`.
+### Recursos & Prompts
+- **Recursos:** `caramelo://guidelines/manual`, `caramelo://guidelines/engine`, `caramelo://tokens/json`, `caramelo://tokens/css`, `caramelo://tokens/semantic`, `caramelo://interactions/catalog`, `caramelo://components/catalog`.
+- **Prompts:** `audit-ux-ui`, `transform-to-caramelo`, `convert-design-system`, `elevate-interaction`.
+
+### Motor programático
+O mesmo motor está disponível para scripts e builds:
+```ts
+import { transform, audit } from '@caramelo/design-system/engine';
+
+const before = audit(code);
+const { code: next, changes, manual } = transform(code, { material: 'lumen', accent: 'sky' });
+```
+A vitrine (`npm run showcase`) traz um playground que roda o motor no navegador.
 
 ### Como Configurar nos Seus Editores e IAs:
 

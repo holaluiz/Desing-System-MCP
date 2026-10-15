@@ -1,3 +1,4 @@
+// Material PRINT (V1) — editorial, cartaz, sombras sólidas
 export * from './Wordmark';
 export * from './Lockup';
 export * from './Button';
@@ -14,3 +15,6 @@ export * from './Select';
 export * from './Alert';
 export * from './Avatar';
 export * from './Divider';
+
+// Material LUMEN (V2) — microinterações de produto
+export * from './Interaction';

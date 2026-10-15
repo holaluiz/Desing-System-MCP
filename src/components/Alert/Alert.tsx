@@ -14,6 +14,7 @@ export const Alert: React.FC<AlertProps> = ({
   badge,
   className,
   children,
+  role,
   ...props
 }) => {
   const variantStyles = {
@@ -34,7 +35,8 @@ export const Alert: React.FC<AlertProps> = ({
 
   return (
     <div
-      role="alert"
+      // status = anúncio educado. Use role="alert" apenas para erros que exigem ação imediata.
+      role={role ?? 'status'}
       className={cn('relative p-4 md:p-5 border-2 transition-all', variantStyles, className)}
       {...props}
     >

@@ -30,7 +30,7 @@ export const Wordmark: React.FC<WordmarkProps> = ({
   return (
     <div
       className={cn(
-        'font-black tracking-[-0.035em] uppercase select-none font-display inline-flex flex-col',
+        'font-black tracking-[-0.055em] leading-[0.95] uppercase select-none font-display inline-flex flex-col',
         sizeStyles,
         colorStyles,
         withChromaticOffset && 'transition-all duration-200 hover:[text-shadow:-2px_-1px_0px_rgba(37,191,255,0.7),2px_1px_0px_rgba(255,61,141,0.7)]',

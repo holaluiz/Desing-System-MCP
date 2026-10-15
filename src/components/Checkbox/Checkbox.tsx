@@ -9,7 +9,8 @@ export interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputE
 
 export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
   ({ label, description, accentColor = 'caramel', className, id, disabled, ...props }, ref) => {
-    const inputId = id || React.useId();
+    const generatedId = React.useId();
+    const inputId = id ?? generatedId;
 
     const accentBorder = {
       caramel: 'checked:bg-[#FF701A] checked:border-[#FF701A] focus-visible:ring-[#FF701A]',

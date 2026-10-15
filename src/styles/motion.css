@@ -1,0 +1,206 @@
+/**
+ * Motion — Um Cara Caramelo (V2 2026)
+ * Keyframes canônicos + utilitários de microinteração.
+ * "STILLNESS = CAMADAS ALINHADAS • MOVEMENT = CAMADAS SE SEPARAM"
+ */
+
+/* ============ KEYFRAMES ============ */
+@keyframes cm-fade { from { opacity: 0; } to { opacity: 1; } }
+
+@keyframes cm-reveal {
+  from { opacity: 0; transform: translateY(var(--cm-reveal-y, 16px)); filter: blur(var(--cm-blur-md)); }
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+
+@keyframes cm-panel-in {
+  from { opacity: 0; transform: translateY(4px); filter: blur(var(--cm-blur-sm)); }
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+
+@keyframes cm-menu-in {
+  from { opacity: 0; transform: translateY(-4px) scale(0.97); filter: blur(4px); }
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+@keyframes cm-menu-out {
+  to { opacity: 0; transform: translateY(-2px) scale(0.98); filter: blur(2px); }
+}
+
+/* Submenus: deslize lateral com desfoque (câmera mudando de plano) */
+@keyframes cm-glide-in-fwd {
+  0% { opacity: 0; transform: translateX(36%); filter: blur(8px); }
+  45% { opacity: 0.9; }
+  100% { opacity: 1; transform: none; filter: blur(0); }
+}
+@keyframes cm-glide-out-fwd {
+  0% { opacity: 1; transform: none; filter: blur(0); }
+  30% { opacity: 0.9; filter: blur(6px); }
+  100% { opacity: 0; transform: translateX(-36%); filter: blur(9px); }
+}
+@keyframes cm-glide-in-back {
+  0% { opacity: 0; transform: translateX(-36%); filter: blur(8px); }
+  45% { opacity: 0.9; }
+  100% { opacity: 1; transform: none; filter: blur(0); }
+}
+@keyframes cm-glide-out-back {
+  0% { opacity: 1; transform: none; filter: blur(0); }
+  30% { opacity: 0.9; filter: blur(6px); }
+  100% { opacity: 0; transform: translateX(36%); filter: blur(9px); }
+}
+
+@keyframes cm-letter-in {
+  from { transform: translateY(110%); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+@keyframes cm-shake {
+  0%, 100% { translate: 0; }
+  20% { translate: -4px; }
+  40% { translate: 4px; }
+  60% { translate: -3px; }
+  80% { translate: 2px; }
+}
+
+@keyframes cm-pop {
+  0% { transform: scale(0.5); opacity: 0; }
+  60% { transform: scale(1.12); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes cm-nudge-min { 0%, 100% { translate: 0; } 40% { translate: -4px; } }
+@keyframes cm-nudge-max { 0%, 100% { translate: 0; } 40% { translate: 4px; } }
+
+@keyframes cm-pulse {
+  0%, 100% { opacity: 0.5; transform: scale(0.7); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes cm-spark {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.4); }
+  25% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--cm-sx, 0), var(--cm-sy, -16px)) scale(1); }
+}
+
+/* Revelação diagonal de tema (View Transitions API) */
+@keyframes cm-theme-reveal {
+  from { clip-path: polygon(0 0, 0 0, 0 0); }
+  to { clip-path: polygon(0 0, 200% 0, 0 200%); }
+}
+
+/* ============ UTILITÁRIOS ============ */
+
+/* Revelação por desfoque no scroll — componente <Reveal> ou data-revealed manual */
+.cm-reveal {
+  opacity: 0;
+  transform: translateY(var(--cm-reveal-y, 16px));
+  filter: blur(var(--cm-blur-md));
+  transition:
+    opacity var(--cm-dur-smooth) var(--cm-ease-quint),
+    transform var(--cm-dur-smooth) var(--cm-ease-quint),
+    filter var(--cm-dur-smooth) var(--cm-ease-quint);
+  transition-delay: calc(var(--cm-i, 0) * var(--cm-stagger-item));
+}
+.cm-reveal[data-revealed="true"] { opacity: 1; transform: none; filter: none; }
+@media (scripting: none) { .cm-reveal { opacity: 1; transform: none; filter: none; } }
+
+/* Entrada imediata ao montar (sem observer) */
+.cm-animate-in {
+  animation: cm-reveal var(--cm-dur-smooth) var(--cm-ease-quint) both;
+  animation-delay: calc(var(--cm-i, 0) * var(--cm-stagger-item));
+}
+
+/* Física de clique universal */
+.cm-press { transition: transform var(--cm-dur-quick) var(--cm-ease-out); }
+.cm-press:active { transform: scale(0.97); transition-duration: var(--cm-dur-instant); }
+
+/* Brilho que varre (uma vez por hover — nunca em loop) */
+.cm-shine { position: relative; overflow: hidden; isolation: isolate; }
+.cm-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.32) 50%, transparent 65%);
+  transform: translateX(-120%);
+}
+.cm-shine:hover::after,
+.cm-shine:focus-visible::after {
+  transform: translateX(120%);
+  transition: transform var(--cm-dur-cinematic) var(--cm-ease-quint);
+}
+
+/* Seta que avança */
+.cm-arrow { display: inline-block; transition: transform var(--cm-dur-quick) var(--cm-ease-out); }
+:where(a, button, .cm-arrow-host):is(:hover, :focus-visible) .cm-arrow { transform: translateX(3px); }
+
+/* Sublinhado que cresce da esquerda e sai pela direita */
+.cm-underline { position: relative; text-decoration: none; }
+.cm-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--cm-dur-base) var(--cm-ease-out);
+}
+.cm-underline:hover::after,
+.cm-underline:focus-visible::after { transform: scaleX(1); transform-origin: left; }
+
+/* Troca de texto vertical (zero layout shift) */
+.cm-swap { display: inline-grid; overflow: hidden; vertical-align: top; line-height: 1.25; }
+.cm-swap > .cm-swap__a,
+.cm-swap > .cm-swap__b { grid-area: 1 / 1; display: inline-flex; white-space: pre; }
+.cm-swap:not(.cm-swap--stagger) > span { transition: transform var(--cm-dur-base) var(--cm-ease-out); }
+.cm-swap:not(.cm-swap--stagger) > .cm-swap__b { transform: translateY(110%); }
+:where(a, button, .cm-swap-host):is(:hover, :focus-visible) .cm-swap:not(.cm-swap--stagger) > .cm-swap__a,
+.cm-swap:not(.cm-swap--stagger):hover > .cm-swap__a { transform: translateY(-110%); }
+:where(a, button, .cm-swap-host):is(:hover, :focus-visible) .cm-swap:not(.cm-swap--stagger) > .cm-swap__b,
+.cm-swap:not(.cm-swap--stagger):hover > .cm-swap__b { transform: none; }
+
+/* Variante escalonada: cada letra com 18ms de atraso */
+.cm-swap--stagger .cm-swap__ch {
+  display: inline-block;
+  white-space: pre;
+  transition: transform var(--cm-dur-base) var(--cm-ease-out);
+  transition-delay: calc(var(--i, 0) * var(--cm-stagger-letter));
+}
+.cm-swap--stagger .cm-swap__b .cm-swap__ch { transform: translateY(110%); }
+:where(a, button, .cm-swap-host):is(:hover, :focus-visible) .cm-swap--stagger .cm-swap__a .cm-swap__ch,
+.cm-swap--stagger:hover .cm-swap__a .cm-swap__ch { transform: translateY(-110%); }
+:where(a, button, .cm-swap-host):is(:hover, :focus-visible) .cm-swap--stagger .cm-swap__b .cm-swap__ch,
+.cm-swap--stagger:hover .cm-swap__b .cm-swap__ch { transform: none; }
+
+/* Troca de tema — só durante a transição disparada pelo ThemeToggle */
+:root[data-cm-theme-transition]::view-transition-old(root),
+:root[data-cm-theme-transition]::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+:root[data-cm-theme-transition]::view-transition-new(root) {
+  animation: cm-theme-reveal var(--cm-dur-cinematic) var(--cm-ease-drawer);
+}
+
+/* ============ MOVIMENTO REDUZIDO ============
+   Sem deslocamento, escala, blur ou paralaxe. Apenas crossfade curto. */
+@media (prefers-reduced-motion: reduce) {
+  .cm-reveal { transform: none; filter: none; transition-property: opacity; }
+  .cm-animate-in { animation-name: cm-fade; }
+  .cm-press:active { transform: none; }
+  .cm-shine::after { display: none; }
+  .cm-arrow { transition: none; }
+  :where(a, button, .cm-arrow-host):is(:hover, :focus-visible) .cm-arrow { transform: none; }
+
+  .cm-swap > span,
+  .cm-swap .cm-swap__ch { transform: none !important; transition: opacity var(--cm-dur-micro) linear !important; }
+  .cm-swap > .cm-swap__b { opacity: 0; }
+  :where(a, button, .cm-swap-host):is(:hover, :focus-visible) .cm-swap > .cm-swap__a,
+  .cm-swap:hover > .cm-swap__a { opacity: 0; }
+  :where(a, button, .cm-swap-host):is(:hover, :focus-visible) .cm-swap > .cm-swap__b,
+  .cm-swap:hover > .cm-swap__b { opacity: 1; }
+
+  :root[data-cm-theme-transition]::view-transition-new(root) { animation: none; }
+}

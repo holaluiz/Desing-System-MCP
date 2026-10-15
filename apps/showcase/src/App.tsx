@@ -21,8 +21,27 @@ import {
   MisregistrationText,
   LayerSplit,
 } from '@caramelo/design-system';
+import { LumenLab } from './LumenLab';
+
+type ShowcaseMaterial = 'lumen' | 'print';
+
+const readMaterial = (): ShowcaseMaterial => (typeof window !== 'undefined' && window.location.hash === '#print' ? 'print' : 'lumen');
 
 export default function App() {
+  const [material, setMaterial] = useState<ShowcaseMaterial>(readMaterial);
+
+  const switchMaterial = (next: ShowcaseMaterial) => {
+    setMaterial(next);
+    window.history.replaceState(null, '', next === 'print' ? '#print' : ' ');
+    window.scrollTo({ top: 0 });
+  };
+
+  if (material === 'lumen') return <LumenLab onSwitchToPrint={() => switchMaterial('print')} />;
+  return <PrintCatalog onSwitchToLumen={() => switchMaterial('lumen')} />;
+}
+
+/** Catálogo V1 (material Print) — mantido como estava, com acesso de volta ao Lumen */
+function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
   const [toggleActive, setToggleActive] = useState<boolean>(true);
   const [toggleSky, setToggleSky] = useState<boolean>(false);
@@ -126,6 +145,13 @@ export default function App() {
           <div className="flex items-center gap-2">
             <Badge color="caramel">V1 2026</Badge>
             <span className="text-xs font-mono text-neutral-400">@caramelo/design-system</span>
+            <button
+              type="button"
+              onClick={onSwitchToLumen}
+              className="ml-2 border-2 border-[#FF701A] px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#FF701A] transition-[transform,box-shadow] duration-150 ease-kinetic hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[3px_3px_0px_#FF701A] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none focus-visible:outline-none focus-visible:shadow-focus"
+            >
+              Lumen V1 →
+            </button>
           </div>
         </div>
 

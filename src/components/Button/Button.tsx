@@ -16,14 +16,16 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       className,
       children,
       disabled,
+      type,
       ...props
     },
     ref
   ) => {
     const baseStyles = [
       'relative inline-flex items-center justify-center select-none font-display font-extrabold tracking-tight',
-      'border-2 uppercase transition-all duration-150 ease-[cubic-bezier(0.2,0.8,0.2,1)]',
-      'focus:outline-none focus-visible:ring-2 focus-visible:ring-[#25BFFF] focus-visible:ring-offset-2',
+      'border-2 uppercase transition-[transform,box-shadow,background-color,border-color] duration-150 ease-[cubic-bezier(0.2,0.8,0.2,1)]',
+      'focus:outline-none focus-visible:ring-2 focus-visible:ring-[#25BFFF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#101014]',
+      'motion-reduce:transition-[box-shadow] motion-reduce:hover:translate-x-0 motion-reduce:hover:translate-y-0 motion-reduce:active:translate-x-0 motion-reduce:active:translate-y-0',
       disabled ? 'opacity-50 cursor-not-allowed shadow-none' : 'cursor-pointer active:translate-x-[1px] active:translate-y-[1px]',
     ].join(' ');
 
@@ -59,6 +61,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         ref={ref}
+        type={type ?? 'button'}
         disabled={disabled}
         className={cn(baseStyles, sizeStyles, variantStyles, fullWidth && 'w-full', className)}
         {...props}

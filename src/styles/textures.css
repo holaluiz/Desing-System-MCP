@@ -81,3 +81,11 @@
   transform: translate(1px, 1px);
   box-shadow: 1px 1px 0px var(--caramelo-color-caramel);
 }
+
+/* Movimento reduzido: camadas permanecem alinhadas, apenas a sombra responde */
+@media (prefers-reduced-motion: reduce) {
+  .caramelo-layer-split,
+  .caramelo-misregistration { transition: box-shadow 120ms linear, text-shadow 120ms linear; }
+  .caramelo-layer-split:hover,
+  .caramelo-layer-split:active { transform: none; }
+}

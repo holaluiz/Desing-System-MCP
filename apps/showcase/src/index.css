@@ -3,3 +3,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Cabeçalho fixo da vitrine (h-14): offsets de âncora, sticky e barra de progresso */
+:root { --cm-header-height: 56px; }

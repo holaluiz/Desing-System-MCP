@@ -1,7 +1,7 @@
 {
   "name": "@caramelo/design-system",
-  "version": "1.0.0",
-  "description": "Sistema de Design Canônico V1 2026 & Servidor MCP de UX/UI — Um Cara Caramelo (Laboratório de Interação)",
+  "version": "2.0.0",
+  "description": "Sistema de Design Canônico V2 2026 & Servidor MCP de UX/UI — transforma qualquer interface na identidade Um Cara Caramelo (Laboratório de Interação)",
   "author": "Luiz | Head de Interação <umcaracaramelo>",
   "license": "MIT",
   "main": "./dist/index.js",
@@ -25,6 +25,16 @@
       "types": "./dist/tailwind/index.d.ts",
       "import": "./dist/tailwind/index.mjs",
       "require": "./dist/tailwind/index.js"
+    },
+    "./motion": {
+      "types": "./dist/motion/index.d.ts",
+      "import": "./dist/motion/index.mjs",
+      "require": "./dist/motion/index.js"
+    },
+    "./engine": {
+      "types": "./dist/engine/index.d.ts",
+      "import": "./dist/engine/index.mjs",
+      "require": "./dist/engine/index.js"
     },
     "./mcp": {
       "types": "./dist/mcp/index.d.ts",
@@ -54,7 +64,8 @@
   },
   "peerDependencies": {
     "react": ">=18.0.0",
-    "react-dom": ">=18.0.0"
+    "react-dom": ">=18.0.0",
+    "lenis": ">=1.1.0"
   },
   "peerDependenciesMeta": {
     "react": {
@@ -62,12 +73,16 @@
     },
     "react-dom": {
       "optional": true
+    },
+    "lenis": {
+      "optional": true
     }
   },
   "devDependencies": {
     "@types/node": "^22.13.4",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
+    "lenis": "^1.1.18",
     "lucide-react": "^1.16.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

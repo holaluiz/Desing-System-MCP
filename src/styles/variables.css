@@ -1,10 +1,15 @@
 /**
- * CSS Custom Properties — Um Cara Caramelo (Manual V1 2026)
- * Injetável em qualquer projeto CSS/HTML/Next/Vite
+ * CSS Custom Properties — Um Cara Caramelo (Manual V2 2026)
+ * Injetável em qualquer projeto CSS/HTML/Next/Vite.
+ *
+ * Camadas:
+ *  1. --caramelo-*  → paleta de marca e tokens V1 (valores literais)
+ *  2. --cm-*        → papéis semânticos V2 (triplets RGB: use rgb(var(--cm-fg)))
+ *                     que mudam com o tema e com o acento da cena.
  */
 
 :root {
-  /* Cores Canônicas */
+  /* ============ 1. MARCA (V1, inalterado) ============ */
   --caramelo-color-ink: #101014;
   --caramelo-color-ink-muted: #18181D;
   --caramelo-color-ink-surface: #1F1F26;
@@ -17,14 +22,17 @@
   --caramelo-color-caramel: #FF701A;
   --caramelo-color-caramel-hover: #E55E0D;
   --caramelo-color-caramel-light: #FFEFE6;
+  --caramelo-color-caramel-bright: #FF8A3D;
+  --caramelo-color-caramel-deep: #B23F00;
 
   --caramelo-color-sky: #25BFFF;
   --caramelo-color-sky-hover: #0DA8EA;
   --caramelo-color-pink: #FF3D8D;
   --caramelo-color-violet: #7657FF;
   --caramelo-color-yellow: #FFD52A;
+  --caramelo-color-mint: #3DDC97;
 
-  /* Semântica Padrão (Dark Mode / Assinatura Cinematográfica) */
+  /* Semântica V1 (mantida para compatibilidade) */
   --caramelo-bg: var(--caramelo-color-ink);
   --caramelo-text: var(--caramelo-color-cream);
   --caramelo-text-muted: #A3A3B0;
@@ -32,28 +40,193 @@
   --caramelo-accent-sky: var(--caramelo-color-sky);
   --caramelo-border: var(--caramelo-color-ink-border);
 
-  /* Sombras Gráficas */
+  /* Sombras Gráficas (Print) */
   --caramelo-shadow-sm: 2px 2px 0px #101014;
   --caramelo-shadow-md: 4px 4px 0px #101014;
   --caramelo-shadow-caramel: 4px 4px 0px #FF701A;
   --caramelo-shadow-sky: 4px 4px 0px #25BFFF;
 
-  /* Fontes */
-  --caramelo-font-display: "Inter Display", "Syne", "Impact", -apple-system, sans-serif;
-  --caramelo-font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --caramelo-font-handwriting: "Caveat", "Kalam", "Gochi Hand", cursive;
+  /* Fontes — Montserrat · Inter · Covered By Your Grace (+ mono do sistema) */
+  --caramelo-font-display: "Montserrat", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --caramelo-font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --caramelo-font-handwriting: "Covered By Your Grace", cursive;
+  --caramelo-font-mono: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
 
-  /* Motion */
+  /* Motion V1 */
   --caramelo-ease-kinetic: cubic-bezier(0.2, 0.8, 0.2, 1);
   --caramelo-ease-snap: cubic-bezier(0.16, 1, 0.3, 1);
   --caramelo-ease-split: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ============ 2. SEMÂNTICA V2 — MODO ESCURO (padrão) ============ */
+  color-scheme: dark;
+
+  --cm-stage: 10 10 13;
+  --cm-surface-1: 16 16 20;
+  --cm-surface-2: 24 24 29;
+  --cm-surface-3: 31 31 38;
+
+  --cm-line-soft: 26 26 32;
+  --cm-line: 39 39 47;
+  --cm-line-strong: 58 58 68;
+
+  --cm-fg: 255 244 232;
+  --cm-fg-2: 217 211 204;
+  --cm-fg-muted: 163 163 176;
+  --cm-fg-dim: 139 139 152;
+  --cm-fg-faint: 90 90 102;
+
+  --cm-accent: 255 112 26;
+  --cm-accent-bright: 255 138 61;
+  --cm-accent-ink: 255 112 26;
+  --cm-accent-soft: 43 22 8;
+  --cm-accent-contrast: 16 16 20;
+
+  --cm-focus: 37 191 255;
+  --cm-success: 61 220 151;
+  --cm-success-soft: 11 42 29;
+  --cm-warning: 255 213 42;
+  --cm-warning-soft: 51 41 0;
+  --cm-danger: 255 61 141;
+  --cm-danger-soft: 51 11 28;
+  --cm-info: 37 191 255;
+  --cm-info-soft: 10 37 51;
+  --cm-on-status: 16 16 20;
+
+  /* Elevação Lumen */
+  --cm-highlight: inset 0 1px 0 rgba(255, 244, 232, 0.05);
+  --cm-elev-1: inset 0 1px 0 rgba(255, 244, 232, 0.04), 0 1px 2px rgba(0, 0, 0, 0.4);
+  --cm-elev-2: inset 0 1px 0 rgba(255, 244, 232, 0.05), 0 8px 20px -6px rgba(0, 0, 0, 0.55);
+  --cm-elev-3: inset 0 1px 0 rgba(255, 244, 232, 0.06), 0 16px 34px -8px rgba(0, 0, 0, 0.6);
+  --cm-elev-4: inset 0 1px 0 rgba(255, 244, 232, 0.06), 0 0 0 1px rgba(255, 244, 232, 0.06), 0 24px 60px -12px rgba(0, 0, 0, 0.72);
+  --cm-pressed: inset 0 2px 4px rgba(0, 0, 0, 0.6), inset 0 -1px 1px rgba(255, 244, 232, 0.05);
+  --cm-glow-sm: 0 0 0 1px rgb(var(--cm-accent) / 0.35), 0 0 14px rgb(var(--cm-accent) / 0.35);
+  --cm-glow: 0 0 0 1px rgb(var(--cm-accent-bright) / 0.5), 0 0 11px 3px rgb(var(--cm-accent) / 0.8), 0 0 28px 8px rgb(var(--cm-accent) / 0.4), 0 0 44px 14px rgb(var(--cm-accent) / 0.14);
+  --cm-focus-ring: 0 0 0 2px rgb(var(--cm-stage)), 0 0 0 4px rgb(var(--cm-focus));
+
+  /* Raios Lumen (concêntricos) */
+  --cm-radius-xs: 3px;
+  --cm-radius-sm: 5px;
+  --cm-radius-md: 8px;
+  --cm-radius-lg: 12px;
+  --cm-radius-xl: 16px;
+  --cm-radius-2xl: 22px;
+  --cm-radius-pill: 999px;
+
+  /* Motion V2 */
+  --cm-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --cm-ease-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --cm-ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --cm-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --cm-ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --cm-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --cm-dur-instant: 80ms;
+  --cm-dur-micro: 160ms;
+  --cm-dur-quick: 240ms;
+  --cm-dur-base: 320ms;
+  --cm-dur-smooth: 480ms;
+  --cm-dur-cinematic: 640ms;
+
+  --cm-stagger-letter: 18ms;
+  --cm-stagger-item: 40ms;
+
+  /* Altura do cabeçalho fixo — offsets de âncora, sticky e barra de progresso */
+  --cm-header-height: 0px;
+
+  --cm-blur-sm: 2px;
+  --cm-blur-md: 8px;
+  --cm-blur-lg: 16px;
 }
 
-/* Modo Editorial Claro (Warm Cream) */
+/* ============ MODO CLARO — Editorial Warm Cream ============ */
 [data-caramelo-theme="light"],
 .theme-caramelo-cream {
+  color-scheme: light;
+
   --caramelo-bg: var(--caramelo-color-cream);
   --caramelo-text: var(--caramelo-color-ink);
   --caramelo-text-muted: #6B6862;
   --caramelo-border: var(--caramelo-color-cream-border);
+
+  --cm-stage: 255 244 232;
+  --cm-surface-1: 255 250 244;
+  --cm-surface-2: 245 230 212;
+  --cm-surface-3: 238 220 198;
+
+  --cm-line-soft: 240 226 210;
+  --cm-line: 232 210 187;
+  --cm-line-strong: 212 188 159;
+
+  --cm-fg: 16 16 20;
+  --cm-fg-2: 46 44 42;
+  --cm-fg-muted: 94 90 85;
+  --cm-fg-dim: 107 104 98;
+  --cm-fg-faint: 163 156 147;
+
+  --cm-accent: 255 112 26;
+  --cm-accent-bright: 229 94 13;
+  --cm-accent-ink: 178 63 0;
+  --cm-accent-soft: 255 230 211;
+  --cm-accent-contrast: 16 16 20;
+
+  --cm-focus: 11 110 153;
+  --cm-success: 11 107 69;
+  --cm-success-soft: 231 251 242;
+  --cm-warning: 122 86 0;
+  --cm-warning-soft: 255 251 230;
+  --cm-danger: 192 24 94;
+  --cm-danger-soft: 255 235 243;
+  --cm-info: 11 110 153;
+  --cm-info-soft: 230 248 255;
+  --cm-on-status: 255 244 232;
+
+  --cm-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  --cm-elev-1: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 1px 2px rgba(16, 16, 20, 0.08);
+  --cm-elev-2: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 8px 20px -8px rgba(16, 16, 20, 0.18);
+  --cm-elev-3: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 16px 34px -10px rgba(16, 16, 20, 0.22);
+  --cm-elev-4: 0 0 0 1px rgba(16, 16, 20, 0.06), 0 24px 60px -16px rgba(16, 16, 20, 0.28);
+  --cm-pressed: inset 0 2px 4px rgba(16, 16, 20, 0.12);
+  --cm-glow-sm: 0 0 0 1px rgb(var(--cm-accent) / 0.4), 0 6px 16px -4px rgb(var(--cm-accent) / 0.45);
+  --cm-glow: 0 0 0 1px rgb(var(--cm-accent) / 0.5), 0 8px 24px -4px rgb(var(--cm-accent) / 0.55), 0 0 40px 4px rgb(var(--cm-accent) / 0.18);
+}
+
+/* ============ ACENTOS DE CENA (regra: 1 acento dominante) ============
+   <section data-cm-accent="sky"> troca o acento de tudo dentro dela. */
+[data-cm-accent="caramel"] { --cm-accent: 255 112 26; --cm-accent-bright: 255 138 61; --cm-accent-ink: 255 112 26; --cm-accent-soft: 43 22 8; --cm-accent-contrast: 16 16 20; }
+[data-cm-accent="sky"] { --cm-accent: 37 191 255; --cm-accent-bright: 92 208 255; --cm-accent-ink: 37 191 255; --cm-accent-soft: 10 37 51; --cm-accent-contrast: 16 16 20; }
+[data-cm-accent="pink"] { --cm-accent: 255 61 141; --cm-accent-bright: 255 107 168; --cm-accent-ink: 255 61 141; --cm-accent-soft: 51 11 28; --cm-accent-contrast: 16 16 20; }
+[data-cm-accent="violet"] { --cm-accent: 93 60 232; --cm-accent-bright: 118 87 255; --cm-accent-ink: 154 133 255; --cm-accent-soft: 25 18 56; --cm-accent-contrast: 255 244 232; }
+[data-cm-accent="yellow"] { --cm-accent: 255 213 42; --cm-accent-bright: 255 224 102; --cm-accent-ink: 255 213 42; --cm-accent-soft: 51 41 0; --cm-accent-contrast: 16 16 20; }
+
+[data-caramelo-theme="light"] [data-cm-accent="caramel"], [data-caramelo-theme="light"][data-cm-accent="caramel"] { --cm-accent-bright: 229 94 13; --cm-accent-ink: 178 63 0; --cm-accent-soft: 255 230 211; }
+[data-caramelo-theme="light"] [data-cm-accent="sky"], [data-caramelo-theme="light"][data-cm-accent="sky"] { --cm-accent-bright: 13 168 234; --cm-accent-ink: 11 110 153; --cm-accent-soft: 230 248 255; }
+[data-caramelo-theme="light"] [data-cm-accent="pink"], [data-caramelo-theme="light"][data-cm-accent="pink"] { --cm-accent-bright: 232 37 118; --cm-accent-ink: 192 24 94; --cm-accent-soft: 255 235 243; }
+[data-caramelo-theme="light"] [data-cm-accent="violet"], [data-caramelo-theme="light"][data-cm-accent="violet"] { --cm-accent-ink: 91 63 224; --cm-accent-soft: 241 239 255; }
+[data-caramelo-theme="light"] [data-cm-accent="yellow"], [data-caramelo-theme="light"][data-cm-accent="yellow"] { --cm-accent-bright: 230 189 21; --cm-accent-ink: 122 86 0; --cm-accent-soft: 255 251 230; }
+
+/* Tokens DERIVADOS do acento/tema: custom properties resolvem var() onde são
+   declaradas, então precisam ser redeclarados no escopo da cena/tema —
+   senão o glow de um <section data-cm-accent="sky"> continuaria Caramel. */
+[data-cm-accent],
+[data-caramelo-theme] {
+  --cm-glow-sm: 0 0 0 1px rgb(var(--cm-accent) / 0.35), 0 0 14px rgb(var(--cm-accent) / 0.35);
+  --cm-glow: 0 0 0 1px rgb(var(--cm-accent-bright) / 0.5), 0 0 11px 3px rgb(var(--cm-accent) / 0.8), 0 0 28px 8px rgb(var(--cm-accent) / 0.4), 0 0 44px 14px rgb(var(--cm-accent) / 0.14);
+  --cm-focus-ring: 0 0 0 2px rgb(var(--cm-stage)), 0 0 0 4px rgb(var(--cm-focus));
+}
+[data-caramelo-theme="light"],
+[data-caramelo-theme="light"] [data-cm-accent] {
+  --cm-glow-sm: 0 0 0 1px rgb(var(--cm-accent) / 0.4), 0 6px 16px -4px rgb(var(--cm-accent) / 0.45);
+  --cm-glow: 0 0 0 1px rgb(var(--cm-accent) / 0.5), 0 8px 24px -4px rgb(var(--cm-accent) / 0.55), 0 0 40px 4px rgb(var(--cm-accent) / 0.18);
+}
+
+/* ============ MOVIMENTO REDUZIDO ============ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --cm-dur-quick: 120ms;
+    --cm-dur-base: 160ms;
+    --cm-dur-smooth: 160ms;
+    --cm-dur-cinematic: 160ms;
+    --cm-stagger-letter: 0ms;
+    --cm-stagger-item: 0ms;
+  }
 }
