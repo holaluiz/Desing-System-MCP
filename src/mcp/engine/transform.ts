@@ -4,12 +4,12 @@
  *
  * Princípios:
  *  - Cores viram PAPÉIS semânticos (não hex): o resultado funciona nos dois temas
- *    e troca de acento com data-cm-accent, sem reescrever o código de novo.
+ *    e muda a cor funcional de base com data-cm-accent. Gradientes preservam o espectro da marca.
  *  - Só adiciona interação/acessibilidade que esteja FALTANDO — nunca remove intenção.
  *  - Toda mudança é rastreável (linha, antes → depois, motivo).
  */
 
-import type { SceneAccent } from '../../tokens/semantic';
+import { hexToTriplet, type SceneAccent } from '../../tokens/semantic';
 import { classify, type AccentStrategy, type Polarity } from './brand';
 import { type HueFamily } from './color';
 import { analyzeCss, colorHits, colorKindOfProp, parseCss, transformCss } from './css';
@@ -48,9 +48,9 @@ export interface TransformOptions {
   material?: Material;
   /** Tema-alvo. Omitido = mantém a polaridade da origem */
   theme?: Polarity;
-  /** unify = 1 acento dominante (regra de ouro) · preserve = cada matiz vira a tinta da marca mais próxima */
+  /** unify = papéis sólidos funcionais · preserve = preserva matizes decorativos. Gradientes combinam as cores nas duas estratégias. */
   strategy?: AccentStrategy;
-  /** Acento da cena (padrão caramel) */
+  /** Base funcional neutra por padrão; cores individuais são opt-in e não limitam a assinatura visual */
   accent?: SceneAccent;
   enhanceInteractions?: boolean;
   fixA11y?: boolean;
@@ -143,7 +143,7 @@ const FAMILY_LABEL: Record<HueFamily, string> = {
 export function transform(code: string, options: TransformOptions = {}): TransformReport {
   const material = options.material ?? 'lumen';
   const strategy = options.strategy ?? 'unify';
-  const accent = options.accent ?? 'caramel';
+  const accent = options.accent ?? 'neutral';
   const enhanceInteractions = options.enhanceInteractions ?? true;
   const fixA11y = options.fixA11y ?? true;
   const language = detectLanguage(code);
@@ -238,11 +238,31 @@ export function transform(code: string, options: TransformOptions = {}): Transfo
   const theme = options.theme ?? polarity;
   const opts: MapOptions = { primaryFamily, strategy, material, theme, polarity };
 
+  // ——— Estilos inline (também informam o preenchimento que prevalece no CTA) ———
+  const inlineFills = new Map<number, 'accent' | 'status'>();
+  els.forEach((el, idx) => {
+    const style = getAttr(el, 'style');
+    if (!style?.raw) return;
+    const interactive = INTERACTIVE_TAGS.has(el.tag) || getAttr(el, 'role')?.value === 'button';
+    const fill = inlineStyleEdits(style.valueStart, style.raw, opts, lines, edits, changes, interactive);
+    if (fill) inlineFills.set(idx, fill);
+    if (!interactive || fill !== 'accent' || material !== 'lumen' || sources.some((s) => s.el === idx)) return;
+    const classAttr = getAttr(el, 'className', 'class', ':class', 'v-bind:class', 'class:list');
+    if (classAttr) {
+      manual.push({ line: el.line, issue: 'CTA com preenchimento inline e classe dinâmica não editável com segurança.', suggestion: 'Adicione cm-brand-action à classe do controle para combinar o espectro.' });
+    } else {
+      const attr = style.raw.startsWith('{') ? 'className' : 'class';
+      const at = el.start + 1 + el.tag.length;
+      edits.push({ start: at, end: at, text: ` ${attr}="cm-brand-action"` });
+      changes.push({ line: el.line, kind: 'color', from: `<${el.tag}>`, to: '+ cm-brand-action', reason: 'CTA inline → camada combinada das cinco cores sobre base neutra' });
+    }
+  });
+
   // ——— Classes ———
   for (const s of sources) {
     const el = s.el !== null ? els[s.el] : null;
     const info = el
-      ? { tag: el.tag, role: getAttr(el, 'role')?.value ?? null, inputType: getAttr(el, 'type')?.value ?? null }
+      ? { tag: el.tag, role: getAttr(el, 'role')?.value ?? null, inputType: getAttr(el, 'type')?.value ?? null, fill: inlineFills.get(s.el!) }
       : s.enhance
         ? { tag: 'button', loose: true }
         : undefined;
@@ -254,13 +274,6 @@ export function transform(code: string, options: TransformOptions = {}): Transfo
       const line = lines.lineAt(lit.start);
       for (const c of res.changes) changes.push({ line, kind: kindOfClassChange(c.from, c.to, c.reason), ...c });
     });
-  }
-
-  // ——— Estilos inline ———
-  for (const el of els) {
-    const style = getAttr(el, 'style');
-    if (!style?.raw) continue;
-    inlineStyleEdits(style.valueStart, style.raw, opts, lines, edits, changes);
   }
 
   // ——— Blocos <style> ———
@@ -309,7 +322,7 @@ function finish(
 // ——— Inline styles (JSX objeto ou HTML string) ———
 const camelToKebab = (s: string) => s.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`);
 
-function inlineStyleEdits(base: number, raw: string, opts: MapOptions, lines: LineIndex, edits: Edit[], changes: Change[]) {
+function inlineStyleEdits(base: number, raw: string, opts: MapOptions, lines: LineIndex, edits: Edit[], changes: Change[], interactive = false) {
   const pairs: Array<{ prop: string; vStart: number; value: string }> = [];
   if (raw.startsWith('{')) {
     for (const m of raw.matchAll(/([A-Za-z]+)\s*:\s*(['"`])([^'"`]*)\2/g)) {
@@ -322,29 +335,33 @@ function inlineStyleEdits(base: number, raw: string, opts: MapOptions, lines: Li
   // preenchimento cromático no próprio elemento → texto vira contraste garantido
   let fill: 'accent' | 'status' | null = null;
   for (const p of pairs) {
-    if (p.prop !== 'background' && p.prop !== 'background-color') continue;
+    if (p.prop !== 'background' && p.prop !== 'background-color' && p.prop !== 'background-image') continue;
     for (const h of colorHits(p.value)) {
       const c = classify(h.rgb);
       const n = c.shade === 'white' ? 0 : c.shade === 'black' ? 1000 : c.shade;
       if (c.family === 'neutral' || n <= 200 || n >= 900) continue;
-      const r = roleFor('bg', c.family, c.shade, opts);
+      const r = roleFor(/gradient\(/i.test(p.value) ? 'gradient' : 'bg', c.family, c.shade, opts);
       fill = r.role === 'accent' || r.literal ? 'accent' : 'status';
     }
   }
   for (const p of pairs) {
     const kind = colorKindOfProp(p.prop);
     if (!kind) continue;
+    const isGradient = /gradient\(/i.test(p.value);
     for (const h of colorHits(p.value, kind !== 'shadow')) {
       const c = classify(h.rgb);
       if (kind === 'shadow' && c.family === 'neutral') continue;
-      const r = roleFor(kind, c.family, c.shade, opts, { fill: kind === 'text' ? fill : null });
+      const r = roleFor(isGradient ? 'gradient' : kind, c.family, c.shade, opts, { fill: kind === 'text' ? fill : null });
       const alpha = h.rgb.a < 1 ? ` / ${+h.rgb.a.toFixed(2)}` : '';
-      const text = r.role ? `rgb(var(--cm-${r.role})${alpha})` : literalHex(r.literal!);
+      const literal = r.literal ? literalHex(r.literal) : '';
+      const brandBackground = interactive && opts.material === 'lumen' && fill === 'accent' && p.prop === 'background' && !isGradient && r.role === 'accent';
+      const text = brandBackground ? 'var(--cm-spectrum-soft)' : r.role ? `rgb(var(--cm-${r.role})${alpha})` : alpha ? `rgb(${hexToTriplet(literal)}${alpha})` : literal;
       const start = base + p.vStart + h.start;
       edits.push({ start, end: start + h.text.length, text });
-      changes.push({ line: lines.lineAt(start), kind: 'color', from: `${p.prop}: ${h.text}`, to: `${p.prop}: ${text}`, reason: 'cor inline → papel semântico' });
+      changes.push({ line: lines.lineAt(start), kind: 'color', from: `${p.prop}: ${h.text}`, to: `${p.prop}: ${text}`, reason: isGradient ? 'gradiente inline → cores combinadas da marca' : 'cor inline → papel semântico' });
     }
   }
+  return fill;
 }
 
 // ——— Acessibilidade ———
@@ -435,7 +452,8 @@ function markupSetup(theme: Polarity, accent: SceneAccent, material: Material, c
   ];
   if (theme === 'light') out.push('Tema claro editorial: `data-caramelo-theme="light"` no <html> (ou no contêiner da cena).');
   else out.push('Tema escuro cinematográfico é o padrão — nada a configurar. Para alternar, use <ThemeToggle />.');
-  if (accent !== 'caramel') out.push(`Acento da cena: \`data-cm-accent="${accent}"\` no contêiner — todo bg-accent/text-accent-ink dentro dele troca junto.`);
+  out.push('Papéis sólidos têm base neutra. cm-brand-action combina as cinco cores nos CTAs sem escolher uma cor principal.');
+  if (accent !== 'neutral') out.push(`Cor funcional opt-in: \`data-cm-accent="${accent}"\` no contêiner — afeta papéis sólidos; a assinatura dos CTAs continua combinada com cm-brand-action.`);
   if (changes.some((c) => c.reason.includes('dark: removida'))) out.push('Variantes dark: removidas — os papéis semânticos já trocam com o tema.');
   if (material === 'lumen') out.push('Para o ponto focal da cena, troque o CTA principal por <MagneticButton variant="accent" fill> ou <GlowButton> (get_interaction: magnetic-fill / edge-glow).');
   else out.push('Material Print: use <Button> e <LayerSplit> do pacote para a física de clique completa (get_interaction: press-physics).');
@@ -447,6 +465,6 @@ function cssSetup(theme: Polarity, accent: SceneAccent, changes: Change[]): stri
   const out = ["Carregue `@caramelo/design-system/styles.css` antes desta folha (define --cm-*, --caramelo-font-* e motion)."];
   if (changes.some((c) => c.kind === 'theme')) out.push('Variáveis de tema mantiveram o formato original (ex.: triplets HSL do shadcn) — componentes existentes não precisam mudar.');
   if (theme === 'light') out.push('Tema claro: `data-caramelo-theme="light"` no <html> para os papéis --cm-* acompanharem.');
-  if (accent !== 'caramel') out.push(`Acento da cena: \`data-cm-accent="${accent}"\` no contêiner.`);
+  if (accent !== 'neutral') out.push(`Cor funcional opt-in: \`data-cm-accent="${accent}"\` no contêiner. Gradientes mantêm o espectro combinado.`);
   return out;
 }

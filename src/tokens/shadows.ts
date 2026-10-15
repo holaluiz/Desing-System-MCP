@@ -3,7 +3,7 @@
  *
  * Dois materiais, uma identidade:
  *  - PRINT  (editorial, cartaz): sombras sólidas hard-edge, presença impressa.
- *  - LUMEN  (produto, digital): luz interna de 1px + profundidade macia + glow Caramel.
+ *  - LUMEN  (produto, digital): luz interna de 1px + profundidade macia + glow das cinco cores combinadas.
  * Regra: um material por superfície. Nunca misture hard-shadow e glow no mesmo elemento.
  */
 
@@ -31,9 +31,9 @@ export const shadows = {
   /** Estado pressionado / campo afundado */
   pressed: 'inset 0 2px 4px rgba(0, 0, 0, 0.6), inset 0 -1px 1px rgba(255, 244, 232, 0.05)',
   /** Glow discreto (hover de CTA) */
-  'glow-sm': '0 0 0 1px rgba(255, 112, 26, 0.35), 0 0 14px rgba(255, 112, 26, 0.35)',
-  /** Glow de assinatura em 4 camadas (CTA herói) */
-  glow: '0 0 0 1px rgba(255, 198, 139, 0.45), 0 0 11px 3px rgba(255, 112, 26, 0.8), 0 0 28px 8px rgba(255, 91, 20, 0.4), 0 0 44px 14px rgba(255, 76, 19, 0.14)',
+  'glow-sm': '0 0 14px rgba(255,112,26,.1), 4px 0 18px rgba(255,61,141,.1), -4px 0 18px rgba(37,191,255,.1), 0 4px 20px rgba(118,87,255,.1), 0 -3px 16px rgba(255,213,42,.1)',
+  /** Glow de assinatura: cinco ecos cromáticos combinados (CTA herói) */
+  glow: '0 0 20px rgba(255,112,26,.24), 6px 0 26px rgba(255,61,141,.24), -6px 0 26px rgba(37,191,255,.24), 0 6px 30px rgba(118,87,255,.24), 0 -4px 22px rgba(255,213,42,.24)',
   'glow-sky': '0 0 0 1px rgba(150, 220, 255, 0.45), 0 0 11px 3px rgba(37, 191, 255, 0.7), 0 0 28px 8px rgba(37, 191, 255, 0.35)',
   /** Anel de foco de teclado (2px de respiro + 2px Electric Sky) */
   focus: '0 0 0 2px #0A0A0D, 0 0 0 4px #25BFFF',

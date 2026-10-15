@@ -17,6 +17,9 @@ import { renderAudit, renderTransform } from './format';
 import { mcpPrompts } from './prompts';
 import { mcpResources } from './resources';
 import { calculateContrast, generateComponent, mapColors, tokensPayload } from './tools';
+import { brandAssetMetadata, brandUsage, logoMarkup, stickerBlob, stickerCatalog } from './brand-assets';
+import { isotypeSvg } from '../brand/isotype';
+import { TRAIL_STICKERS } from '../brand/stickers';
 
 const server = new McpServer({
   name: 'caramelo-design-system-mcp',
@@ -30,7 +33,7 @@ const tooBig = (code: string) => (code.length > MAX_CODE ? text(`Código grande 
 
 const codeArg = z.string().min(1).describe('Código: JSX/TSX, HTML, Vue/Svelte template, CSS, ou tema de variáveis (shadcn, Bootstrap, MUI, Material 3…).');
 const formatArg = z.enum(['markdown', 'json']).optional().default('markdown').describe('markdown = relatório legível; json = dados estruturados.');
-const ACCENTS = ['caramel', 'sky', 'pink', 'violet', 'yellow'] as const;
+const ACCENTS = ['neutral', 'caramel', 'sky', 'pink', 'violet', 'yellow'] as const;
 
 // ==========================================
 // 1. FERRAMENTAS
@@ -41,7 +44,7 @@ server.registerTool(
   {
     title: 'Auditar UX/UI',
     description:
-      'Audita interface (JSX/TSX, HTML, CSS, Tailwind) com medição real: contraste WCAG calculado com herança de fundo (nos dois temas quando há papéis), acessibilidade de controles e campos, física de interação (hover/press/foco), motion (transition-all, >400ms, reduced-motion), disciplina de acento, material e tipografia. Retorna nota 0–100 por categoria, achados por linha e quais o transform_to_caramelo corrige sozinho.',
+      'Audita interface (JSX/TSX, HTML, CSS, Tailwind) com medição real: contraste WCAG calculado com herança de fundo (nos dois temas quando há papéis), acessibilidade de controles e campos, física de interação (hover/press/foco), motion (transition-all, >400ms, reduced-motion), material e tipografia. As cinco cores combinadas formam a identidade e não geram penalidade. Retorna nota 0–100 por categoria, achados por linha e quais o transform_to_caramelo corrige sozinho.',
     inputSchema: {
       code: codeArg,
       context: z.enum(['web-app', 'landing-page', 'dashboard', 'mobile']).optional().default('web-app').describe('Contexto: ajusta alvos de toque, ponto focal e interações recomendadas.'),
@@ -62,13 +65,13 @@ server.registerTool(
   {
     title: 'Transformar para Caramelo',
     description:
-      'Converte qualquer interface ou design system para a identidade visual e a interatividade Caramelo. Cores viram papéis semânticos (funcionam nos dois temas e com qualquer acento de cena), temas de variáveis (shadcn, Bootstrap, MUI, Material 3, Chakra) recebem valores Caramelo no mesmo formato, sombras/raios/motion viram tokens, e só a interação que falta é adicionada (press 80ms, hover luminoso, foco Electric Sky, halo em campos, reduced-motion). Corrige a11y segura (type, alt, rel, aria-label inferido). Devolve o código, a nota de auditoria antes→depois, cada mudança por linha e o que exige decisão humana.',
+      'Converte qualquer interface ou design system para a identidade visual e a interatividade Caramelo. Cores sólidas viram papéis semânticos; gradientes preservam as cores combinadas do espectro da marca. Temas de variáveis (shadcn, Bootstrap, MUI, Material 3, Chakra) recebem valores Caramelo no mesmo formato, sombras/raios/motion viram tokens, e só a interação que falta é adicionada (press 80ms, hover luminoso, foco Electric Sky, halo em campos, reduced-motion). Glitch cromático responde a hover/foco sem bloquear a ação. Corrige a11y segura (type, alt, rel, aria-label inferido). Devolve o código, a nota de auditoria antes→depois, cada mudança por linha e o que exige decisão humana.',
     inputSchema: {
       code: codeArg,
       material: z.enum(['lumen', 'print']).optional().default('lumen').describe('lumen = produto digital (luz, glow, raios concêntricos) · print = editorial (sombra sólida, arestas retas).'),
       theme: z.enum(['dark', 'light']).optional().describe('Tema-alvo. Omitido = mantém a polaridade da origem (design claro → editorial Warm Cream).'),
-      accent: z.enum(ACCENTS).optional().default('caramel').describe('Acento dominante da cena.'),
-      strategy: z.enum(['unify', 'preserve']).optional().default('unify').describe('unify = 1 acento (regra de ouro) · preserve = cada matiz vira a tinta da marca mais próxima.'),
+      accent: z.enum(ACCENTS).optional().default('neutral').describe('Base funcional neutra por padrão. Cores individuais somente por opt-in; CTAs de marca usam a camada combinada cm-brand-action.'),
+      strategy: z.enum(['unify', 'preserve']).optional().default('unify').describe('unify = papéis sólidos funcionais · preserve = preserva matizes decorativos. Gradientes mantêm as cores combinadas nas duas estratégias.'),
       enhanceInteractions: z.boolean().optional().default(true).describe('Adicionar a física de interação que estiver faltando.'),
       fixA11y: z.boolean().optional().default(true).describe('Aplicar correções de acessibilidade seguras.'),
       format: formatArg,
@@ -177,7 +180,7 @@ server.registerTool(
   'get_design_tokens',
   {
     title: 'Tokens de design',
-    description: 'Tokens Caramelo: json (tudo), css (variáveis --cm-* com os dois temas e acentos de cena), tailwind (classes do preset), semantic (cada papel com uso, valores e contraste) ou all.',
+    description: 'Tokens Caramelo: json (tudo e espectro combinado), css (variáveis --cm-* com dois temas, espectro e bases funcionais), tailwind (classes do preset), semantic (cada papel com uso, valores e contraste) ou all.',
     inputSchema: {
       format: z.enum(['json', 'css', 'tailwind', 'semantic', 'all']).optional().default('all'),
     },
@@ -187,12 +190,41 @@ server.registerTool(
 );
 
 server.registerTool(
+  'get_brand_asset',
+  {
+    title: 'Obter logo e figurinhas canônicas',
+    description: 'Entrega o isotipo SVG vetorizado ou o catálogo/arquivo das figurinhas oficiais de rastro. Todo rastro de mouse Caramelo usa estas figuras. Para aplicar em outro projeto, consulte metadata, copie os assets indicados e use o código react/html. Não substituir logos de terceiros automaticamente.',
+    inputSchema: {
+      asset: z.enum(['isotype', 'trail-stickers']).optional().default('isotype'),
+      format: z.enum(['metadata', 'svg', 'react', 'html', 'file']).optional().default('metadata'),
+      variant: z.enum(['spectrum', 'ink', 'cream']).optional().default('spectrum'),
+      stickerId: z.string().optional().describe('Id canônico retornado no catálogo; obrigatório para obter o arquivo de uma figurinha.'),
+    },
+    annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+  },
+  async ({ asset, format, variant, stickerId }) => {
+    if (format === 'metadata') return json(asset === 'isotype' ? brandAssetMetadata() : stickerCatalog());
+    if (asset === 'isotype') {
+      if (format === 'file') return { content: [{ type: 'resource' as const, resource: { uri: `caramelo://brand/isotype${variant === 'spectrum' ? '' : `-${variant}`}.svg`, mimeType: 'image/svg+xml', text: isotypeSvg({ variant }) } }] };
+      return text(logoMarkup(format, variant));
+    }
+    if (format === 'file') {
+      if (!stickerId) return text('Informe stickerId do catálogo para obter uma figurinha transparente.');
+      try { return { content: [{ type: 'resource' as const, resource: stickerBlob(stickerId) }] }; }
+      catch (error) { return text(error instanceof Error ? error.message : String(error)); }
+    }
+    if (format === 'svg') return text('As figurinhas são imagens WebP transparentes extraídas da fonte original; consulte metadata ou peça format=file com stickerId.');
+    return text(`${format === 'react' ? "import { PointerTrail } from '@caramelo/design-system';\n\n<PointerTrail as=\"section\" appearance=\"stickers\">\n  <h1>Um Cara Caramelo</h1>\n</PointerTrail>" : '<section data-cm-trail data-cm-assets-base="/caramelo/stickers"><h1>Um Cara Caramelo</h1></section>\n<script type="module">import { initCaramelMotion } from "@caramelo/design-system/motion"; initCaramelMotion();</script>'}\n\n${stickerCatalog().setup}\n\n${brandUsage}`);
+  }
+);
+
+server.registerTool(
   'generate_caramelo_component',
   {
     title: 'Gerar componente Caramelo',
     description: 'Gera um componente pronto para produção no padrão Caramelo — Lumen (MagneticButton, Surface, FocusField, SpotlightTabs, GlideMenu, Reveal…), cinematográfico do LP (cinematic_hero com rastro e máscara, portfolio_deck com pilha sticky, manifesto com palavras que acendem) ou Print (Button, LayerSplit, Lockup…).',
     inputSchema: {
-      componentType: z.enum(['button', 'hero', 'cinematic_hero', 'card', 'feature_grid', 'portfolio_deck', 'manifesto', 'form', 'input', 'tabs', 'menu', 'badge', 'command', 'layer_split', 'lockup']),
+      componentType: z.enum(['button', 'hero', 'cinematic_hero', 'card', 'feature_grid', 'portfolio_deck', 'manifesto', 'form', 'input', 'tabs', 'menu', 'badge', 'command', 'layer_split', 'lockup', 'logo', 'isotype']),
       title: z.string().optional().default('').describe('Título ou texto principal.'),
       framework: z.enum(['react-tailwind', 'html-tailwind', 'pure-css']).optional().default('react-tailwind'),
       material: z.enum(['lumen', 'print']).optional().default('lumen'),
@@ -210,6 +242,10 @@ for (const res of mcpResources) {
   server.registerResource(res.name, res.uri, { title: res.name, description: res.description, mimeType: res.mimeType }, async (uri) => ({
     contents: [{ uri: uri.href, mimeType: res.mimeType, text: res.load() }],
   }));
+}
+
+for (const sticker of TRAIL_STICKERS) {
+  server.registerResource(`Figurinha ${sticker.label}`, `caramelo://brand/stickers/${sticker.id}`, { mimeType: 'image/webp', description: 'Arquivo transparente canônico do rastro de mouse Caramelo.' }, async () => ({ contents: [stickerBlob(sticker.id)] }));
 }
 
 // ==========================================

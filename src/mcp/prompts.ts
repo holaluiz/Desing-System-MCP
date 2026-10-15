@@ -26,7 +26,7 @@ export const mcpPrompts: CarameloPrompt[] = [
 1. Rode \`audit_ux_ui\` neste código e leia a nota por categoria.
 2. Rode \`transform_to_caramelo\` (material lumen) e compare a nota antes/depois.
 3. Para cada item em "Precisa de decisão humana", proponha a correção concreta.
-4. Sugira no máximo 2 microinterações do catálogo (\`get_interaction\`) que resolvam um problema de UX real desta tela — explique qual comportamento cada uma provoca.
+4. Sugira no máximo 2 microinterações do catálogo (\`get_interaction\`) que resolvam um problema de UX real desta tela — explique qual comportamento cada uma provoca. Considere glitch cromático no feedback de gesto; as cinco cores combinadas são a assinatura, sem seletor de cor de identidade.
 
 \`\`\`
 ${code}
@@ -45,7 +45,9 @@ ${code}
 1. Chame \`transform_to_caramelo\` com material "${material === 'print' ? 'print' : 'lumen'}".
 2. Revise o relatório: confirme os aria-labels inferidos e resolva os itens de decisão humana.
 3. Se houver um CTA principal, troque-o pelo componente de assinatura (MagneticButton fill ou GlowButton).
+   Preserve gradientes multicolor e use as cinco cores juntas em luz, blur/liquid ou glitch no gesto, com leitura legível e movimento reduzido estático. accent tem base neutra por padrão; CTAs usam cm-brand-action. Não escolha uma cor isolada como principal.
 4. Entregue o código final completo e a lista de setup (preset Tailwind + styles.css).
+5. Para logo e rastro Caramelo, consulte get_brand_asset: use o isotipo canônico e sempre as figurinhas oficiais no rastro. Preserve marcas de terceiros que não façam parte do escopo de troca.
 
 \`\`\`
 ${code}
@@ -76,6 +78,8 @@ ${theme}
 1. Chame \`list_interactions\` e escolha no máximo 3 receitas — cada uma precisa resolver um problema de UX desta tela (feedback, orientação, continuidade espacial, confiança).
 2. Para cada escolhida, chame \`get_interaction\` e aplique o código.
 3. Respeite: 1 ponto focal por cena, nada acima de 400ms em controles, prefers-reduced-motion.
+   Combine as cinco cores da marca; para glitch de gesto, use chromatic-glitch (400ms steps em hover/foco, sem movimento no modo reduzido).
+   Se houver rastro de mouse Caramelo, use as figurinhas canônicas via PointerTrail appearance="stickers" e copie os assets indicados por get_brand_asset. Nunca use cartões, pôsteres ou imagens genéricas como substitutos.
 
 \`\`\`
 ${code}

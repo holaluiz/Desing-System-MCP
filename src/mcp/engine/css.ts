@@ -2,7 +2,7 @@
  * Motor CSS — parser tolerante (aninhamento, @media, comentários) e transformação
  * de folhas de estilo de qualquer sistema para a identidade Caramelo:
  *  - temas por variáveis (shadcn, Bootstrap, MUI, Material 3, Chakra…) → valores Caramelo no MESMO formato
- *  - cores literais → papéis semânticos rgb(var(--cm-*)) que seguem tema e acento da cena
+ *  - cores sólidas → papéis semânticos rgb(var(--cm-*)); gradientes preservam o espectro da marca
  *  - sombras borradas → elevação Lumen / sombra gráfica Print; raios → escala concêntrica
  *  - transições genéricas → tokens de motion; foco removido → anel Electric Sky
  *  - reforços de interação para seletores de botão e campo
@@ -635,12 +635,12 @@ export function transformCss(code: string, rules: CssRule[], opts: CssTransformO
         }
       }
 
-      const isGradient = /gradient\(/.test(d.value);
+      const isGradient = /gradient\(/i.test(d.value);
       const valueEdits: Array<{ s: number; e: number; t: string }> = [];
       const hits = colorHits(d.value, kind !== 'shadow');
       for (const [hi, h] of hits.entries()) {
         const c = classify(h.rgb);
-        // paradas do gradiente: from → accent, to → accent-bright (mantém a profundidade)
+        // Paradas cromáticas do gradiente mantêm suas famílias na paleta da marca.
         const prefix = isGradient ? (hi === 0 ? 'from' : hi === hits.length - 1 ? 'to' : 'via') : undefined;
         // Sombras neutras (preto translúcido) funcionam nos dois temas — mantidas
         if (kind === 'shadow' && c.family === 'neutral') continue;
@@ -658,14 +658,33 @@ export function transformCss(code: string, rules: CssRule[], opts: CssTransformO
         let next = d.value;
         for (const ve of [...valueEdits].reverse()) next = next.slice(0, ve.s) + ve.t + next.slice(ve.e);
         const isContrast = (kind === 'text' || kind === 'fill') && fill;
-        push(d.valueStart, d.valueStart + d.value.length, next, 'color', isContrast ? 'texto sobre preenchimento → contraste garantido' : 'cor → papel semântico (segue tema e acento)');
+        push(d.valueStart, d.valueStart + d.value.length, next, 'color', isContrast ? 'texto sobre preenchimento → contraste garantido' : isGradient ? 'gradiente → cores combinadas da marca' : 'cor → papel semântico (segue tema e base funcional)');
       }
     }
   }
 
-  const appended = opts.enhanceInteractions ? interactionRules(rules, opts) : '';
-  if (appended) notes.push('Regras de interação foram anexadas ao fim do CSS (feedback de clique, foco visível e movimento reduzido).');
+  const brand = brandRules(rules, opts);
+  const interaction = opts.enhanceInteractions ? interactionRules(rules, opts) : '';
+  const appended = brand + interaction;
+  if (brand) notes.push('CTAs com preenchimento de marca receberam a camada combinada equivalente a cm-brand-action. Em marcação, use essa classe para reutilizar o estilo.');
+  if (interaction) notes.push('Regras de interação foram anexadas ao fim do CSS (feedback de clique, foco visível e movimento reduzido).');
   return { edits, changes, appended, notes };
+}
+
+/** Camada de identidade independe de adicionar movimento ao controle. */
+function brandRules(rules: CssRule[], opts: MapOptions): string {
+  if (opts.material !== 'lumen') return '';
+  const selectors = new Set<string>();
+  for (const rule of rules) {
+    if (rule.atRules.some((a) => /keyframes|font-face/.test(a)) || ruleFill(rule, opts) !== 'accent') continue;
+    if (rule.decls.some((d) => d.prop.startsWith('background') && /gradient\(/i.test(d.value))) continue;
+    for (const raw of rule.selector.split(',')) {
+      const selector = raw.trim();
+      if (selector === baseSelector(selector) && BUTTONISH_RE.test(selector)) selectors.add(selector);
+    }
+  }
+  if (!selectors.size) return '';
+  return `\n\n/* Caramelo · cm-brand-action: camada combinada, base neutra e texto legível */\n${Array.from(selectors).join(',\n')} {\n  background: var(--cm-spectrum-soft);\n  color: var(--caramelo-color-ink);\n  box-shadow: var(--cm-glow-sm);\n}\n`;
 }
 
 // ——— Reforços de interação para seletores de botão/campo ———

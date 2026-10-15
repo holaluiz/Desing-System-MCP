@@ -13,24 +13,19 @@ import {
   TiltSurface,
   typography,
   GlowButton,
+  Isotype,
 } from '@caramelo/design-system';
 
 /* ——— Arte de recorte (composição do LP: gradiente, órbita, glifo girado e grão) ——— */
 type Tone = 'caramel' | 'sky' | 'violet' | 'pink' | 'yellow' | 'ink';
-const TONES: Record<Tone, { bg: string; fg: string }> = {
-  caramel: { bg: 'linear-gradient(140deg,#ff963f,#ff701a 50%,#bd3910)', fg: '#101014' },
-  sky: { bg: 'linear-gradient(140deg,#8fe0ff,#25bfff 50%,#0b6e99)', fg: '#101014' },
-  violet: { bg: 'linear-gradient(140deg,#a18aff,#7657ff 50%,#3b25b0)', fg: '#fff4e8' },
-  pink: { bg: 'linear-gradient(140deg,#ff8ab9,#ff3d8d 50%,#a3124f)', fg: '#101014' },
-  yellow: { bg: 'linear-gradient(140deg,#ffe680,#ffd52a 50%,#c79a00)', fg: '#101014' },
-  ink: { bg: 'linear-gradient(140deg,#2a2a33,#18181d 55%,#0a0a0d)', fg: '#fff4e8' },
-};
-
 export function ArtTile({ tone, glyph, label, className, style }: { tone: Tone; glyph: string; label?: string; className?: string; style?: CSSProperties }) {
-  const t = TONES[tone];
+  const phase = ['caramel', 'sky', 'pink', 'violet', 'yellow'].indexOf(tone);
+  const tileStyle: CSSProperties = tone === 'ink'
+    ? { background: 'linear-gradient(140deg,#2a2a33,#18181d 55%,#0a0a0d)', color: '#FFF4E8' }
+    : { color: '#FFF4E8', '--cm-chromatic-phase': phase } as CSSProperties;
   return (
-    <div className={`relative h-full w-full overflow-hidden ${className ?? ''}`} style={{ background: t.bg, color: t.fg, boxShadow: 'inset 0 0 35px #ffb77733', ...style }} aria-hidden="true">
-      <span className="absolute -right-[38%] -top-[55%] aspect-square w-[90%] rounded-full border" style={{ borderColor: `${t.fg}55` }} />
+    <div className={`relative h-full w-full overflow-hidden ${tone === 'ink' ? '' : 'cm-chromatic-tile'} ${className ?? ''}`} style={{ ...tileStyle, ...style }} aria-hidden="true">
+      <span className="absolute -right-[38%] -top-[55%] aspect-square w-[90%] rounded-full border border-cream/30" />
       <b className="absolute inset-0 grid place-items-center font-display font-black leading-none" style={{ fontSize: 'clamp(48px, 9vw, 150px)', transform: 'rotate(-12deg)', letterSpacing: '-0.06em' }}>
         {glyph}
       </b>
@@ -40,26 +35,18 @@ export function ArtTile({ tone, glyph, label, className, style }: { tone: Tone; 
   );
 }
 
-const TRAIL_ITEMS: ReactNode[] = [
-  <ArtTile key="1" tone="caramel" glyph="C." label="Lumen" />,
-  <ArtTile key="2" tone="violet" glyph="UX" label="Interação" />,
-  <ArtTile key="3" tone="sky" glyph="MCP" label="Motor" />,
-  <ArtTile key="4" tone="yellow" glyph="Aa" label="Montserrat" />,
-  <ArtTile key="5" tone="pink" glyph="↗" label="Motion" />,
-  <ArtTile key="6" tone="ink" glyph="®" label="Print" />,
-];
-
 /* ——— Hero no estilo do LP ——— */
 export function CinematicHero() {
   return (
     <PointerTrail
       as="section"
       id="topo"
-      items={TRAIL_ITEMS}
-      className="relative overflow-clip pb-12 pt-16 sm:pt-20"
+      appearance="stickers"
+      className="relative isolate overflow-clip pb-12 pt-16 sm:pt-20"
       style={{ backgroundImage: 'radial-gradient(rgb(var(--cm-fg) / .1) .65px, transparent .8px)', backgroundSize: '56px 56px' }}
     >
-      <div className="mx-auto max-w-[1400px] px-4 sm:px-8">
+      <div className="cm-liquid-field opacity-30" aria-hidden="true" />
+      <div className="relative mx-auto max-w-[1400px] px-4 sm:px-8">
         <Reveal variant="rise" trigger="load" delay={420}>
           <p className="cm-type-meta mb-10 text-fg-dim">
             <span>Design system + MCP · Laboratório de interação</span>
@@ -74,7 +61,9 @@ export function CinematicHero() {
               QUALQUER
             </LineReveal>
             <Reveal variant="clip" trigger="load" index={2} delay={200} className="h-[clamp(64px,9.5vw,150px)] overflow-hidden rounded-cm-lg">
-              <ArtTile tone="caramel" glyph="C." />
+              <div className="cm-chromatic-tile grid h-full place-items-center">
+                <Isotype variant="cream" decorative size="78%" className="cm-hero-isotype" />
+              </div>
             </Reveal>
           </Parallax>
           <Parallax start="top top" end="bottom top" to={{ y: -55, x: 12, opacity: 0.72 }} className="grid grid-cols-[minmax(0,.5fr)_minmax(0,1fr)] items-center gap-4 sm:gap-6">
@@ -87,11 +76,11 @@ export function CinematicHero() {
               </Reveal>
             </div>
             <LineReveal as="div" trigger="load" delay={200} className="cm-type-hero whitespace-nowrap text-right text-[clamp(34px,9.6vw,150px)]">
-              INTERFACE<sup className="text-accent-ink">®</sup>
+              INTERFACE<sup className="text-fg-2">®</sup>
             </LineReveal>
           </Parallax>
           <LineReveal as="div" trigger="load" delay={320} className="cm-type-hero whitespace-nowrap text-[clamp(28px,7.2vw,112px)]">
-            <span className="text-accent-ink">NA SUA</span> IDENTIDADE.
+            <span className="cm-spectrum-text">NA SUA</span> IDENTIDADE.
           </LineReveal>
         </div>
 
@@ -127,7 +116,7 @@ export function SectionHead({ index, context, title, lead, id }: { index: string
     <div className="mb-12">
       <Reveal variant="rise">
         <p className="cm-type-meta mb-6 border-b border-line pb-4 text-fg-dim">
-          <span className="text-accent-ink">{index}</span>
+          <span className="text-fg-2">{index}</span>
           <span>{context}</span>
         </p>
       </Reveal>
@@ -164,10 +153,10 @@ function CarameloCard() {
   return (
     <div className="grid h-full place-items-center bg-stage p-6" style={{ backgroundImage: 'radial-gradient(rgb(var(--cm-fg) / .08) .65px, transparent .8px)', backgroundSize: '28px 28px' }}>
       <div className="w-full max-w-sm rounded-cm-lg border border-line bg-surface-1 p-6 shadow-elev-3">
-        <span className="rounded-pill bg-accent-soft px-2.5 py-1 text-xs font-medium text-accent-ink">Novo</span>
+        <span className="cm-brand-badge rounded-pill px-2.5 py-1 text-xs font-medium">Novo</span>
         <h3 className="mt-3 font-display text-2xl font-black tracking-display">Plano Pro</h3>
         <p className="text-sm text-fg-muted">Tudo do básico, mais automações.</p>
-        <span className="mt-4 flex h-10 w-full items-center justify-center rounded-pill bg-accent text-sm font-semibold text-accent-contrast shadow-glow-sm">Assinar →</span>
+        <span className="cm-brand-action mt-4 flex h-10 w-full items-center justify-center rounded-pill text-sm font-semibold">Assinar →</span>
         <p className="cm-type-hand mt-3 text-xl">sem clichê ↑</p>
       </div>
     </div>
@@ -180,7 +169,7 @@ function StagedDemo() {
   const d = (s: string) => ({ '--cm-delay': s }) as CSSProperties;
   return (
     <div className="flex h-full flex-col gap-4">
-      <div key={run} className="cm-enter--bg relative flex flex-1 flex-col justify-end overflow-hidden rounded-cm-lg p-6" style={{ background: TONES.violet.bg, color: '#fff4e8' }}>
+      <div key={run} className="cm-enter--bg cm-chromatic-tile relative flex flex-1 flex-col justify-end overflow-hidden rounded-cm-lg p-6 text-cream">
         <p className="cm-enter cm-type-meta" style={d('.16s')}>
           <span>Aula 03</span>
           <span>12 min</span>
@@ -202,7 +191,7 @@ function StagedDemo() {
       <button
         type="button"
         onClick={() => setRun((r) => r + 1)}
-        className="self-start rounded-cm-xs text-sm text-accent-ink underline-offset-4 hover:underline focus-visible:outline-none focus-visible:shadow-focus"
+        className="self-start rounded-cm-xs text-sm text-fg-2 underline underline-offset-4 focus-visible:outline-none focus-visible:shadow-focus"
       >
         Reproduzir entrada ↻
       </button>
@@ -228,7 +217,7 @@ export function CinematicSection() {
       />
 
       {/* Manifesto */}
-      <div className="relative overflow-hidden rounded-cm-2xl bg-accent px-6 py-20 text-accent-contrast sm:px-12">
+      <div className="cm-chromatic-tile relative overflow-hidden rounded-cm-2xl px-6 py-20 text-cream sm:px-12">
         <p className="cm-type-meta mb-8 opacity-70">
           <span>scrub-words</span>
           <span>role devagar</span>
@@ -279,7 +268,7 @@ export function CinematicSection() {
               <span className="mt-4 max-w-sm text-sm text-[#5e5a55]">Audite, transforme e receba o relatório de cada mudança.</span>
             </a>
           </Reveal>
-          <Reveal variant="tilt" index={1} as="article" className="cm-lift flex min-h-[340px] flex-col rounded-cm-lg bg-violet-hover p-7 text-cream md:w-[42%]">
+          <Reveal variant="tilt" index={1} as="article" className="cm-lift cm-chromatic-tile flex min-h-[340px] flex-col rounded-cm-lg p-7 text-cream md:w-[42%]">
             <a href="#interacoes" className="flex flex-1 flex-col rounded-cm-sm focus-visible:outline-none focus-visible:shadow-focus">
               <span className="flex items-center justify-between text-[11px] font-medium uppercase tracking-meta">
                 Quero aprender <span className="cm-lift__arrow text-2xl leading-none" aria-hidden="true">↗</span>
@@ -306,11 +295,11 @@ export function CinematicSection() {
             <p className="font-display text-[clamp(36px,4.6vw,64px)] font-black leading-[0.92] tracking-display">
               DIREÇÃO
               <br />
-              <span className="text-caramel">INTERAÇÃO</span>
+              <span className="cm-spectrum-text" data-cm-spectrum-surface="dark">INTERAÇÃO</span>
               <br />
               MOTION
             </p>
-            <span className="cm-type-hand self-end text-yellow">feito à mão ↗</span>
+            <span className="cm-type-hand self-end text-cream">feito à mão ↗</span>
           </TiltSurface>
         </div>
         <div className="flex flex-col gap-3">
@@ -343,7 +332,7 @@ export function CinematicSection() {
             ].map((o) => (
               <article key={o.n} className="rounded-cm-xl border border-line bg-surface-2 p-7 shadow-elev-3">
                 <div className="flex items-center gap-4 border-b border-line pb-5">
-                  <span className="font-display text-4xl font-black" style={{ color: o.tone === 'caramel' ? 'rgb(var(--cm-accent-ink))' : '#25BFFF' }}>
+                  <span className="cm-spectrum-text font-display text-4xl font-black">
                     {o.n}
                   </span>
                   <h4 className="cm-type-heading">{o.t}</h4>

@@ -84,18 +84,19 @@ export const Text: React.FC<TextProps> = ({
  * Peso único (400) e sempre levemente girada. NUNCA em parágrafos longos, menus, preços ou botões.
  */
 export interface HandwrittenNoteProps extends React.HTMLAttributes<HTMLSpanElement> {
-  color?: 'caramel' | 'sky' | 'pink' | 'yellow' | 'cream';
+  color?: 'spectrum' | 'caramel' | 'sky' | 'pink' | 'yellow' | 'cream';
   rotate?: '-4' | '-3' | '-2' | '-1' | '0' | '1' | '2' | '5' | '8';
 }
 
 export const HandwrittenNote: React.FC<HandwrittenNoteProps> = ({
-  color = 'caramel',
+  color = 'spectrum',
   rotate = '-3',
   className,
   children,
   ...props
 }) => {
   const colorStyles = {
+    spectrum: 'cm-spectrum-text',
     caramel: 'text-[#FF701A]',
     sky: 'text-[#25BFFF]',
     pink: 'text-[#FF3D8D]',
@@ -135,16 +136,17 @@ export const HandwrittenNote: React.FC<HandwrittenNoteProps> = ({
  * Caixa alta pontual com tracking expandido para categorias e status.
  */
 export interface EyebrowProps extends React.HTMLAttributes<HTMLSpanElement> {
-  color?: 'caramel' | 'sky' | 'pink' | 'violet' | 'yellow' | 'muted';
+  color?: 'spectrum' | 'caramel' | 'sky' | 'pink' | 'violet' | 'yellow' | 'muted';
 }
 
 export const Eyebrow: React.FC<EyebrowProps> = ({
-  color = 'caramel',
+  color = 'spectrum',
   className,
   children,
   ...props
 }) => {
   const colorStyles = {
+    spectrum: 'cm-brand-badge px-2 py-1',
     caramel: 'text-[#FF701A]',
     sky: 'text-[#25BFFF]',
     pink: 'text-[#FF3D8D]',

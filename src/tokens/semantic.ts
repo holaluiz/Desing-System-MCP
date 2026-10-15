@@ -3,8 +3,8 @@
  *
  * Componentes e apps NUNCA devem referenciar hex diretamente: usam papéis
  * (stage, surface, fg, line, accent…). Assim o mesmo código funciona em
- * modo escuro (assinatura cinematográfica) e claro (editorial), e o acento
- * da cena pode ser trocado sem tocar em nenhuma classe.
+ * modo escuro (assinatura cinematográfica) e claro (editorial). A cor funcional
+ * de base pode ser trocada sem tocar nas classes; a identidade usa o espectro completo.
  *
  * Em CSS cada papel vira `--cm-<papel>` com um triplet RGB ("16 16 20"),
  * consumido como `rgb(var(--cm-surface-1))` ou `rgb(var(--cm-accent) / .3)`.
@@ -57,10 +57,10 @@ export const darkTheme: SemanticTheme = {
   'fg-muted': neutral[300],
   'fg-dim': neutral[400],
   'fg-faint': neutral[500],
-  accent: colors.caramel.DEFAULT,
-  'accent-bright': colors.caramel.bright,
-  'accent-ink': colors.caramel.DEFAULT,
-  'accent-soft': colors.caramel.surface,
+  accent: colors.cream.DEFAULT,
+  'accent-bright': colors.cream.pure,
+  'accent-ink': neutral[50],
+  'accent-soft': neutral[800],
   'accent-contrast': colors.ink.DEFAULT,
   focus: colors.sky.DEFAULT,
   success: colors.mint.DEFAULT,
@@ -88,10 +88,10 @@ export const lightTheme: SemanticTheme = {
   'fg-muted': '#5E5A55',
   'fg-dim': '#6B6862',
   'fg-faint': '#A39C93',
-  accent: colors.caramel.DEFAULT,
-  'accent-bright': colors.caramel.hover,
-  'accent-ink': colors.caramel.deep,
-  'accent-soft': '#FFE6D3',
+  accent: colors.cream.DEFAULT,
+  'accent-bright': colors.cream.pure,
+  'accent-ink': neutral[900],
+  'accent-soft': colors.cream.muted,
   'accent-contrast': colors.ink.DEFAULT,
   focus: colors.sky.deep,
   success: colors.mint.deep,
@@ -105,8 +105,12 @@ export const lightTheme: SemanticTheme = {
   'on-status': colors.cream.DEFAULT,
 };
 
-/** Acentos de cena — troque com data-cm-accent="sky" num contêiner */
+/** Base neutra por padrão; cores individuais apenas por opt-in explícito com data-cm-accent. */
 export const sceneAccents = {
+  neutral: {
+    dark: { accent: darkTheme.accent, bright: darkTheme['accent-bright'], ink: darkTheme['accent-ink'], soft: darkTheme['accent-soft'], contrast: darkTheme['accent-contrast'] },
+    light: { accent: lightTheme.accent, bright: lightTheme['accent-bright'], ink: lightTheme['accent-ink'], soft: lightTheme['accent-soft'], contrast: lightTheme['accent-contrast'] },
+  },
   caramel: { dark: { accent: colors.caramel.DEFAULT, bright: colors.caramel.bright, ink: colors.caramel.DEFAULT, soft: colors.caramel.surface, contrast: colors.ink.DEFAULT }, light: { accent: colors.caramel.DEFAULT, bright: colors.caramel.hover, ink: colors.caramel.deep, soft: '#FFE6D3', contrast: colors.ink.DEFAULT } },
   sky: { dark: { accent: colors.sky.DEFAULT, bright: '#5CD0FF', ink: colors.sky.DEFAULT, soft: colors.sky.surface, contrast: colors.ink.DEFAULT }, light: { accent: colors.sky.DEFAULT, bright: colors.sky.hover, ink: colors.sky.deep, soft: colors.sky.light, contrast: colors.ink.DEFAULT } },
   pink: { dark: { accent: colors.pink.DEFAULT, bright: '#FF6BA8', ink: colors.pink.DEFAULT, soft: colors.pink.surface, contrast: colors.ink.DEFAULT }, light: { accent: colors.pink.DEFAULT, bright: colors.pink.hover, ink: colors.pink.deep, soft: colors.pink.light, contrast: colors.ink.DEFAULT } },
@@ -138,10 +142,10 @@ export const semanticRoles: Record<SemanticRole, string> = {
   'fg-muted': 'Descrições e texto de apoio (AAA).',
   'fg-dim': 'Metadados, legendas, placeholders (AA).',
   'fg-faint': 'Somente não-texto: ícones decorativos, estados desabilitados.',
-  accent: 'Acento da cena (padrão Caramel). Preenchimentos de CTA.',
-  'accent-bright': 'Hover luminoso do acento.',
-  'accent-ink': 'Acento seguro para TEXTO no tema atual.',
-  'accent-soft': 'Fundo tingido pelo acento (badges, seleção).',
+  accent: 'Base funcional neutra (Warm Cream). CTAs de marca combinam o espectro com cm-brand-action; cores individuais são opt-in.',
+  'accent-bright': 'Hover neutro luminoso (branco).',
+  'accent-ink': 'Texto de destaque neutro: foreground seguro do tema atual.',
+  'accent-soft': 'Superfície neutra de seleção e badges (surface-2).',
   'accent-contrast': 'Texto sobre preenchimento de acento.',
   focus: 'Anel de foco de teclado (Electric Sky — distinto do acento).',
   success: 'Sucesso (Signal Mint).',

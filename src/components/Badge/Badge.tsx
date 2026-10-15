@@ -2,13 +2,13 @@ import React from 'react';
 import { cn } from '../../utils/cn';
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-  color?: 'caramel' | 'sky' | 'pink' | 'violet' | 'yellow' | 'ink' | 'cream';
+  color?: 'spectrum' | 'caramel' | 'sky' | 'pink' | 'violet' | 'yellow' | 'ink' | 'cream';
   variant?: 'solid' | 'outline';
   size?: 'sm' | 'md';
 }
 
 export const Badge: React.FC<BadgeProps> = ({
-  color = 'caramel',
+  color = 'spectrum',
   variant = 'solid',
   size = 'md',
   className,
@@ -16,6 +16,7 @@ export const Badge: React.FC<BadgeProps> = ({
   ...props
 }) => {
   const solidColors = {
+    spectrum: 'cm-brand-badge',
     caramel: 'bg-[#FF701A] text-[#101014] border-[#101014]',
     sky: 'bg-[#25BFFF] text-[#101014] border-[#101014]',
     // Ink sobre Pink = 5.70:1 (Cream sobre Pink = 3.07:1, reprovado)
@@ -28,6 +29,7 @@ export const Badge: React.FC<BadgeProps> = ({
   }[color];
 
   const outlineColors = {
+    spectrum: 'cm-brand-badge',
     caramel: 'border-[#FF701A] text-[#FF701A] bg-[#FF701A]/10',
     sky: 'border-[#25BFFF] text-[#25BFFF] bg-[#25BFFF]/10',
     pink: 'border-[#FF3D8D] text-[#FF3D8D] bg-[#FF3D8D]/10',

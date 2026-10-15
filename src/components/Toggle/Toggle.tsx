@@ -6,7 +6,7 @@ export interface ToggleProps {
   onChange: (checked: boolean) => void;
   label?: string;
   description?: string;
-  accentColor?: 'caramel' | 'sky' | 'pink' | 'yellow';
+  accentColor?: 'spectrum' | 'caramel' | 'sky' | 'pink' | 'yellow';
   disabled?: boolean;
   className?: string;
 }
@@ -16,11 +16,12 @@ export const Toggle: React.FC<ToggleProps> = ({
   onChange,
   label,
   description,
-  accentColor = 'caramel',
+  accentColor = 'spectrum',
   disabled = false,
   className,
 }) => {
   const accentActive = {
+    spectrum: 'bg-[image:var(--cm-spectrum-soft)] border-[#FFF4E8]/60',
     caramel: 'bg-[#FF701A] border-[#FF701A]',
     sky: 'bg-[#25BFFF] border-[#25BFFF]',
     pink: 'bg-[#FF3D8D] border-[#FF3D8D]',

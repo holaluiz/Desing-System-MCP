@@ -5,6 +5,8 @@
 import { interactions } from '../tokens/interactions';
 import { semanticRoles } from '../tokens/semantic';
 import { semanticTable, tokensCss, tokensPayload } from './tools';
+import { isotypeSvg } from '../brand/isotype';
+import { brandAssetMetadata, brandUsage } from './brand-assets';
 
 const manual = `# Um Cara Caramelo — Manual de Identidade e Interação (V2 2026)
 
@@ -15,16 +17,20 @@ const manual = `# Um Cara Caramelo — Manual de Identidade e Interação (V2 20
 ## Dois materiais, uma identidade
 | Material | Onde | Assinatura |
 |---|---|---|
-| **Lumen** | Produto digital, apps, dashboards, landing pages | Palco escuro, aresta de luz de 1px, hairlines, glow do acento, raios concêntricos (3/5/8/12/16/22px) |
+| **Lumen** | Produto digital, apps, dashboards, landing pages | Palco escuro, aresta de luz de 1px, hairlines, luz espectral combinada, raios concêntricos (3/5/8/12/16/22px) |
 | **Print** | Editorial, campanhas, cartazes | Sombra gráfica sólida, arestas retas, retícula Ben-Day, desalinhamento CMYK |
 Regra: **um material por superfície** — nunca sombra sólida e glow no mesmo elemento.
 
 ## Cor
 - Base: Ink (#101014 → stage #0A0A0D) e Warm Cream (#FFF4E8).
-- Assinatura: Caramel #FF701A. Acentos de cena: Sky #25BFFF, Pink #FF3D8D, Violet #7657FF, Yellow #FFD52A.
+- Espectro de assinatura: Caramel #FF701A, Sky #25BFFF, Pink #FF3D8D, Violet #7657FF e Yellow #FFD52A atuam juntos.
 - Funcional: Signal Mint #3DDC97 — só sucesso, nunca decorativo.
-- **Regra de ouro: 1 acento dominante por cena.** Troque com \`data-cm-accent="sky"\` no contêiner.
-- Código nunca usa hex: usa **papéis semânticos** (stage, surface-1..3, line, fg, fg-muted, accent, accent-ink, accent-contrast…).
+- **Combine as cinco cores sempre que a composição permitir:** glitch no gesto, misturas de luz com blur e liquid motion. Controle intensidade e área para manter conteúdo legível.
+- A base funcional padrão é neutra: accent Cream, accent-bright branco, accent-ink igual ao foreground e accent-soft igual à surface-2. Nenhuma cor isolada é principal.
+- Cores individuais são opt-in explícito com \`data-cm-accent="sky"\`; \`data-cm-accent="neutral"\` restaura a base neutra. A identidade continua combinada.
+- CTAs de marca usam \`cm-brand-action\` (espectro suave + texto Ink); badges usam \`cm-brand-badge\` e barras/progresso usam \`cm-brand-meter\`.
+- Logo: isotipo C coroado do arquivo original, componente Isotype ou caramelo://brand/isotype.svg. Rastro: sempre as figurinhas canônicas de rastro mouse.png, disponíveis via get_brand_asset e caramelo://brand/identity. Preserve logos de terceiros fora do escopo.
+- Superfícies e leitura usam **papéis semânticos** (stage, surface-1..3, line, fg, fg-muted, accent, accent-ink, accent-contrast…); gradientes combinam os tokens da marca.
 - Texto sobre Caramel é Ink (6.86:1) — **nunca Cream sobre Caramel (2.55:1)**.
 - fg-faint é só para não-texto (ícones decorativos, disabled).
 
@@ -51,6 +57,7 @@ Fontes auto-hospedadas (WOFF2 + OFL) dentro do styles.css — sem request ao Goo
 ## Física de interação (UX)
 - Press ≤ 100ms (\`active:scale-[0.97] duration-instant\`) — o gesto precisa "pegar".
 - Hover/cor ~160ms (\`duration-micro ease-out-expo\`).
+- Glitch cromático: pulso de 400ms com steps em hover/focus-visible (\`cm-glitch\`), sem bloquear o clique; as cores permanecem combinadas com movimento reduzido, sem animação.
 - Indicadores, menus, trocas: 240–320ms (\`ease-drawer\`).
 - Revelações narrativas: 480–640ms — nunca em controles.
 - Nada que bloqueie a próxima ação passa de 400ms (Doherty).
@@ -79,7 +86,9 @@ const engineGuide = `# Como o motor transforma qualquer sistema em Caramelo
    preenchimentos e CTAs), material e tokens já existentes.
 2. **Cores → papéis**, com contexto do elemento:
    - neutros por polaridade (em design claro, bg-white = surface-1 e bg-gray-900 = elemento invertido = fg);
-   - acento da origem → accent / accent-ink (texto) / accent-soft (tons 50–200) / accent-bright (hover);
+   - acento da origem → papéis neutros accent / accent-ink (texto) / accent-soft (tons 50–200) / accent-bright (hover);
+   - CTA preenchido de marca → classe cm-brand-action, combinando as cinco cores; CSS puro recebe a camada equivalente;
+   - gradientes mantêm suas famílias cromáticas na paleta da marca, combinando as cores nas duas estratégias;
    - vermelho → danger, verde → success, amarelo → warning, azul secundário → info;
    - texto sobre preenchimento colorido → accent-contrast / on-status (contraste garantido);
    - variantes \`dark:\` são removidas — os papéis já trocam com o tema.
@@ -93,10 +102,30 @@ const engineGuide = `# Como o motor transforma qualquer sistema em Caramelo
 7. **Acessibilidade segura**: type="button", alt="", rel="noopener", aria-label inferido do ícone ou do
    placeholder. O que exige julgamento vira "decisão humana" no relatório.
 
-Estratégias de acento: **unify** (padrão — regra de ouro, 1 acento) ou **preserve** (cada matiz vira a tinta
-da marca mais próxima: laranja→caramel, azul→sky, rosa/vermelho→pink, violeta→violet, amarelo→yellow, verde→mint).`;
+Estratégias para cores sólidas: **unify** (padrão — papéis funcionais) ou **preserve** (mantém matizes
+decorativos compatíveis na paleta da marca). Gradientes preservam o espectro nas duas estratégias:
+laranja→caramel, azul→sky, rosa/vermelho→pink, violeta→violet, amarelo→yellow; verde decorativo→sky.
+Mint continua exclusivo de sucesso. A opção accent tem padrão neutral; caramel/sky/pink/violet/yellow são
+cores funcionais opt-in. Nenhuma delas é a cor principal da marca. O espectro combinado define os CTAs de marca.`;
 
 export const mcpResources = [
+  ...(['spectrum', 'ink', 'cream'] as const).map((variant) => ({
+    uri: `caramelo://brand/isotype${variant === 'spectrum' ? '' : `-${variant}`}.svg`,
+    name: `Isotipo vetorial Caramelo — ${variant}`,
+    description: 'C coroado vetorizado da fonte original. Aplicar sem alterar geometria ou proporção.',
+    mimeType: 'image/svg+xml',
+    load: () => isotypeSvg({ variant }),
+  })),
+  {
+    uri: 'caramelo://brand/identity', name: 'Logo e figurinhas canônicas',
+    description: 'Arquivos oficiais, variantes do isotipo, catálogo do rastro e caminhos de aplicação.',
+    mimeType: 'application/json', load: () => JSON.stringify(brandAssetMetadata(), null, 2),
+  },
+  {
+    uri: 'caramelo://brand/usage', name: 'Regras de aplicação dos arquivos de marca',
+    description: 'Aplicar logo e figurinhas corretos, preservar marcas de clientes.',
+    mimeType: 'text/markdown', load: () => brandUsage,
+  },
   {
     uri: 'caramelo://guidelines/manual',
     name: 'Manual de Identidade e Interação V2 2026',
@@ -121,7 +150,7 @@ export const mcpResources = [
   {
     uri: 'caramelo://tokens/css',
     name: 'Tokens em CSS Custom Properties',
-    description: 'Variáveis --cm-* (dois temas + acentos de cena) prontas para colar.',
+    description: 'Variáveis --cm-* (dois temas + espectro combinado + bases funcionais) prontas para colar.',
     mimeType: 'text/css',
     load: () => tokensCss(),
   },
@@ -174,7 +203,8 @@ export const mcpResources = [
 - **Reveal variant** — blur · rise · tilt · clip · calm.
 - **Parallax** — transform dirigido pelo scroll (from/to, scrub).
 - **ScrollProgress / SceneNav** — progresso de leitura e cenas laterais.
-- **PointerTrail** — rastro de imagens do mouse.
+- **PointerTrail** — rastro das figurinhas canônicas; appearance="stickers", assets em public/caramelo/stickers, sem recorte ou moldura.
+- **Isotype** — logo C coroado em SVG vetorial, variantes spectrum/ink/cream/current e resposta cromática opcional.
 - **TiltSurface** — cartaz que inclina com o ponteiro.
 - **StickyDeck** — pilha de cartões sticky (portfólio).
 - **StickyStack** — ofertas sticky que chegam.
@@ -182,6 +212,7 @@ export const mcpResources = [
 - **CompareSlider** — antes/depois acessível, opcionalmente dirigido pelo scroll.
 - **InViewVideo** — vídeo que só toca visível (máx. 2).
 - Classes CSS: cm-lift, cm-media-zoom, cm-enter(--headline|--card|--pop), cm-sheet-in, cm-modal-in.
+- Glitch interativo: cm-glitch (400ms steps em hover/focus-visible; estático com movimento reduzido).
 - HTML puro: initCaramelMotion() de @caramelo/design-system/motion + atributos data-cm-*.
 
 ## Print (editorial)

@@ -23,7 +23,7 @@ export const colors = {
     surface: '#FDF7F0',
   },
 
-  // Cor de Assinatura Oficial
+  // Caramel — uma das cinco cores do espectro de assinatura
   caramel: {
     DEFAULT: '#FF701A',
     rgb: '255, 112, 26',
@@ -39,7 +39,7 @@ export const colors = {
     surface: '#2B1608',
   },
 
-  // Acentos Elétricos (Regra de Ouro: usar 1 cor dominante por cena)
+  // Espectro de assinatura: estas cores atuam juntas em glitch, luz, blur e liquid motion.
   sky: {
     DEFAULT: '#25BFFF',
     rgb: '37, 191, 255',
@@ -91,6 +91,14 @@ export const colors = {
   },
 } as const;
 
+/** Identidade cromática combinada. Cores individuais continuam disponíveis para papéis funcionais. */
+export const brandSpectrum = {
+  colors: ['caramel', 'pink', 'violet', 'sky', 'yellow'],
+  stops: [colors.caramel.DEFAULT, colors.pink.DEFAULT, colors.violet.DEFAULT, colors.sky.DEFAULT, colors.yellow.DEFAULT],
+  gradient: `linear-gradient(110deg, ${colors.caramel.DEFAULT} 0%, ${colors.pink.DEFAULT} 24%, ${colors.violet.DEFAULT} 48%, ${colors.sky.DEFAULT} 72%, ${colors.yellow.DEFAULT} 100%)`,
+  interaction: 'As cinco cores formam uma assinatura combinada: glitch acionado por gesto, luz difusa e liquid motion. Preserve o contraste do conteúdo e uma versão estática com movimento reduzido.',
+} as const;
+
 /**
  * Escala Neutra Ink → Cream (13 passos)
  * Tinta levemente fria (Ink) que esquenta até o papel (Cream).
@@ -122,8 +130,8 @@ export const contrastRatios = {
   'yellow-on-ink': { ratio: 13.38, level: 'AAA', role: 'Alertas e sinalização de alta visibilidade' },
   'mint-on-ink': { ratio: 10.74, level: 'AAA', role: 'Estados de sucesso' },
   'ink-on-cream': { ratio: 17.5, level: 'AAA', role: 'Texto editorial em fundo claro' },
-  'ink-on-caramel': { ratio: 6.86, level: 'AA', role: 'Texto de botões primários (NUNCA cream sobre caramel: 2.55)' },
-  'caramel-deep-on-cream': { ratio: 5.37, level: 'AA', role: 'Links e destaques em modo claro' },
+  'ink-on-caramel': { ratio: 6.86, level: 'AA', role: 'Contraste do ingrediente Caramel (NUNCA cream sobre caramel: 2.55)' },
+  'caramel-deep-on-cream': { ratio: 5.37, level: 'AA', role: 'Contraste da variante Caramel em fundo claro' },
   'muted-on-ink': { ratio: 7.61, level: 'AAA', role: 'Texto de apoio (neutral 300)' },
   'dim-on-ink': { ratio: 5.64, level: 'AA', role: 'Metadados e legendas (neutral 400)' },
 } as const;

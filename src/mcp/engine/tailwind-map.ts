@@ -1,7 +1,7 @@
 /**
  * Mapeamento de classes Tailwind genéricas → identidade Caramelo.
  * Cores viram PAPÉIS semânticos (bg-surface-1, text-fg-muted, bg-accent…),
- * que se adaptam ao tema e ao acento da cena sem reescrever o código de novo.
+ * que se adaptam ao tema e à cor funcional de base. Gradientes mantêm as cores combinadas da marca.
  */
 
 import { colors } from '../../tokens/colors';
@@ -122,7 +122,7 @@ export type ElementFill = 'accent' | 'status' | null;
 export interface RoleResult {
   /** Papel semântico (preferencial) */
   role?: SemanticRole;
-  /** Token literal da marca (estratégia preserve), ex.: "violet-surface" */
+  /** Token literal da marca (gradientes ou estratégia preserve), ex.: "violet-surface" */
   literal?: string;
   /** Opacidade sugerida quando a origem era um tom claro de borda */
   opacity?: string;
@@ -152,6 +152,13 @@ export function roleFor(
 
   if (family === 'neutral') return { role: neutralRole(kind, shade, opts.polarity) };
 
+  // Gradientes são composição de marca: nunca colapsar seus stops em um acento único.
+  // Mint continua reservado a sucesso; verde decorativo entra no canal frio do espectro.
+  if (kind === 'gradient') {
+    const color = FAMILY_TO_BRAND[family];
+    return { literal: color === 'mint' ? 'sky' : color };
+  }
+
   const role = chromaRole(family, opts.primaryFamily);
 
   if (opts.strategy === 'preserve' && role === 'accent' && family !== opts.primaryFamily) {
@@ -177,8 +184,6 @@ export function roleFor(
       return { role };
     case 'text':
       return { role: role === 'accent' ? 'accent-ink' : role };
-    case 'gradient':
-      return { role: role === 'accent' && ctx.prefix === 'to' ? 'accent-bright' : role };
     case 'shadow':
       return { role, opacity: '/30' };
     case 'line':
@@ -271,6 +276,8 @@ export interface ElementInfo {
   tag: string;
   role?: string | null;
   inputType?: string | null;
+  /** Preenchimento do estilo inline, que prevalece sobre as classes. */
+  fill?: ElementFill;
   /** Lista solta (base de cva/variantes): o hover vem das variantes, não do base */
   loose?: boolean;
 }
@@ -363,6 +370,8 @@ export function detectFill(tokens: string[], opts: MapOptions): ElementFill {
   for (const t of tokens) {
     const p = parseUtility(t);
     if (p.variants.length) continue;
+    if (/^bg-(accent|caramel|sky|pink|violet|yellow)(?:\/(?:\d+|\[[^\]]+\]))?$/.test(p.base)) return 'accent';
+    if (/^bg-(danger|success|warning|info)$/.test(p.base)) return 'status';
     const cu = splitColorUtility(p.base);
     if (!cu || (cu.kind !== 'bg' && !(cu.kind === 'gradient' && cu.prefix === 'from')) || cu.family === 'neutral') continue;
     const n = cu.shade === 'white' ? 0 : cu.shade === 'black' ? 1000 : cu.shade;
@@ -388,10 +397,10 @@ export function mapClassList(
   const lead = /^\s*/.exec(value)![0];
   const trail = /\s*$/.exec(value)![0];
   const tokens = value.trim().split(/\s+/).filter(Boolean);
-  if (!tokens.length) return { value, changes: [] };
+  if (!tokens.length && !el?.fill) return { value, changes: [] };
 
   const changes: ClassChange[] = [];
-  const fill = detectFill(contextTokens ?? tokens, opts);
+  const fill = el?.fill ?? detectFill(contextTokens ?? tokens, opts);
   const out: string[] = [];
 
   for (const token of tokens) {
@@ -431,6 +440,11 @@ export function mapClassList(
   }
 
   let final = Array.from(new Set(out));
+  const interactive = el && (INTERACTIVE_TAGS.has(el.tag) || el.role === 'button' || el.role === 'tab' || el.role === 'menuitem');
+  if (interactive && fill === 'accent' && opts.material === 'lumen' && !(contextTokens ?? final).includes('cm-brand-action')) {
+    final.push('cm-brand-action');
+    changes.push({ from: `<${el.tag}>`, to: '+ cm-brand-action', reason: 'CTA de marca → camada combinada das cinco cores sobre base neutra' });
+  }
   if (el && enhanceInteractions) {
     const { add, reasons } = enhance(contextTokens ? Array.from(new Set([...final, ...contextTokens])) : final, el, opts, fill);
     if (add.length) {

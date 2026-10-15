@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import {
   Wordmark,
+  Isotype,
   Lockup,
   Button,
   DisplayHeading,
@@ -15,7 +16,6 @@ import {
   Checkbox,
   Toggle,
   Alert,
-  Avatar,
   Divider,
   HalftoneOverlay,
   MisregistrationText,
@@ -40,7 +40,7 @@ export default function App() {
   return <PrintCatalog onSwitchToLumen={() => switchMaterial('lumen')} />;
 }
 
-/** Catálogo V1 (material Print) — mantido como estava, com acesso de volta ao Lumen */
+/** Catálogo Print com tokens individuais e direção cromática compartilhada. */
 function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
   const [toggleActive, setToggleActive] = useState<boolean>(true);
@@ -58,7 +58,7 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
   const palette = [
     { name: 'Ink Black', hex: '#101014', rgb: '16, 16, 20', role: 'Base Principal (Fundo escuro, contraste, massa tipográfica)', ratio: 'Base', textDark: false },
     { name: 'Warm Cream', hex: '#FFF4E8', rgb: '255, 244, 232', role: 'Base Clara (Respiro editorial, contraponto humano)', ratio: '17.50:1 (AAA)', textDark: true },
-    { name: 'Caramel Orange', hex: '#FF701A', rgb: '255, 112, 26', role: 'Assinatura Oficial (CTAs, momentos-chave, marcações)', ratio: '6.86:1 (AA)', textDark: false },
+    { name: 'Caramel Orange', hex: '#FF701A', rgb: '255, 112, 26', role: 'Canal quente da assinatura combinada', ratio: '6.86:1 (AA)', textDark: false },
     { name: 'Electric Sky', hex: '#25BFFF', rgb: '37, 191, 255', role: 'Acento Digital (Interação, links, sinalização, profundidade fria)', ratio: '9.02:1 (AAA)', textDark: true },
     { name: 'Hot Pink', hex: '#FF3D8D', rgb: '255, 61, 141', role: 'Acento de Provocação (Comentários críticos, intervenções gráficas)', ratio: '5.70:1 (AA)', textDark: false },
     { name: 'Electric Violet', hex: '#7657FF', rgb: '118, 87, 255', role: 'Acento de Transição (Energia secundária, estados especiais)', ratio: '4.14:1 (AA Large)', textDark: false },
@@ -100,7 +100,7 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
     { name: 'graphic-sm', css: '2px 2px 0px #101014', role: 'Badges, botões pequenos e checkboxes' },
     { name: 'graphic-md', css: '4px 4px 0px #101014', role: 'Botões padrão, inputs e cards' },
     { name: 'graphic-lg', css: '8px 8px 0px #101014', role: 'Superfícies de alto impacto e heros' },
-    { name: 'graphic-caramel', css: '4px 4px 0px #FF701A', role: 'Destaque e assinatura sobre fundo escuro' },
+    { name: 'graphic-caramel', css: '4px 4px 0px #FF701A', role: 'Ingrediente laranja da composição gráfica' },
     { name: 'graphic-sky', css: '4px 4px 0px #25BFFF', role: 'Acento interativo digital' },
     { name: 'graphic-cream', css: '4px 4px 0px #FFF4E8', role: 'Elevação para elementos pretos sobre fundo claro' },
     { name: 'offset-cmyk', css: '-2px -1px 0 rgba(37,191,255,0.5), 2px 1px 0 rgba(255,61,141,0.5)', role: 'Registro de impressão em aceleração' },
@@ -126,10 +126,10 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
   const shouldShow = (id: string) => activeSection === 'all' || activeSection === id;
 
   return (
-    <div className="min-h-screen bg-[#101014] text-[#FFF4E8] font-sans selection:bg-[#FF701A] selection:text-[#101014]">
+    <div data-caramelo-theme="dark" className="min-h-screen bg-[#101014] text-[#FFF4E8] font-sans selection:bg-cream selection:text-[#101014]">
       {/* Toast de Cópia */}
       {copiedToken && (
-        <div className="fixed bottom-6 right-6 z-50 bg-[#FF701A] text-[#101014] border-2 border-[#101014] px-4 py-2 font-display font-black text-xs uppercase tracking-wider shadow-[4px_4px_0px_#FFF4E8] animate-bounce">
+        <div className="fixed bottom-6 right-6 z-50 bg-[image:var(--cm-spectrum-soft)] text-[#101014] border-2 border-[#101014] px-4 py-2 font-display font-black text-xs uppercase tracking-wider shadow-[4px_4px_0px_#FFF4E8] animate-bounce">
           ✓ Copiado: {copiedToken}
         </div>
       )}
@@ -138,17 +138,16 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
       <header className="border-b-2 border-[#27272F] bg-[#141419]/95 backdrop-blur sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 py-4 flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <Avatar fallback="UC" size="sm" accentBorder="caramel" />
             <Lockup type="institucional" size="sm" variant="cream" />
           </div>
 
           <div className="flex items-center gap-2">
-            <Badge color="caramel">V1 2026</Badge>
+            <Badge color="spectrum">V1 2026</Badge>
             <span className="text-xs font-mono text-neutral-400">@caramelo/design-system</span>
             <button
               type="button"
               onClick={onSwitchToLumen}
-              className="ml-2 border-2 border-[#FF701A] px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#FF701A] transition-[transform,box-shadow] duration-150 ease-kinetic hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[3px_3px_0px_#FF701A] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none focus-visible:outline-none focus-visible:shadow-focus"
+              className="ml-2 border-2 border-line-strong px-3 py-1 text-xs font-bold uppercase tracking-wider text-fg-2 transition-[transform,box-shadow] duration-150 ease-kinetic hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[var(--cm-spectrum-print)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none focus-visible:outline-none focus-visible:shadow-focus"
             >
               Lumen V1 →
             </button>
@@ -164,7 +163,7 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
                 onClick={() => setActiveSection(s.id)}
                 className={`px-3 py-1 text-xs font-bold uppercase tracking-wider transition-all border ${
                   activeSection === s.id
-                    ? 'bg-[#FF701A] text-[#101014] border-[#101014] shadow-[2px_2px_0px_#101014]'
+                    ? 'bg-[image:var(--cm-spectrum-soft)] text-[#101014] border-[#101014] shadow-[2px_2px_0px_#101014]'
                     : 'text-[#FFF4E8]/70 border-transparent hover:text-[#FFF4E8] hover:border-[#27272F]'
                 }`}
               >
@@ -181,7 +180,7 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
 
         <div className="max-w-7xl mx-auto relative z-10 flex flex-col gap-6">
           <div className="flex flex-wrap items-center gap-3">
-            <Eyebrow color="caramel">DOCUMENTO CANÔNICO & GUIA VIVO</Eyebrow>
+            <Eyebrow color="spectrum">DOCUMENTO CANÔNICO & GUIA VIVO</Eyebrow>
             <span className="text-xs text-neutral-500">•</span>
             <span className="text-xs text-neutral-400 font-mono">LABORATÓRIO DE INTERAÇÃO</span>
           </div>
@@ -190,7 +189,7 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
             <div className="max-w-3xl">
               <DisplayHeading size="xl" className="leading-[0.90]">
                 SISTEMA VISUAL & <br />
-                <span className="text-[#FF701A]">DESIGN SYSTEM V1</span>
+                <span className="cm-spectrum-text">DESIGN SYSTEM V1</span>
               </DisplayHeading>
 
               <div className="mt-4 flex flex-wrap items-center gap-3">
@@ -204,8 +203,8 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
             </div>
 
             {/* Caixa Central de Princípio */}
-            <div className="p-5 bg-[#1F1F26] border-2 border-[#FF701A] shadow-[5px_5px_0px_#FF701A] max-w-md">
-              <span className="text-[0.65rem] font-black uppercase tracking-widest text-[#FF701A] block mb-1">
+            <div className="p-5 bg-[#1F1F26] border-2 border-line-strong shadow-[var(--cm-spectrum-print)] max-w-md">
+              <span className="text-[0.65rem] font-black uppercase tracking-widest text-fg-2 block mb-1">
                 PRINCÍPIO CENTRAL DE PROJETO
               </span>
               <p className="font-display font-black text-base uppercase leading-tight text-[#FFF4E8]">
@@ -229,7 +228,7 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
           <section id="principles" className="flex flex-col gap-8">
             <div className="flex items-baseline justify-between border-b-2 border-[#27272F] pb-4">
               <div>
-                <Eyebrow color="caramel">01. DNA & Fundamentos</Eyebrow>
+                <Eyebrow color="spectrum">01. DNA & Fundamentos</Eyebrow>
                 <DisplayHeading as="h2" size="md">Os 6 Pilares da Linguagem Visual</DisplayHeading>
               </div>
               <HandwrittenNote color="sky" rotate="1">
@@ -249,7 +248,7 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
                 <Card key={i} variant="dark" halftone interactive className="flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between mb-3">
-                      <Badge color="caramel">{p.badge}</Badge>
+                      <Badge color="spectrum">{p.badge}</Badge>
                       <span className="text-xs font-mono text-neutral-500">0{i + 1}</span>
                     </div>
                     <h3 className="font-display font-black text-xl uppercase mb-2">{p.title}</h3>
@@ -268,17 +267,22 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
           <section id="colors" className="flex flex-col gap-8">
             <div className="flex items-baseline justify-between border-b-2 border-[#27272F] pb-4">
               <div>
-                <Eyebrow color="caramel">02. Sistema Cromático</Eyebrow>
+                <Eyebrow color="spectrum">02. Sistema Cromático</Eyebrow>
                 <DisplayHeading as="h2" size="md">Paleta Oficial Canônica V1 (2026)</DisplayHeading>
               </div>
               <HandwrittenNote color="pink" rotate="-1">
-                regra: apenas 1 acento dominante por cena!
+                cinco cores, uma assinatura em movimento!
               </HandwrittenNote>
             </div>
 
             <Text size="base" variant="muted" className="max-w-3xl">
-              Base sóbria em Ink Black e Warm Cream. As cores elétricas funcionam como tintas gráficas de destaque e nunca devem poluir simultaneamente a mesma tela.
+              Base sóbria em Ink Black e Warm Cream. Orange, Sky, Pink, Violet e Yellow compõem juntas a assinatura: misturas em blur, movimento líquido e separação cromática no glitch de interação. Os tokens abaixo documentam os ingredientes dessa composição.
             </Text>
+
+            <div className="cm-chromatic-tile relative overflow-hidden rounded-cm-lg px-6 py-12 text-cream">
+              <p className="font-display text-3xl font-black uppercase tracking-tight">A paleta inteira faz parte do gesto.</p>
+              <p className="mt-3 max-w-xl text-sm leading-relaxed">As cores se encontram na mesma composição, com contraste e espaço para a leitura.</p>
+            </div>
 
             {/* Grid de Cores com Cópia Rápida */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -298,7 +302,7 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
                   <div className="mt-4 flex flex-col gap-1">
                     <div className="flex items-center justify-between">
                       <span className="font-display font-black text-base uppercase text-[#FFF4E8]">{c.name}</span>
-                      <span className="text-xs font-mono font-bold text-[#FF701A]">{c.hex}</span>
+                      <span className="text-xs font-mono font-bold text-fg-2">{c.hex}</span>
                     </div>
                     <span className="text-xs text-neutral-400 font-sans leading-snug">{c.role}</span>
                     <div className="mt-2 pt-2 border-t border-[#27272F] flex items-center justify-between text-[0.65rem] font-bold">
@@ -312,7 +316,7 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
 
             {/* Tabela de Contraste WCAG 2.1 */}
             <Card variant="dark" className="overflow-x-auto p-6">
-              <h3 className="font-display font-black text-lg uppercase text-[#FF701A] mb-4">
+              <h3 className="font-display font-black text-lg uppercase text-fg-2 mb-4">
                 Matriz Canônica de Contraste e Acessibilidade (WCAG 2.1)
               </h3>
               <table className="w-full text-left text-xs font-sans">
@@ -334,8 +338,8 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
                   <tr>
                     <td className="py-3 font-bold text-[#FF701A]">Caramel Orange (#FF701A) sobre Ink Black</td>
                     <td className="py-3 font-mono text-[#FF701A]">6.86:1</td>
-                    <td className="py-3"><Badge color="caramel" size="sm">AA</Badge></td>
-                    <td className="py-3 text-neutral-300">Botões de ação principal (CTAs), marcações e destaques de seção.</td>
+                    <td className="py-3"><Badge color="spectrum" size="sm">AA</Badge></td>
+                    <td className="py-3 text-neutral-300">Cor da paleta; combinar com os outros canais nos elementos de assinatura.</td>
                   </tr>
                   <tr>
                     <td className="py-3 font-bold text-[#25BFFF]">Electric Sky (#25BFFF) sobre Ink Black</td>
@@ -378,15 +382,15 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
 
             {/* As 3 Vozes em Destaque */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card variant="dark" className="border-t-4 border-t-[#FF701A]">
-                <Badge color="caramel" className="mb-3">Voz 1 — Grotesca Pesada</Badge>
+              <Card variant="dark" className="border-t-4 border-t-cream/50">
+                <Badge color="spectrum" className="mb-3">Voz 1 — Grotesca Pesada</Badge>
                 <h3 className="font-display font-black text-2xl uppercase tracking-tight text-[#FFF4E8] mb-2">
                   PRESENÇA DE CARTAZ
                 </h3>
                 <Text size="sm" variant="muted">
                   Pesos Heavy e Black, entrelinha compacta (leading 0.90-1.05). Usada em Wordmarks, títulos de cena, números dramáticos e CTAs principais.
                 </Text>
-                <div className="mt-4 p-3 bg-[#141419] border border-[#27272F] text-xs font-mono text-[#FF701A]">
+                <div className="mt-4 p-3 bg-[#141419] border border-[#27272F] text-xs font-mono text-fg-2">
                   font-display font-black uppercase
                 </div>
               </Card>
@@ -429,7 +433,7 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
                 {typographyScale.map((t, i) => (
                   <div key={i} className="py-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                     <div className="w-64 flex-shrink-0">
-                      <div className="font-display font-black text-sm uppercase text-[#FF701A]">{t.name}</div>
+                      <div className="font-display font-black text-sm uppercase text-fg-2">{t.name}</div>
                       <div className="text-xs text-neutral-400 font-mono mt-0.5">{t.size} • {t.weight}</div>
                       <div className="text-[0.65rem] text-neutral-500 font-sans">{t.voice}</div>
                     </div>
@@ -465,7 +469,7 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
                 <Eyebrow color="pink">04. Espaçamento & Ritmo</Eyebrow>
                 <DisplayHeading as="h2" size="md">Régua Editorial de Espaçamento</DisplayHeading>
               </div>
-              <HandwrittenNote color="caramel" rotate="1">
+              <HandwrittenNote color="spectrum" rotate="1">
                 proporção matemática com respiração humana
               </HandwrittenNote>
             </div>
@@ -479,10 +483,10 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
                 <div
                   key={s.token}
                   onClick={() => copyToClipboard(`p-${s.token} / gap-${s.token}`, s.token)}
-                  className="p-4 bg-[#18181D] border-2 border-[#27272F] flex items-center justify-between gap-4 cursor-pointer hover:border-[#FF701A] transition-all select-none"
+                  className="p-4 bg-[#18181D] border-2 border-[#27272F] flex items-center justify-between gap-4 cursor-pointer hover:border-line-strong transition-all select-none"
                 >
                   <div className="flex items-center gap-4">
-                    <span className="w-10 font-mono font-black text-sm text-[#FF701A]">p-{s.token}</span>
+                    <span className="w-10 font-mono font-black text-sm text-fg-2">p-{s.token}</span>
                     <div className="flex flex-col">
                       <span className="text-xs font-bold text-[#FFF4E8]">{s.px} ({s.rem})</span>
                       <span className="text-[0.65rem] text-neutral-400">{s.use}</span>
@@ -491,7 +495,7 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
 
                   {/* Barra Visual */}
                   <div
-                    className="h-6 bg-[#FF701A] border border-[#101014] flex-shrink-0"
+                    className="h-6 bg-[image:var(--cm-spectrum-soft)] border border-[#101014] flex-shrink-0"
                     style={{ width: s.px === '4px' ? '8px' : s.px }}
                   />
                 </div>
@@ -534,7 +538,7 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
                   </div>
 
                   <div className="mt-3">
-                    <span className="font-display font-bold text-xs uppercase text-[#FF701A] block">{sh.name}</span>
+                    <span className="font-display font-bold text-xs uppercase text-fg-2 block">{sh.name}</span>
                     <span className="text-[0.65rem] text-neutral-400 block mt-0.5">{sh.role}</span>
                     <span className="text-[0.60rem] font-mono text-neutral-500 block mt-1">{sh.css}</span>
                   </div>
@@ -551,7 +555,7 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
           <section id="textures" className="flex flex-col gap-8">
             <div className="flex items-baseline justify-between border-b-2 border-[#27272F] pb-4">
               <div>
-                <Eyebrow color="caramel">06. Textura & Matéria</Eyebrow>
+                <Eyebrow color="spectrum">06. Textura & Matéria</Eyebrow>
                 <DisplayHeading as="h2" size="md">Linguagem Tátil: Halftone, Grain & Misregistration</DisplayHeading>
               </div>
               <HandwrittenNote color="sky" rotate="1">
@@ -564,13 +568,13 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
               <HalftoneOverlay density="normal">
                 <Card variant="dark" className="flex flex-col justify-between h-full">
                   <div>
-                    <Badge color="caramel" className="mb-3">Halftone / Ben-Day</Badge>
+                    <Badge color="spectrum" className="mb-3">Halftone / Ben-Day</Badge>
                     <h3 className="font-display font-black text-xl uppercase mb-2">Retícula Pontilhada</h3>
                     <Text size="sm" variant="muted">
                       Simula as retículas de impressão de quadrinhos clássicos e cartazes urbanos em sombras e fundos escuros.
                     </Text>
                   </div>
-                  <div className="mt-4 p-3 bg-[#101014] border border-[#27272F] text-xs font-mono text-[#FF701A]">
+                  <div className="mt-4 p-3 bg-[#101014] border border-[#27272F] text-xs font-mono text-fg-2">
                     &lt;HalftoneOverlay density="normal"&gt;
                   </div>
                 </Card>
@@ -633,9 +637,9 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
                 <span className="text-xs font-bold uppercase tracking-wider text-neutral-400">
                   Teste o Hover e o Clique no Contêiner Abaixo:
                 </span>
-                <LayerSplit accentColor="caramel">
+                <LayerSplit accentColor="spectrum">
                   <div className="flex items-center justify-between mb-3">
-                    <Badge color="caramel">Física Canônica</Badge>
+                    <Badge color="spectrum">Física Canônica</Badge>
                     <HandwrittenNote color="yellow" rotate="-2">passe o mouse!</HandwrittenNote>
                   </div>
                   <h3 className="font-display font-black text-2xl uppercase mb-2">
@@ -651,7 +655,7 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
               {/* Especificação das Curvas de Movimento */}
               <Card variant="dark" className="p-6 flex flex-col justify-between">
                 <div>
-                  <h3 className="font-display font-black text-lg uppercase text-[#FF701A] mb-4">
+                  <h3 className="font-display font-black text-lg uppercase text-fg-2 mb-4">
                     Curvas de Easing Oficiais
                   </h3>
                   <div className="flex flex-col gap-3 text-xs font-mono">
@@ -660,7 +664,7 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
                       <span className="block text-[0.65rem] text-neutral-400 mt-0.5">Resposta imediata e tátil em botões.</span>
                     </div>
                     <div className="p-3 bg-[#141419] border border-[#27272F]">
-                      <span className="text-[#FF701A] font-bold">snap:</span> cubic-bezier(0.16, 1, 0.3, 1)
+                      <span className="text-fg-2 font-bold">snap:</span> cubic-bezier(0.16, 1, 0.3, 1)
                       <span className="block text-[0.65rem] text-neutral-400 mt-0.5">Física mecânica em toggles e abas.</span>
                     </div>
                     <div className="p-3 bg-[#141419] border border-[#27272F]">
@@ -681,7 +685,7 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
           <section id="brand" className="flex flex-col gap-8">
             <div className="flex items-baseline justify-between border-b-2 border-[#27272F] pb-4">
               <div>
-                <Eyebrow color="caramel">08. Marca & Assinaturas</Eyebrow>
+                <Eyebrow color="spectrum">08. Marca & Assinaturas</Eyebrow>
                 <DisplayHeading as="h2" size="md">Wordmarks e Hierarquia de Lockups</DisplayHeading>
               </div>
             </div>
@@ -694,9 +698,9 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
               </Card>
 
               <Card variant="dark" className="p-6 flex flex-col justify-between">
-                <span className="text-xs font-bold uppercase text-neutral-400 mb-4">Wordmark Caramel Orange (Assinatura)</span>
-                <Wordmark size="lg" variant="caramel" />
-                <span className="text-[0.65rem] text-neutral-500 mt-4">Assinatura de alto impacto</span>
+                <span className="text-xs font-bold uppercase text-neutral-400 mb-4">Isotipo — assinatura combinada</span>
+                <Isotype size={144} interactive />
+                <a href="/caramelo/brand/isotipo.svg" download className="mt-4 text-xs text-cream underline underline-offset-4">Baixar SVG vetorial</a>
               </Card>
 
               <Card variant="light" className="p-6 flex flex-col justify-between">
@@ -709,7 +713,7 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
             {/* Hierarquia de Lockups */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="p-5 bg-[#18181D] border-2 border-[#27272F]">
-                <Badge color="caramel" size="sm" className="mb-3">1. Institucional</Badge>
+                <Badge color="spectrum" size="sm" className="mb-3">1. Institucional</Badge>
                 <Lockup type="institucional" size="sm" variant="cream" />
               </div>
               <div className="p-5 bg-[#18181D] border-2 border-[#27272F]">
@@ -735,7 +739,7 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
           <section id="buttons" className="flex flex-col gap-8">
             <div className="flex items-baseline justify-between border-b-2 border-[#27272F] pb-4">
               <div>
-                <Eyebrow color="caramel">09. Botões & Ações</Eyebrow>
+                <Eyebrow color="spectrum">09. Botões & Ações</Eyebrow>
                 <DisplayHeading as="h2" size="md">Botões Cinéticos & Estados Interativos</DisplayHeading>
               </div>
               <HandwrittenNote color="sky" rotate="1">
@@ -746,7 +750,7 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
             {/* Variantes Principais */}
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
               <div className="p-4 bg-[#18181D] border border-[#27272F] flex flex-col gap-2">
-                <span className="text-xs text-neutral-400 font-bold uppercase">Primary (Caramel)</span>
+                <span className="text-xs text-neutral-400 font-bold uppercase">Primary (espectro combinado)</span>
                 <Button variant="primary">Ação Principal</Button>
               </div>
 
@@ -773,7 +777,7 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
 
             {/* Tamanhos e Estados */}
             <Card variant="dark" className="p-6 flex flex-col gap-6">
-              <h3 className="font-display font-black text-base uppercase text-[#FF701A]">
+              <h3 className="font-display font-black text-base uppercase text-fg-2">
                 Tamanhos, Ícones e Estados Desabilitados
               </h3>
 
@@ -847,7 +851,7 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
                   <Toggle
                     checked={toggleActive}
                     onChange={setToggleActive}
-                    accentColor="caramel"
+                    accentColor="spectrum"
                     label="Ativar Separação de Camadas (Movement)"
                     description="Permite que a interface responda ao gesto do usuário"
                   />
@@ -865,8 +869,8 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
                   <Checkbox
                     checked={checkboxChecked}
                     onChange={(e) => setCheckboxChecked(e.target.checked)}
-                    accentColor="caramel"
-                    label="Concordo com a regra de 1 acento dominante por cena"
+                    accentColor="spectrum"
+                    label="Combinar as cores da marca com contraste e intenção"
                     description="Princípio de disciplina cromática do Manual V1 2026"
                   />
                 </div>
@@ -893,7 +897,7 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <Card variant="dark" halftone interactive>
                 <div className="flex items-center justify-between mb-3">
-                  <Badge color="caramel">Superfície Escura</Badge>
+                  <Badge color="spectrum">Superfície Escura</Badge>
                   <span className="text-xs font-mono text-neutral-500">Ink Surface</span>
                 </div>
                 <h4 className="font-display font-black text-xl uppercase mb-2">Painel Cinematográfico</h4>
@@ -916,11 +920,11 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
               <Card variant="accent" interactive>
                 <div className="flex items-center justify-between mb-3">
                   <Badge color="yellow">Acento de Destaque</Badge>
-                  <span className="text-xs font-mono text-[#FF701A]">Caramel Edge</span>
+                  <span className="text-xs font-mono text-fg-2">Spectrum Edge</span>
                 </div>
                 <h4 className="font-display font-black text-xl uppercase mb-2">Momento Crítico</h4>
                 <p className="text-sm text-neutral-300">
-                  Borda e sombra em Caramel Orange (#FF701A) para sinalizar conversão ou encerramento.
+                  As cinco cores se encontram na borda e na resposta do card, mantendo o conteúdo sobre uma base legível.
                 </p>
               </Card>
             </div>
@@ -940,7 +944,7 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
             </div>
 
             <div className="flex flex-col gap-4">
-              <Alert variant="caramel" badge="Assinatura" title="Experiência em Produção">
+              <Alert variant="spectrum" badge="Assinatura" title="Experiência em Produção">
                 Este sistema foi concebido para o ecossistema Um Cara Caramelo. Toda peça gerada deve carregar intenção e contraste.
               </Alert>
 
@@ -966,7 +970,7 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
           <section id="dodont" className="flex flex-col gap-8">
             <div className="flex items-baseline justify-between border-b-2 border-[#27272F] pb-4">
               <div>
-                <Eyebrow color="caramel">13. Critérios Canônicos</Eyebrow>
+                <Eyebrow color="spectrum">13. Critérios Canônicos</Eyebrow>
                 <DisplayHeading as="h2" size="md">O que Fazer vs O que NUNCA Fazer</DisplayHeading>
               </div>
               <HandwrittenNote color="pink" rotate="-1">
@@ -980,7 +984,7 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
                 <Badge color="sky">DO (Correto)</Badge>
                 <h4 className="font-display font-black text-lg uppercase text-[#FFF4E8]">Práticas Canônicas</h4>
                 <ul className="text-xs text-neutral-300 font-sans space-y-2 list-disc list-inside">
-                  <li>Usar apenas <strong>1 cor de destaque elétrico dominante por cena</strong>.</li>
+                  <li>Combinar <strong>as cinco cores da marca</strong> em luz, blur, movimento líquido e glitch de interação.</li>
                   <li>Usar sombras gráficas sólidas (hard-edge) com deslocamento visível.</li>
                   <li>Limitar a fonte manuscrita a observações curtas, provocações e setas.</li>
                   <li>Garantir resposta tátil no clique de botões (active translate).</li>
@@ -995,7 +999,7 @@ function PrintCatalog({ onSwitchToLumen }: { onSwitchToLumen: () => void }) {
                 <h4 className="font-display font-black text-lg uppercase text-[#FFF4E8]">Erros Clichês</h4>
                 <ul className="text-xs text-neutral-300 font-sans space-y-2 list-disc list-inside">
                   <li><strong>NUNCA</strong> usar sombras borradas corporativas (soft drop-shadows).</li>
-                  <li><strong>NUNCA</strong> misturar múltiplas cores elétricas na mesma tela sem motivo.</li>
+                  <li>Evitar misturas que comprometam a leitura e o reconhecimento dos estados.</li>
                   <li><strong>NUNCA</strong> aplicar fonte manuscrita em botões, preços ou parágrafos longos.</li>
                   <li><strong>NUNCA</strong> criar efeitos de movimento sem saber qual resposta eles provocam.</li>
                   <li><strong>NUNCA</strong> transformar o alter ego Caramelo em um mascote corporativo solto.</li>

@@ -4,15 +4,16 @@ import { cn } from '../../utils/cn';
 export interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {
   label?: string;
   description?: string;
-  accentColor?: 'caramel' | 'sky' | 'pink' | 'yellow';
+  accentColor?: 'spectrum' | 'caramel' | 'sky' | 'pink' | 'yellow';
 }
 
 export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
-  ({ label, description, accentColor = 'caramel', className, id, disabled, ...props }, ref) => {
+  ({ label, description, accentColor = 'spectrum', className, id, disabled, ...props }, ref) => {
     const generatedId = React.useId();
     const inputId = id ?? generatedId;
 
     const accentBorder = {
+      spectrum: 'checked:bg-[image:var(--cm-spectrum-soft)] checked:border-[#FFF4E8]/60 focus-visible:ring-[rgb(var(--cm-focus))]',
       caramel: 'checked:bg-[#FF701A] checked:border-[#FF701A] focus-visible:ring-[#FF701A]',
       sky: 'checked:bg-[#25BFFF] checked:border-[#25BFFF] focus-visible:ring-[#25BFFF]',
       pink: 'checked:bg-[#FF3D8D] checked:border-[#FF3D8D] focus-visible:ring-[#FF3D8D]',
@@ -28,7 +29,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
             type="checkbox"
             disabled={disabled}
             className={cn(
-              'appearance-none w-5 h-5 bg-[#141419] border-2 border-[#27272F] cursor-pointer',
+              'peer appearance-none w-5 h-5 bg-[#141419] border-2 border-[#27272F] cursor-pointer',
               'transition-all duration-150 ease-kinetic shadow-[2px_2px_0px_#101014]',
               'hover:border-[#FFF4E8] active:translate-x-[1px] active:translate-y-[1px]',
               'focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1',

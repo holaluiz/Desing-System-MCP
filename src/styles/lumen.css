@@ -1,8 +1,8 @@
 /**
  * Material LUMEN — Um Cara Caramelo (V2 2026)
- * Superfícies escuras com aresta de luz, hairlines de 1px e glow Caramel.
+ * Superfícies com aresta de luz, hairlines de 1px e mistura cromática da marca.
  * Tudo baseado em papéis semânticos (--cm-*): funciona nos dois temas
- * e com qualquer acento de cena (data-cm-accent).
+ * com a paleta combinada nos gestos expressivos de interação.
  */
 
 /* =====================================================================
@@ -29,7 +29,7 @@
   background-size: 18px 18px;
 }
 
-/* Luz ambiente Caramel (golden hour) atrás do conteúdo */
+/* Luz ambiente com a paleta combinada atrás do conteúdo */
 .cm-ambient { position: relative; isolation: isolate; }
 .cm-ambient::before {
   content: "";
@@ -39,8 +39,11 @@
   height: 70%;
   pointer-events: none;
   background:
-    radial-gradient(40% 50% at 30% 40%, rgb(var(--cm-accent) / 0.32), transparent 70%),
-    radial-gradient(30% 40% at 75% 30%, rgb(var(--cm-accent-bright) / 0.18), transparent 70%);
+    radial-gradient(35% 50% at 18% 40%, #FF701A38, transparent 70%),
+    radial-gradient(30% 40% at 78% 24%, #25BFFF2E, transparent 70%),
+    radial-gradient(35% 45% at 67% 66%, #FF3D8D29, transparent 70%),
+    radial-gradient(40% 50% at 42% 46%, #7657FF33, transparent 70%),
+    radial-gradient(28% 40% at 28% 76%, #FFD52A24, transparent 70%);
   filter: blur(60px);
 }
 
@@ -104,8 +107,8 @@
   width: 8px;
   height: 8px;
   border-radius: 2px;
-  background: rgb(var(--cm-accent));
-  box-shadow: 0 0 10px rgb(var(--cm-accent) / 0.7);
+  background: var(--cm-spectrum-gradient);
+  box-shadow: var(--cm-spectrum-glow);
 }
 .cm-dot--pulse { animation: cm-pulse 1.8s var(--cm-ease-standard) infinite; }
 
@@ -141,8 +144,8 @@
 .cm-surface--3 { background: rgb(var(--cm-surface-3)); }
 .cm-surface--sunken { background: rgb(var(--cm-stage)); box-shadow: var(--cm-pressed); }
 .cm-surface--glow {
-  border-color: rgb(var(--cm-accent) / 0.35);
-  box-shadow: var(--cm-elev-2), 0 10px 40px -12px rgb(var(--cm-accent) / 0.45);
+  border-color: rgb(var(--cm-line-strong));
+  box-shadow: var(--cm-elev-2), var(--cm-spectrum-glow);
 }
 
 .cm-surface--interactive {
@@ -169,13 +172,23 @@
 .cm-surface--spotlight::before {
   inset: 0;
   z-index: -1;
-  background: radial-gradient(420px circle at var(--mx) var(--my), rgb(var(--cm-fg) / 0.07), transparent 45%);
+  background:
+    radial-gradient(300px circle at calc(var(--mx) - 65px) var(--my), #FF701A1F, transparent 60%),
+    radial-gradient(280px circle at calc(var(--mx) + 65px) var(--my), #25BFFF1F, transparent 60%),
+    radial-gradient(260px circle at var(--mx) calc(var(--my) + 55px), #FF3D8D1A, transparent 60%),
+    radial-gradient(300px circle at var(--mx) var(--my), #7657FF1F, transparent 60%),
+    radial-gradient(240px circle at var(--mx) calc(var(--my) - 55px), #FFD52A14, transparent 60%);
 }
 .cm-surface--spotlight::after {
   inset: -1px;
   z-index: 1;
   padding: 1px;
-  background: radial-gradient(240px circle at var(--mx) var(--my), rgb(var(--cm-accent) / 0.6), transparent 45%);
+  background:
+    radial-gradient(220px circle at calc(var(--mx) - 60px) var(--my), #FF701AA6, transparent 55%),
+    radial-gradient(220px circle at calc(var(--mx) + 60px) var(--my), #25BFFFA6, transparent 55%),
+    radial-gradient(200px circle at var(--mx) calc(var(--my) + 45px), #FF3D8D99, transparent 55%),
+    radial-gradient(220px circle at var(--mx) var(--my), #7657FF99, transparent 55%),
+    radial-gradient(200px circle at var(--mx) calc(var(--my) - 45px), #FFD52A99, transparent 55%);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
@@ -183,6 +196,9 @@
 }
 .cm-surface--spotlight:hover::before,
 .cm-surface--spotlight:hover::after,
+.cm-surface--spotlight:focus-within::before,
+.cm-surface--spotlight:focus-visible::before,
+.cm-surface--spotlight:focus-visible::after,
 .cm-surface--spotlight:focus-within::after { opacity: 1; }
 
 /* =====================================================================
@@ -193,8 +209,8 @@
   --cm-btn-bg: rgb(var(--cm-surface-2));
   --cm-btn-fg: rgb(var(--cm-fg));
   --cm-btn-line: rgb(var(--cm-line));
-  --cm-btn-fill: rgb(var(--cm-accent));
-  --cm-btn-fill-fg: rgb(var(--cm-accent-contrast));
+  --cm-btn-fill: var(--cm-spectrum-soft);
+  --cm-btn-fill-fg: #101014;
   position: relative;
   isolation: isolate;
   display: inline-flex;
@@ -235,11 +251,11 @@
 .cm-btn--block { display: flex; width: 100%; }
 
 .cm-btn--accent {
-  --cm-btn-bg: rgb(var(--cm-accent));
-  --cm-btn-fg: rgb(var(--cm-accent-contrast));
+  --cm-btn-bg: #101014;
+  --cm-btn-fg: #FFF4E8;
   --cm-btn-line: transparent;
-  --cm-btn-fill: rgb(var(--cm-fg));
-  --cm-btn-fill-fg: rgb(var(--cm-stage));
+  --cm-btn-fill: var(--cm-spectrum-soft);
+  --cm-btn-fill-fg: #101014;
   box-shadow: var(--cm-highlight), 0 1px 2px rgb(0 0 0 / 0.4);
 }
 .cm-btn--accent:hover { border-color: transparent; box-shadow: var(--cm-glow-sm); }
@@ -331,7 +347,12 @@
 .cm-glow-btn::before {
   inset: -2px;
   padding: 2px;
-  background: radial-gradient(90px circle at var(--mx) var(--my), rgb(var(--cm-accent-bright)), rgb(var(--cm-accent)) 30%, transparent 70%);
+  background:
+    radial-gradient(100px circle at calc(var(--mx) - 28px) var(--my), #FF701A, transparent 68%),
+    radial-gradient(100px circle at calc(var(--mx) + 28px) var(--my), #25BFFF, transparent 68%),
+    radial-gradient(90px circle at var(--mx) calc(var(--my) + 22px), #FF3D8D, transparent 68%),
+    radial-gradient(90px circle at var(--mx) var(--my), #7657FF, transparent 68%),
+    radial-gradient(90px circle at var(--mx) calc(var(--my) - 22px), #FFD52A, transparent 68%);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
@@ -341,7 +362,12 @@
 .cm-glow-btn::after {
   inset: -14px;
   z-index: -1;
-  background: radial-gradient(110px circle at calc(var(--mx) + 14px) calc(var(--my) + 14px), rgb(var(--cm-accent) / 0.75), transparent 65%);
+  background:
+    radial-gradient(110px circle at calc(var(--mx) - 32px) var(--my), #FF701A70, transparent 65%),
+    radial-gradient(110px circle at calc(var(--mx) + 32px) var(--my), #25BFFF70, transparent 65%),
+    radial-gradient(100px circle at var(--mx) calc(var(--my) + 25px), #FF3D8D60, transparent 65%),
+    radial-gradient(110px circle at var(--mx) var(--my), #7657FF60, transparent 65%),
+    radial-gradient(100px circle at var(--mx) calc(var(--my) - 25px), #FFD52A50, transparent 65%);
   filter: blur(12px);
 }
 .cm-glow-btn:hover::before,
@@ -433,9 +459,9 @@
   top: auto;
   bottom: -1px;
   height: 2px;
-  background: rgb(var(--cm-accent));
+  background: var(--cm-spectrum-gradient);
   border-radius: 2px;
-  box-shadow: 0 0 12px rgb(var(--cm-accent) / 0.65);
+  box-shadow: var(--cm-spectrum-glow);
 }
 .cm-tabs--underline .cm-tabs__indicator::after { display: none; }
 
@@ -581,7 +607,7 @@
   border-radius: var(--cm-radius-md);
   box-shadow: var(--cm-highlight);
   outline: none;
-  caret-color: rgb(var(--cm-accent));
+  caret-color: rgb(var(--cm-fg));
   transition:
     border-color var(--cm-dur-micro) var(--cm-ease-standard),
     background-color var(--cm-dur-micro) var(--cm-ease-standard),
@@ -593,8 +619,8 @@
 .cm-field__input:hover { border-color: rgb(var(--cm-line-strong)); }
 .cm-field__input:focus {
   background: rgb(var(--cm-surface-2));
-  border-color: rgb(var(--cm-accent) / 0.75);
-  box-shadow: 0 0 0 3px rgb(var(--cm-accent) / 0.16), var(--cm-highlight);
+  border-color: rgb(var(--cm-fg) / 0.65);
+  box-shadow: var(--cm-spectrum-glow), var(--cm-highlight);
 }
 .cm-field__label {
   position: absolute;
@@ -610,7 +636,7 @@
 }
 .cm-field__input:focus + .cm-field__label,
 .cm-field__input:not(:placeholder-shown) + .cm-field__label { transform: translateY(-9px) scale(0.78); color: rgb(var(--cm-fg-muted)); }
-.cm-field__input:focus + .cm-field__label { color: rgb(var(--cm-accent-ink)); }
+.cm-field__input:focus + .cm-field__label { color: rgb(var(--cm-fg)); }
 
 /* Traço de luz que percorre o topo no foco */
 .cm-field__beam {
@@ -620,7 +646,7 @@
   top: 0;
   height: 1px;
   pointer-events: none;
-  background: linear-gradient(90deg, transparent, rgb(var(--cm-accent-bright)), transparent);
+  background: var(--cm-spectrum-gradient);
   transform: scaleX(0);
   opacity: 0;
   transition:
@@ -673,7 +699,7 @@
 }
 .cm-scrub:hover { border-color: rgb(var(--cm-line-strong)); }
 .cm-scrub:focus-within,
-.cm-scrub[data-scrubbing] { border-color: rgb(var(--cm-accent) / 0.75); box-shadow: 0 0 0 3px rgb(var(--cm-accent) / 0.16), var(--cm-highlight); }
+.cm-scrub[data-scrubbing] { border-color: rgb(var(--cm-fg) / 0.65); box-shadow: var(--cm-spectrum-glow), var(--cm-highlight); }
 .cm-scrub__handle {
   display: flex;
   align-items: center;
@@ -708,8 +734,8 @@
   bottom: 0;
   height: 2px;
   width: calc(var(--cm-scrub-p) * 100%);
-  background: rgb(var(--cm-accent));
-  box-shadow: 0 0 8px rgb(var(--cm-accent) / 0.6);
+  background: var(--cm-spectrum-gradient);
+  box-shadow: var(--cm-spectrum-glow);
   opacity: 0;
   transition: opacity var(--cm-dur-micro) var(--cm-ease-standard);
   pointer-events: none;

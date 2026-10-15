@@ -1,0 +1,350 @@
+/**
+ * Expressão cromática — Um Cara Caramelo
+ * As cinco cores formam um único gesto: mistura, luz e glitch de interação.
+ * Os tokens de cor individuais continuam disponíveis para usos semânticos.
+ */
+
+:root,
+[data-caramelo-theme="dark"] {
+  --cm-spectrum: linear-gradient(110deg, #FF701A 0%, #FF3D8D 24%, #7657FF 48%, #25BFFF 72%, #FFD52A 100%);
+  --cm-spectrum-gradient: var(--cm-spectrum);
+  --cm-spectrum-vertical: linear-gradient(180deg, #FF701A 0%, #FF3D8D 24%, #7657FF 48%, #25BFFF 72%, #FFD52A 100%);
+  --cm-spectrum-soft: linear-gradient(110deg, #FFAE7B 0%, #FF8FBD 24%, #B6A5FF 48%, #8ADEFF 72%, #FFE889 100%);
+  --cm-spectrum-glow: 0 0 16px #FF701A26, 5px 0 22px #FF3D8D22, -5px 0 22px #25BFFF22, 0 5px 24px #7657FF20, 0 -3px 18px #FFD52A1A;
+  --cm-spectrum-glow-strong: -6px 0 22px #FF701A45, 6px 0 22px #25BFFF45, 0 6px 26px #FF3D8D3D, 0 0 32px #7657FF40, 0 -6px 24px #FFD52A33;
+  --cm-spectrum-print: 0.8px 0.8px 0 #FF701A, 1.6px 1.6px 0 #FF3D8D, 2.4px 2.4px 0 #7657FF, 3.2px 3.2px 0 #25BFFF, 4px 4px 0 #FFD52A;
+  --cm-spectrum-text-image: var(--cm-spectrum-soft);
+  --cm-spectrum-text-color: transparent;
+}
+
+[data-caramelo-theme="light"],
+.theme-caramelo-cream {
+  --cm-spectrum-text-image: none;
+  --cm-spectrum-text-color: rgb(var(--cm-fg));
+}
+
+/* Um único indicador da paleta, sem estados de seleção por cor. */
+.cm-spectrum-swatch {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: 42px;
+  height: 14px;
+  overflow: hidden;
+  vertical-align: middle;
+  border: 1px solid rgb(var(--cm-fg) / 0.22);
+  border-radius: var(--cm-radius-pill);
+  background: var(--cm-spectrum);
+  box-shadow: inset 0 0 0 1px rgb(255 244 232 / 0.12), var(--cm-spectrum-glow);
+}
+
+.cm-spectrum-swatch::before {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  pointer-events: none;
+  background: var(--cm-spectrum);
+  filter: blur(5px);
+  opacity: 0.7;
+}
+
+/* Use em títulos grandes; o tema claro preserva o contraste com tinta. */
+.cm-spectrum-text {
+  color: rgb(var(--cm-fg));
+}
+
+.cm-spectrum-text[data-cm-spectrum-surface="dark"] {
+  color: #FFF4E8;
+}
+
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  .cm-spectrum-text {
+    background-image: var(--cm-spectrum-text-image, var(--cm-spectrum-soft));
+    background-size: 160% 100%;
+    background-position: 50% 50%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: var(--cm-spectrum-text-color, transparent);
+  }
+
+  .cm-spectrum-text[data-cm-spectrum-surface="dark"] {
+    background-image: var(--cm-spectrum-soft);
+    color: transparent;
+  }
+}
+
+.cm-spectrum-fill {
+  background-image: linear-gradient(#10101499, #10101499), var(--cm-spectrum);
+  background-size: 150% 150%;
+  background-position: 50% 50%;
+}
+
+/* A composição precisa de um ancestral posicionado com isolation: isolate. */
+.cm-liquid-field {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+  contain: paint;
+}
+
+.cm-liquid-field::before,
+.cm-liquid-field::after {
+  content: "";
+  position: absolute;
+  inset: -12%;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 15% 32%, #FF701A70 0%, transparent 44%),
+    radial-gradient(ellipse at 75% 24%, #25BFFF60 0%, transparent 44%),
+    radial-gradient(ellipse at 84% 75%, #FF3D8D60 0%, transparent 42%),
+    radial-gradient(ellipse at 43% 62%, #7657FF70 0%, transparent 46%),
+    radial-gradient(ellipse at 25% 88%, #FFD52A50 0%, transparent 40%);
+  filter: blur(38px);
+  opacity: 0.55;
+  animation: cm-liquid-drift 18s ease-in-out infinite alternate;
+}
+
+.cm-liquid-field::after {
+  opacity: 0.3;
+  transform: rotate(180deg) scale(1.06);
+  animation-name: cm-liquid-counter;
+  animation-duration: 24s;
+}
+
+/* O campo de tinta e o véu escuro mantêm todos os glifos legíveis. */
+.cm-chromatic-tile {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  color: #FFF4E8;
+  background: #101014;
+  text-shadow: 0 2px 14px #10101466;
+}
+
+.cm-chromatic-tile::before,
+.cm-chromatic-tile::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.cm-chromatic-tile::before {
+  z-index: -2;
+  inset: -15%;
+  background:
+    radial-gradient(ellipse at 8% 28%, #FF701A 0%, transparent 48%),
+    radial-gradient(ellipse at 76% 12%, #25BFFF 0%, transparent 46%),
+    radial-gradient(ellipse at 95% 68%, #FF3D8D 0%, transparent 48%),
+    radial-gradient(ellipse at 44% 72%, #7657FF 0%, transparent 50%),
+    radial-gradient(ellipse at 20% 100%, #FFD52A 0%, transparent 43%);
+  filter: blur(18px);
+  opacity: 0.92;
+  rotate: calc(var(--cm-chromatic-phase, 0) * 12deg);
+}
+
+.cm-chromatic-tile::after {
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(145deg, #10101499, #101014AD 48%, #10101499);
+}
+
+.cm-chromatic-tile:is(:hover, :focus-within)::before,
+:is(a, button):is(:hover, :focus-visible) .cm-chromatic-tile::before {
+  animation: cm-liquid-drift 5s ease-in-out alternate 2;
+}
+
+/* Um gesto curto; cinco ecos cromáticos acompanham o texto principal. */
+.cm-glitch {
+  position: relative;
+  display: inline-block;
+}
+
+.cm-glitch:is(:hover, :focus-visible),
+.cm-spectrum-trigger:is(:hover, :focus-visible) .cm-glitch,
+.cm-glitch[data-cm-glitch-active]:not([data-cm-glitch-active="false"]),
+[data-cm-glitch-active]:not([data-cm-glitch-active="false"]) .cm-glitch {
+  animation: cm-chromatic-glitch 400ms steps(1, end) 1;
+}
+
+.cm-spectrum-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65em;
+  padding: 0.9em 1.2em;
+  color: rgb(var(--cm-fg));
+  background: linear-gradient(rgb(var(--cm-surface-2)), rgb(var(--cm-surface-2))) padding-box, var(--cm-spectrum) border-box;
+  border: 1px solid transparent;
+  border-radius: var(--cm-radius-lg);
+  font: 600 0.875rem/1.2 var(--caramelo-font-sans);
+  cursor: pointer;
+  transition: box-shadow var(--cm-dur-quick) var(--cm-ease-out);
+}
+
+.cm-spectrum-trigger:hover {
+  box-shadow: var(--cm-spectrum-glow);
+}
+
+.cm-spectrum-trigger:focus-visible {
+  outline: 2px solid rgb(var(--cm-fg));
+  outline-offset: 4px;
+  box-shadow: var(--cm-spectrum-glow);
+}
+
+.cm-glitch:focus-visible {
+  outline: 2px solid rgb(var(--cm-fg));
+  outline-offset: 4px;
+}
+
+/* Cor combinada nos controles: o rótulo permanece sobre tinta uniforme. */
+.cm-btn {
+  --cm-btn-fill: var(--cm-spectrum-soft);
+  --cm-btn-fill-fg: #101014;
+}
+
+.cm-btn--accent {
+  --cm-btn-bg: #101014;
+  --cm-btn-fg: #FFF4E8;
+  --cm-btn-fill: var(--cm-spectrum-soft);
+  --cm-btn-fill-fg: #101014;
+  background: linear-gradient(#101014, #101014) padding-box, var(--cm-spectrum) border-box;
+  border-color: transparent;
+  box-shadow: inset 0 1px 0 #FFF4E80D, var(--cm-spectrum-glow);
+}
+
+.cm-btn--accent:hover,
+.cm-btn--accent:focus-visible {
+  border-color: transparent;
+  box-shadow: var(--cm-spectrum-glow);
+}
+
+.cm-btn--accent:focus-visible {
+  outline: 2px solid rgb(var(--cm-fg));
+  outline-offset: 3px;
+}
+
+.cm-btn__fill {
+  background: var(--cm-btn-fill);
+}
+
+.cm-btn--cream {
+  --cm-btn-fill: var(--cm-spectrum-soft);
+  --cm-btn-fill-fg: #101014;
+}
+
+.cm-btn--ghost {
+  --cm-btn-fill: rgb(var(--cm-surface-3));
+  --cm-btn-fill-fg: rgb(var(--cm-fg));
+}
+
+/* Aparência compartilhada para CTAs Print, Lumen e interfaces convertidas. */
+.cm-brand-action {
+  --cm-btn-bg: #FFF4E8;
+  --cm-btn-fg: #101014;
+  --cm-btn-fill: var(--cm-spectrum-soft);
+  --cm-btn-fill-fg: #101014;
+  color: #101014;
+  background: var(--cm-spectrum-soft);
+  border: 1px solid rgb(255 244 232 / 0.3);
+  box-shadow: inset 0 1px 0 #FFF4E84D, var(--cm-spectrum-glow);
+}
+
+.cm-brand-action:is(:hover, :focus-visible) {
+  color: #101014;
+  box-shadow: inset 0 1px 0 #FFF4E84D, var(--cm-spectrum-glow-strong);
+}
+
+.cm-brand-action:focus-visible {
+  outline: 2px solid rgb(var(--cm-fg));
+  outline-offset: 4px;
+}
+
+/* Texto pequeno em superfície neutra; a borda carrega as cinco cores. */
+.cm-brand-badge {
+  color: rgb(var(--cm-fg));
+  background: linear-gradient(rgb(var(--cm-surface-2)), rgb(var(--cm-surface-2))) padding-box, var(--cm-spectrum-gradient) border-box;
+  border: 1px solid transparent;
+}
+
+.cm-brand-meter {
+  background: var(--cm-spectrum-gradient);
+}
+
+/* Print preserva a aresta seca; apenas o afastamento dos ecos muda. */
+.cm-print-interactive {
+  --cm-print-step: 0.8px;
+  --cm-print-shadow:
+    var(--cm-print-step) var(--cm-print-step) 0 #FF701A,
+    calc(var(--cm-print-step) * 2) calc(var(--cm-print-step) * 2) 0 #FF3D8D,
+    calc(var(--cm-print-step) * 3) calc(var(--cm-print-step) * 3) 0 #7657FF,
+    calc(var(--cm-print-step) * 4) calc(var(--cm-print-step) * 4) 0 #25BFFF,
+    calc(var(--cm-print-step) * 5) calc(var(--cm-print-step) * 5) 0 #FFD52A;
+  box-shadow: var(--cm-print-shadow);
+}
+
+.cm-print-interactive:is(:hover, :focus-visible, :focus-within) {
+  --cm-print-step: 1.2px;
+  box-shadow: var(--cm-print-shadow);
+}
+
+.cm-print-interactive:active {
+  --cm-print-step: 0.4px;
+  box-shadow: var(--cm-print-shadow);
+}
+
+@keyframes cm-liquid-drift {
+  from { transform: translate3d(-2%, -1%, 0) rotate(-4deg) scale(1.04); }
+  to { transform: translate3d(3%, 2%, 0) rotate(5deg) scale(1.12); }
+}
+
+@keyframes cm-liquid-counter {
+  from { transform: translate3d(2%, -1%, 0) rotate(176deg) scale(1.06); }
+  to { transform: translate3d(-3%, 2%, 0) rotate(187deg) scale(1.14); }
+}
+
+@keyframes cm-chromatic-glitch {
+  0%, 100% { text-shadow: none; translate: 0; }
+  16% {
+    translate: -1px 0;
+    text-shadow: 3px 0 #FF701A, -3px 0 #25BFFF, 0 2px #FF3D8D, 1px -2px #7657FF, -1px 1px #FFD52A;
+  }
+  34% {
+    translate: 1px 0;
+    text-shadow: -2px 0 #FF701A, 3px 1px #25BFFF, 1px -1px #FF3D8D, -1px 2px #7657FF, 2px -2px #FFD52A;
+  }
+  56% {
+    translate: 0;
+    text-shadow: 1px 0 #FF701A99, -1px 0 #25BFFF99, 0 1px #FF3D8D99, 1px -1px #7657FF99, -1px 1px #FFD52A99;
+  }
+  78% { text-shadow: none; translate: 0; }
+}
+
+/* A paleta continua presente quando o usuário desativa movimento. */
+@media (prefers-reduced-motion: reduce) {
+  .cm-liquid-field::before,
+  .cm-liquid-field::after,
+  .cm-chromatic-tile::before,
+  .cm-glitch,
+  .cm-glitch:is(:hover, :focus-visible),
+  .cm-spectrum-trigger:is(:hover, :focus-visible) .cm-glitch,
+  .cm-glitch[data-cm-glitch-active],
+  [data-cm-glitch-active] .cm-glitch {
+    animation: none !important;
+    translate: none;
+  }
+
+  .cm-spectrum-trigger { transition: none; }
+}
+
+html[data-motion="off"] .cm-liquid-field::before,
+html[data-motion="off"] .cm-liquid-field::after,
+html[data-motion="off"] .cm-chromatic-tile::before,
+html[data-motion="off"] .cm-glitch,
+html[data-motion="off"] .cm-spectrum-trigger .cm-glitch {
+  animation: none !important;
+  translate: none;
+}

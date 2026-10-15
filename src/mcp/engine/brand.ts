@@ -14,7 +14,7 @@ export type UtilityKind = 'bg' | 'text' | 'line' | 'fill' | 'gradient' | 'placeh
 
 /** Paleta de marca (literal) para nearest-match e relatórios */
 export const BRAND_SWATCHES: Array<{ token: string; hex: string; role: string }> = [
-  { token: 'caramel', hex: colors.caramel.DEFAULT, role: 'Assinatura / CTA' },
+  { token: 'caramel', hex: colors.caramel.DEFAULT, role: 'Canal quente do espectro combinado' },
   { token: 'caramel-bright', hex: colors.caramel.bright, role: 'Hover luminoso' },
   { token: 'caramel-deep', hex: colors.caramel.deep, role: 'Texto acento (claro)' },
   { token: 'caramel-light', hex: colors.caramel.light, role: 'Fundo tingido (claro)' },
@@ -45,9 +45,9 @@ export function isBrandColor(c: RGB, tolerance = 2.5): boolean {
   return nearestBrand(c).deltaE <= tolerance;
 }
 
-/** Valor do papel semântico no tema escolhido (com o acento da cena aplicado) */
-export function roleHex(role: SemanticRole, theme: Polarity, accent: SceneAccent = 'caramel'): string {
-  if (accent !== 'caramel' && role.startsWith('accent')) {
+/** Valor do papel semântico no tema escolhido (com a cor funcional de base aplicada) */
+export function roleHex(role: SemanticRole, theme: Polarity, accent: SceneAccent = 'neutral'): string {
+  if (accent !== 'neutral' && role.startsWith('accent')) {
     const a = sceneAccents[accent][theme];
     const key = role === 'accent' ? 'accent' : (role.slice('accent-'.length) as 'bright' | 'ink' | 'soft' | 'contrast');
     return a[key as keyof typeof a];
@@ -129,7 +129,7 @@ export function neutralRole(kind: UtilityKind, shade: Shade, polarity: Polarity)
 
 export type ChromaRole = 'accent' | 'danger' | 'success' | 'warning' | 'info';
 
-/** Família cromática → papel (estratégia "unify": 1 acento dominante por cena) */
+/** Família cromática → papel sólido funcional (estratégia "unify"). Gradientes preservam o espectro. */
 export function chromaRole(family: Exclude<HueFamily, 'neutral'>, primary: HueFamily | null): ChromaRole {
   if (family === primary) return 'accent';
   switch (family) {
@@ -142,7 +142,7 @@ export function chromaRole(family: Exclude<HueFamily, 'neutral'>, primary: HueFa
     case 'blue':
       return 'info';
     default:
-      return 'accent'; // orange, violet, pink decorativos → acento da cena
+      return 'accent'; // preenchimentos sólidos decorativos → cor funcional de base
   }
 }
 

@@ -36,7 +36,7 @@ export const Divider: React.FC<DividerProps> = ({
   const lineStyles = {
     solid: 'border-t-2',
     dashed: 'border-t-2 border-dashed',
-    halftone: 'h-1 bg-[radial-gradient(#FF701A_1px,transparent_1px)] [background-size:6px_6px]',
+    halftone: 'h-1 bg-[radial-gradient(currentColor_1px,transparent_1px)] [background-size:6px_6px]',
   }[variant];
 
   return <div className={cn('w-full my-6', lineStyles, accentColor, className)} {...props} />;

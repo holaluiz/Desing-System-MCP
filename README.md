@@ -72,7 +72,9 @@ design-system/
 | **Acid Yellow** | `#FFD52A` | Acento Alta Visibilidade (Alertas, humor) | 13.38:1 (AAA) |
 
 > [!IMPORTANT]
-> **Regra Cromática Canônica:** Usar **apenas 1 cor de destaque dominante por cena**. A paleta inteira existe no sistema, mas nunca deve poluir simultaneamente a mesma peça.
+> **Assinatura cromática:** Caramel, Sky, Pink, Violet e Yellow formam **um espectro combinado da marca**. Sempre que a composição permitir, use as cinco juntas em luz difusa, blur, liquid motion e glitch acionado pela interação. Controle intensidade e área para preservar a leitura. Nenhuma cor isolada é principal. `accent` tem base neutra por padrão; cores individuais via `data-cm-accent` são opt-in. CTAs usam `cm-brand-action`, badges `cm-brand-badge` e barras `cm-brand-meter`. Signal Mint permanece exclusivo de sucesso.
+
+O glitch é feedback de gesto: `.cm-glitch` responde a hover e foco com um pulso de 400ms em steps, sem bloquear a ação. Com `prefers-reduced-motion`, mantenha a composição cromática estática. Gradientes multicolor são preservados pelo motor nas duas estratégias de transformação.
 
 ---
 
@@ -160,7 +162,7 @@ export default function Home() {
       {/* Tipografia em 3 vozes */}
       <div className="mt-8">
         <DisplayHeading size="xl">
-          LABORATÓRIO DE <span className="text-caramel">INTERAÇÃO</span>
+          LABORATÓRIO DE <span className="cm-spectrum-text">INTERAÇÃO</span>
         </DisplayHeading>
         
         <HandwrittenNote color="yellow" rotate="-2">
@@ -204,12 +206,12 @@ Este repositório também funciona como um **Servidor MCP nativo (v2)**: assiste
 ### Ferramentas MCP
 | Tool | O que faz |
 |---|---|
-| `transform_to_caramelo` | Converte JSX/TSX, HTML, Vue ou CSS. Cores viram **papéis semânticos** (funcionam nos dois temas e com qualquer acento de cena); temas por variáveis (shadcn, Bootstrap, MUI, Material 3, Chakra) recebem valores Caramelo **no mesmo formato**; sombras, raios e motion viram tokens; adiciona só a interação que falta (press 80ms, hover luminoso, foco Electric Sky, halo em campos, reduced-motion) e corrige a11y segura. Devolve nota de auditoria antes → depois, cada mudança por linha e o que exige decisão humana. Opções: `material` (lumen/print), `theme`, `accent`, `strategy` (unify/preserve). |
+| `transform_to_caramelo` | Converte JSX/TSX, HTML, Vue ou CSS. Cores sólidas viram **papéis semânticos**, e gradientes preservam o espectro combinado da marca; temas por variáveis (shadcn, Bootstrap, MUI, Material 3, Chakra) recebem valores Caramelo **no mesmo formato**; sombras, raios e motion viram tokens; adiciona só a interação que falta (press 80ms, hover luminoso, foco Electric Sky, halo em campos, reduced-motion) e corrige a11y segura. Devolve nota de auditoria antes → depois, cada mudança por linha e o que exige decisão humana. Opções: `material` (lumen/print), `theme`, `accent` (base funcional sólida), `strategy` (unify/preserve). |
 | `audit_ux_ui` | Nota 0–100 por categoria (acessibilidade, contraste, interação, motion, identidade, tipografia, UX), com contraste calculado por herança de fundo e achados por linha marcados como `auto` quando o transform resolve. |
 | `map_colors` | Cores de qualquer formato (hex, rgb, hsl, oklch, triplets shadcn) → tinta da marca mais próxima (ΔE OKLab), papel semântico equivalente e contraste. |
 | `check_contrast_wcag` | Contraste WCAG em qualquer formato; se falhar, sugere as tintas/papéis Caramelo mais próximos que passam. |
 | `list_interactions` / `get_interaction` | Catálogo de microinterações (problema de UX, quando usar/evitar, motion, a11y) e o código pronto: componente React + HTML com classes `cm-*` + JS mínimo. |
-| `get_design_tokens` | `json`, `css` (variáveis `--cm-*` com temas e acentos), `tailwind`, `semantic` ou `all`. |
+| `get_design_tokens` | `json`, `css` (variáveis `--cm-*` com temas, espectro e bases funcionais), `tailwind`, `semantic` ou `all`. |
 | `generate_caramelo_component` | Componentes prontos — Lumen (MagneticButton, Surface, FocusField, SpotlightTabs, GlideMenu, Reveal…) ou Print. |
 
 ### Recursos & Prompts
@@ -222,7 +224,8 @@ O mesmo motor está disponível para scripts e builds:
 import { transform, audit } from '@caramelo/design-system/engine';
 
 const before = audit(code);
-const { code: next, changes, manual } = transform(code, { material: 'lumen', accent: 'sky' });
+const { code: next, changes, manual } = transform(code, { material: 'lumen' });
+// Gradientes combinam as cores da marca; accent só altera a base de papéis sólidos.
 ```
 A vitrine (`npm run showcase`) traz um playground que roda o motor no navegador.
 

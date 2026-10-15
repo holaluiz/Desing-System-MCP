@@ -2,16 +2,17 @@ import React from 'react';
 import { cn } from '../../utils/cn';
 
 export interface LayerSplitProps extends React.HTMLAttributes<HTMLDivElement> {
-  accentColor?: 'caramel' | 'sky' | 'pink' | 'violet' | 'yellow';
+  accentColor?: 'spectrum' | 'caramel' | 'sky' | 'pink' | 'violet' | 'yellow';
 }
 
 export const LayerSplit: React.FC<LayerSplitProps> = ({
-  accentColor = 'caramel',
+  accentColor = 'spectrum',
   className,
   children,
   ...props
 }) => {
   const accentBg = {
+    spectrum: 'cm-spectrum-fill',
     caramel: 'bg-[#FF701A]',
     sky: 'bg-[#25BFFF]',
     pink: 'bg-[#FF3D8D]',

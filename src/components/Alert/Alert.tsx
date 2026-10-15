@@ -3,13 +3,13 @@ import { cn } from '../../utils/cn';
 import { HandwrittenNote } from '../Typography';
 
 export interface AlertProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: 'caramel' | 'sky' | 'pink' | 'yellow' | 'confession';
+  variant?: 'spectrum' | 'caramel' | 'sky' | 'pink' | 'yellow' | 'confession';
   title?: string;
   badge?: string;
 }
 
 export const Alert: React.FC<AlertProps> = ({
-  variant = 'caramel',
+  variant = 'spectrum',
   title,
   badge,
   className,
@@ -18,19 +18,21 @@ export const Alert: React.FC<AlertProps> = ({
   ...props
 }) => {
   const variantStyles = {
+    spectrum: 'cm-brand-badge',
     caramel: 'border-[#FF701A] bg-[#1F1F26] text-[#FFF4E8] shadow-[4px_4px_0px_#FF701A]',
     sky: 'border-[#25BFFF] bg-[#0A2533] text-[#FFF4E8] shadow-[4px_4px_0px_#25BFFF]',
     pink: 'border-[#FF3D8D] bg-[#330B1C] text-[#FFF4E8] shadow-[4px_4px_0px_#FF3D8D]',
     yellow: 'border-[#FFD52A] bg-[#332900] text-[#FFF4E8] shadow-[4px_4px_0px_#FFD52A]',
-    confession: 'border-[#FF701A] bg-[#18181D] text-[#FFF4E8] shadow-[4px_4px_0px_#FF3D8D]',
+    confession: 'cm-brand-badge',
   }[variant];
 
   const accentBadge = {
+    spectrum: 'cm-brand-badge',
     caramel: 'bg-[#FF701A] text-[#101014]',
     sky: 'bg-[#25BFFF] text-[#101014]',
     pink: 'bg-[#FF3D8D] text-[#FFF4E8]',
     yellow: 'bg-[#FFD52A] text-[#101014]',
-    confession: 'bg-[#FF3D8D] text-[#FFF4E8]',
+    confession: 'cm-brand-badge',
   }[variant];
 
   return (
@@ -60,7 +62,7 @@ export const Alert: React.FC<AlertProps> = ({
         </div>
 
         {variant === 'confession' && (
-          <HandwrittenNote color="yellow" rotate="-2" className="text-base">
+          <HandwrittenNote color="spectrum" rotate="-2" className="text-xl">
             confissão patética
           </HandwrittenNote>
         )}

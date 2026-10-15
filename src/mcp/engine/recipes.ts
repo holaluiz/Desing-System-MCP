@@ -26,6 +26,15 @@ document.querySelectorAll('.cm-glow-btn, .cm-surface--spotlight').forEach((el) =
 });`;
 
 export const recipes: Record<string, Recipe> = {
+  'chromatic-glitch': {
+    react: `<button type="button" className="cm-spectrum-trigger"><span className="cm-glitch">Explorar o lab</span></button>`,
+    html: `<button type="button" class="cm-spectrum-trigger"><span class="cm-glitch">Explorar o lab</span></button>`,
+    notes: [
+      'Importe styles.css: cm-glitch combina as cinco cores da marca em um pulso de 400ms com steps no hover e focus-visible.',
+      'O feedback não bloqueia o clique; preserve o rótulo legível e o anel de foco.',
+      'A borda espectral continua presente com prefers-reduced-motion; o glitch fica sem deslocamento nem animação.',
+    ],
+  },
   'magnetic-fill': {
     react: `import { MagneticButton, IconArrowRight } from '@caramelo/design-system';
 
@@ -194,7 +203,7 @@ import { Home, Search, Bell } from 'lucide-react';
 
 <Surface as="article" spotlight interactive className="p-6">
   <h3 className="font-display text-lg">Tokens semânticos</h3>
-  <p className="text-fg-muted">Um código, dois temas, cinco acentos.</p>
+  <p className="text-fg-muted">Um código, dois temas, cinco cores em uma assinatura.</p>
 </Surface>`,
     html: `<article class="cm-surface cm-surface--spotlight cm-surface--interactive" style="padding:24px">…</article>`,
     js: POINTER_JS,
@@ -229,8 +238,8 @@ document.querySelectorAll('.cm-reveal').forEach((el) => io.observe(el));`,
   'layer-split': {
     react: `import { LayerSplit, Eyebrow } from '@caramelo/design-system';
 
-<LayerSplit accentColor="caramel" className="max-w-md">
-  <Eyebrow color="caramel">Princípio de movimento</Eyebrow>
+<LayerSplit className="max-w-md">
+  <Eyebrow>Princípio de movimento</Eyebrow>
   <h3 className="font-display font-black text-2xl uppercase">Stillness → Movement</h3>
 </LayerSplit>`,
     html: `<div class="caramelo-layer-split">…</div>`,
@@ -239,7 +248,7 @@ document.querySelectorAll('.cm-reveal').forEach((el) => io.observe(el));`,
     react: `import { Button } from '@caramelo/design-system';
 
 <Button variant="primary">Explorar o lab</Button>`,
-    html: `<button type="button" class="rounded-none border-2 border-ink bg-caramel px-5 py-3 font-display font-black uppercase text-ink shadow-graphic-sm transition-[transform,box-shadow] duration-150 ease-kinetic hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-graphic-md active:translate-x-[1px] active:translate-y-[1px] active:shadow-none focus-visible:outline-none focus-visible:shadow-focus motion-reduce:transform-none">
+    html: `<button type="button" class="cm-brand-action rounded-none border-2 border-ink bg-accent px-5 py-3 font-display font-black uppercase text-ink shadow-graphic-sm transition-[transform,box-shadow] duration-150 ease-kinetic hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-graphic-md active:translate-x-[1px] active:translate-y-[1px] active:shadow-none focus-visible:outline-none focus-visible:shadow-focus motion-reduce:transform-none">
   Explorar o lab
 </button>`,
   },
@@ -342,19 +351,14 @@ Object.assign(recipes, {
   'pointer-trail': {
     react: `import { PointerTrail } from '@caramelo/design-system';
 
-<PointerTrail as="section" items={projetos.map((p) => p.poster)} className="min-h-[80vh]">
+<PointerTrail as="section" appearance="stickers" className="min-h-[80vh]">
   <h1 className="cm-type-hero">UM CARA CARAMELO</h1>
 </PointerTrail>`,
-    html: `<section data-cm-trail class="cm-trail">
+    html: `<section data-cm-trail data-cm-assets-base="/caramelo/stickers" class="cm-trail cm-trail--stickers">
   <h1 class="cm-type-hero">UM CARA CARAMELO</h1>
-  <div class="cm-trail__layer" aria-hidden="true">
-    <div class="cm-trail__slot"><img src="poster-1.webp" alt=""></div>
-    <div class="cm-trail__slot"><img src="poster-2.webp" alt=""></div>
-    <!-- … 8 slots -->
-  </div>
 </section>`,
     js: MOTION_INIT,
-    notes: ['Use pôsteres reais do portfólio (16:10).', 'items aceita nós React — cartões tipográficos funcionam bem.'],
+    notes: ['Use sempre as figurinhas canônicas extraídas de rastro mouse.png. Copie assets/stickers do pacote para public/caramelo/stickers.', 'Consulte get_brand_asset asset=trail-stickers para catálogo/arquivos. Não substituir por pôsteres, cartões genéricos ou imagens de banco.', 'HTML: initCaramelMotion() cria os slots canônicos automaticamente. Transparência, object-fit:contain, proporção e movimento reduzido preservados.'],
   },
   'pointer-tilt': {
     react: `import { TiltSurface } from '@caramelo/design-system';

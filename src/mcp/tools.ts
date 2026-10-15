@@ -4,7 +4,7 @@
  * Auditoria e transformação vivem em ./engine (audit.ts / transform.ts).
  */
 
-import { colors, contrastRatios, neutral } from '../tokens/colors';
+import { brandSpectrum, colors, contrastRatios, neutral } from '../tokens/colors';
 import { interactions } from '../tokens/interactions';
 import { motion } from '../tokens/motion';
 import { darkTheme, hexToTriplet, lightTheme, sceneAccents, semanticRoles, type SemanticRole } from '../tokens/semantic';
@@ -14,6 +14,7 @@ import { typography } from '../tokens/typography';
 import { BRAND_SWATCHES, classify, nearestBrand, roleHex, type Polarity } from './engine/brand';
 import { contrastRatio, deltaE, formatOklch, parseColor, toHex, type HueFamily } from './engine/color';
 import { roleFor, type MapOptions } from './engine/tailwind-map';
+import { brandAssetMetadata, logoMarkup } from './brand-assets';
 
 // ═══════════════════════════════════════════════════════════════════
 // 1. Contraste WCAG (qualquer formato) + alternativas da marca
@@ -111,13 +112,22 @@ export function tokensCss(): string {
   const accents = Object.entries(sceneAccents)
     .map(
       ([name, a]) =>
-        `[data-cm-accent="${name}"] { --cm-accent: ${hexToTriplet(a.dark.accent)}; --cm-accent-bright: ${hexToTriplet(a.dark.bright)}; --cm-accent-ink: ${hexToTriplet(a.dark.ink)}; --cm-accent-soft: ${hexToTriplet(a.dark.soft)}; --cm-accent-contrast: ${hexToTriplet(a.dark.contrast)}; }`
+        `[data-cm-accent="${name}"] { --cm-accent: ${hexToTriplet(a.dark.accent)}; --cm-accent-bright: ${hexToTriplet(a.dark.bright)}; --cm-accent-ink: ${hexToTriplet(a.dark.ink)}; --cm-accent-soft: ${hexToTriplet(a.dark.soft)}; --cm-accent-contrast: ${hexToTriplet(a.dark.contrast)}; }\n` +
+        `[data-caramelo-theme="light"] [data-cm-accent="${name}"], [data-caramelo-theme="light"][data-cm-accent="${name}"] { --cm-accent: ${hexToTriplet(a.light.accent)}; --cm-accent-bright: ${hexToTriplet(a.light.bright)}; --cm-accent-ink: ${hexToTriplet(a.light.ink)}; --cm-accent-soft: ${hexToTriplet(a.light.soft)}; --cm-accent-contrast: ${hexToTriplet(a.light.contrast)}; }`
     )
     .join('\n');
   return `/* Caramelo Design System — tokens (gerado pelo MCP). Prefira importar '@caramelo/design-system/styles.css'. */
 :root {
   color-scheme: dark;
+  --caramelo-color-ink: #101014;
 ${semanticCss(darkTheme)}
+  --cm-spectrum-gradient: ${brandSpectrum.gradient};
+  --cm-spectrum: var(--cm-spectrum-gradient);
+  --cm-spectrum-soft: linear-gradient(110deg, #FFAE7B 0%, #FF8FBD 24%, #B6A5FF 48%, #8ADEFF 72%, #FFE889 100%);
+  --cm-spectrum-glow: ${shadows['glow-sm']};
+  --cm-spectrum-glow-strong: ${shadows.glow};
+  --cm-glow-sm: var(--cm-spectrum-glow);
+  --cm-glow: var(--cm-spectrum-glow-strong);
   --cm-focus-ring: 0 0 0 2px rgb(var(--cm-stage)), 0 0 0 4px rgb(var(--cm-focus));
 ${Object.entries(lumenRadii)
   .map(([k, v]) => `  --cm-radius-${k}: ${v};`)
@@ -140,7 +150,7 @@ ${(['instant', 'micro', 'quick', 'base', 'smooth', 'cinematic'] as const).map((d
 ${semanticCss(lightTheme)}
 }
 
-/* 1 acento dominante por cena */
+/* Base neutra por padrão. Cores individuais são opt-in; a assinatura combina o espectro. */
 ${accents}
 
 @media (prefers-reduced-motion: reduce) {
@@ -166,7 +176,7 @@ export function semanticTable() {
 
 export function tokensPayload(format: 'json' | 'css' | 'tailwind' | 'semantic' | 'all') {
   if (format === 'css') return tokensCss();
-  if (format === 'semantic') return { roles: semanticTable(), sceneAccents, usage: 'Tailwind: bg-surface-1, text-fg-muted, bg-accent, text-accent-contrast… CSS: rgb(var(--cm-<papel>) / alpha).' };
+  if (format === 'semantic') return { roles: semanticTable(), sceneAccents, brandSpectrum, usage: 'Base neutra: bg-surface-1, text-fg-muted, bg-accent, text-accent-contrast. CTAs de marca: cm-brand-action; badges: cm-brand-badge; barras: cm-brand-meter. data-cm-accent aplica uma cor individual somente por opt-in.' };
   if (format === 'tailwind')
     return {
       install: "import { carameloPreset } from '@caramelo/design-system/tailwind'; export default { presets: [carameloPreset], content: [...] }",
@@ -178,13 +188,13 @@ export function tokensPayload(format: 'json' | 'css' | 'tailwind' | 'semantic' |
       animation: ['animate-cm-reveal', 'animate-cm-menu-in', 'animate-cm-pop', 'animate-cm-shake', 'animate-cm-pulse'],
       fontFamily: ['font-display', 'font-sans', 'font-handwriting', 'font-mono'],
     };
-  const base = { colors, neutral, contrastRatios, semantic: { dark: darkTheme, light: lightTheme, sceneAccents }, typography, spacing, lumenRadii, targets, shadows, motion };
+  const base = { colors, brandSpectrum, neutral, contrastRatios, semantic: { dark: darkTheme, light: lightTheme, sceneAccents }, typography, spacing, lumenRadii, targets, shadows, motion, brandAssets: brandAssetMetadata() };
   if (format === 'json') return base;
   return {
     system: 'Um Cara Caramelo — Laboratório de Interação',
     version: '2.0.0 (2026)',
     principle: 'STILLNESS = CAMADAS ALINHADAS • MOVEMENT = CAMADAS SE SEPARAM',
-    materials: { lumen: 'Produto digital: aresta de luz, hairlines, glow do acento, raios concêntricos.', print: 'Editorial/cartaz: sombra sólida, arestas retas, retícula.' },
+    materials: { lumen: 'Produto digital: aresta de luz, hairlines, luz espectral combinada, raios concêntricos.', print: 'Editorial/cartaz: sombra sólida, arestas retas, retícula.' },
     ...base,
     interactions: interactions.map((i) => i.id),
   };
@@ -195,6 +205,8 @@ export function tokensPayload(format: 'json' | 'css' | 'tailwind' | 'semantic' |
 // ═══════════════════════════════════════════════════════════════════
 
 export type ComponentType =
+  | 'logo'
+  | 'isotype'
   | 'button'
   | 'hero'
   | 'card'
@@ -214,6 +226,7 @@ export type ComponentType =
 const esc = (s: string) => s.replace(/[<>{}]/g, '');
 
 export function generateComponent(type: ComponentType, title: string, framework: 'react-tailwind' | 'html-tailwind' | 'pure-css' = 'react-tailwind', material: 'lumen' | 'print' = 'lumen'): string {
+  if (type === 'logo' || type === 'isotype') return logoMarkup(framework === 'react-tailwind' ? 'react' : framework === 'pure-css' ? 'svg' : 'html');
   const t = esc(title);
   if (framework !== 'react-tailwind') {
     const html = htmlTemplate(type, t, material);
@@ -231,7 +244,7 @@ function lumenTemplate(type: ComponentType, t: string): string {
 // e profundidade ao sair. Monte <SmoothScroll /> na raiz e defina --cm-header-height.
 export function CinematicHero({ posters }: { posters: string[] }) {
   return (
-    <PointerTrail as="section" items={posters} className="relative bg-stage px-6 pb-16 pt-32 text-fg">
+    <PointerTrail as="section" appearance="stickers" className="relative bg-stage px-6 pb-16 pt-32 text-fg">
       <p className="cm-type-meta mb-10 text-fg-dim"><span>Laboratório de interação</span><span>2026</span></p>
       <Parallax start="top top" end="bottom top" to={{ y: -30, x: -12, opacity: 0.72 }}>
         <LineReveal as="h1" trigger="load" className="cm-type-hero">
@@ -344,7 +357,7 @@ export function FeatureCard() {
       return `import { Reveal, Surface } from '@caramelo/design-system';
 
 const features = [
-  { title: 'Papéis semânticos', body: 'Um código, dois temas, cinco acentos de cena.' },
+  { title: 'Papéis semânticos', body: 'Um código, dois temas e cinco cores em uma assinatura.' },
   { title: 'Física de interação', body: 'Press em 80ms, hover em 160ms, nada acima de 400ms.' },
   { title: 'Acessível por padrão', body: 'Foco Electric Sky, contraste AA garantido pelo token.' },
 ];
@@ -422,7 +435,7 @@ export function StatusBadges() {
   return (
     <div className="flex flex-wrap items-center gap-2">
       <Chip><span className="cm-dot cm-dot--pulse" aria-hidden="true" /> ${t || 'Ao vivo'}</Chip>
-      <span className="inline-flex h-6 items-center rounded-pill bg-accent-soft px-2.5 text-xs font-medium text-accent-ink">Novo</span>
+      <span className="cm-brand-badge inline-flex h-6 items-center rounded-pill px-2.5 text-xs font-medium">Novo</span>
       <span className="inline-flex h-6 items-center rounded-pill bg-success-soft px-2.5 text-xs font-medium text-success">Ativo</span>
       <span className="inline-flex h-6 items-center rounded-pill bg-danger-soft px-2.5 text-xs font-medium text-danger">Falhou</span>
     </div>
@@ -472,8 +485,8 @@ export function HeroSection() {
 
 export function MotionCard() {
   return (
-    <LayerSplit accentColor="caramel" className="max-w-md">
-      <Eyebrow color="caramel">Princípio de movimento</Eyebrow>
+    <LayerSplit className="max-w-md">
+      <Eyebrow>Princípio de movimento</Eyebrow>
       <h3 className="mb-1 mt-2 font-display text-2xl font-black uppercase">${t || 'STILLNESS → MOVEMENT'}</h3>
       <p className="text-sm text-fg-muted">Passe o cursor: as camadas se separam e revelam a sombra sólida.</p>
     </LayerSplit>
@@ -489,7 +502,7 @@ export function BrandLockup() {
       return `import { Badge } from '@caramelo/design-system';
 
 export function Badges() {
-  return <Badge color="caramel">${t || 'Novo'}</Badge>;
+  return <Badge>${t || 'Novo'}</Badge>;
 }`;
     default:
       return `import { Card, DisplayHeading, Button } from '@caramelo/design-system';

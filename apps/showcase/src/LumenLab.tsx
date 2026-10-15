@@ -11,6 +11,7 @@ import {
   IconArrowRight,
   interactions,
   Kbd,
+  Isotype,
   MagneticButton,
   Reveal,
   SceneNav,
@@ -23,20 +24,11 @@ import {
   TextSwap,
   ThemeToggle,
   useScrolled,
-  type SceneAccent,
   type SemanticRole,
 } from '@caramelo/design-system';
 import { Bell, Home, Search, Settings } from 'lucide-react';
 import { CinematicHero, CinematicSection, SectionHead, TypeSpecimen } from './Cinematic';
 import { EnginePlayground } from './EnginePlayground';
-
-const ACCENTS: Array<{ id: SceneAccent; label: string; hex: string }> = [
-  { id: 'caramel', label: 'Caramel', hex: '#FF701A' },
-  { id: 'sky', label: 'Electric Sky', hex: '#25BFFF' },
-  { id: 'pink', label: 'Hot Pink', hex: '#FF3D8D' },
-  { id: 'violet', label: 'Electric Violet', hex: '#7657FF' },
-  { id: 'yellow', label: 'Acid Yellow', hex: '#FFD52A' },
-];
 
 const spec = (id: string) => interactions.find((i) => i.id === id)!;
 
@@ -63,53 +55,76 @@ function Demo({ id, index, children, wide }: { id: string; index: number; childr
   );
 }
 
-function AccentPicker({ value, onChange }: { value: SceneAccent; onChange: (a: SceneAccent) => void }) {
+function GlitchTrigger({ children, className }: { children: ReactNode; className?: string }) {
+  const [glitchRun, setGlitchRun] = useState(0);
+  const [glitchActive, setGlitchActive] = useState(false);
+
   return (
-    <div role="radiogroup" aria-label="Acento da cena" className="flex items-center gap-1.5">
-      {ACCENTS.map((a) => (
-        <button
-          key={a.id}
-          type="button"
-          role="radio"
-          aria-checked={value === a.id}
-          aria-label={a.label}
-          title={a.label}
-          onClick={() => onChange(a.id)}
-          className="grid size-7 place-items-center rounded-pill transition-transform duration-micro ease-out-expo hover:scale-110 active:scale-95 focus-visible:outline-none focus-visible:shadow-focus motion-reduce:transition-none"
-        >
-          <span
-            className="size-3.5 rounded-pill transition-shadow duration-micro"
-            style={{
-              background: a.hex,
-              boxShadow: value === a.id ? `0 0 0 2px rgb(var(--cm-stage)), 0 0 0 3.5px ${a.hex}` : undefined,
-            }}
-          />
-        </button>
-      ))}
-    </div>
+    <button type="button" onClick={() => { setGlitchRun((run) => run + 1); setGlitchActive(true); }} className={`cm-spectrum-trigger rounded-cm-md focus-visible:outline-none focus-visible:shadow-focus ${className ?? ''}`}>
+      <span key={glitchRun} className="cm-glitch block" data-cm-glitch-active={glitchActive ? '' : undefined} onAnimationEnd={(event) => { if (event.target === event.currentTarget) setGlitchActive(false); }}>{children}</span>
+    </button>
+  );
+}
+
+function SpectrumStudy() {
+  return (
+    <section id="paleta" aria-labelledby="paleta-titulo" className="scroll-mt-20">
+      <SectionHead
+        id="paleta-titulo"
+        index="00 · Identidade em movimento"
+        context="Orange · Sky · Pink · Violet · Yellow"
+        title={<>Cinco cores.<br /><span className="cm-spectrum-text">Uma assinatura.</span></>}
+        lead="As cores da marca se encontram, se misturam e respondem a você. Blur e movimento líquido dão corpo à paleta; o glitch separa suas camadas no instante da interação."
+      />
+      <div className="grid gap-4 md:grid-cols-[1.15fr_1fr]">
+        <Surface className="relative isolate flex min-h-[320px] flex-col justify-between overflow-hidden p-6 sm:p-8">
+          <div className="cm-liquid-field" aria-hidden="true" />
+          <span className="relative font-mono text-[11px] uppercase tracking-meta text-fg-2">01 / Mistura líquida</span>
+          <div className="relative max-w-sm">
+            <p className="font-display text-4xl font-black leading-none tracking-display sm:text-5xl">A cor também<br />se move.</p>
+            <p className="mt-4 max-w-[30ch] text-sm leading-relaxed text-fg-2">Laranja, azul, rosa, violeta e amarelo no mesmo campo de luz.</p>
+          </div>
+        </Surface>
+        <Surface className="flex min-h-[320px] flex-col justify-between gap-8 p-6 sm:p-8">
+          <span className="font-mono text-[11px] uppercase tracking-meta text-fg-dim">02 / Glitch de interação</span>
+          <GlitchTrigger className="border border-line bg-stage px-5 py-8 text-left">
+            <span className="block font-display text-4xl font-black leading-none tracking-display sm:text-5xl">TOCOU.<br />MUDOU.</span>
+            <span className="mt-5 block text-sm text-fg-muted">Passe o cursor, use o teclado ou toque. ↗</span>
+          </GlitchTrigger>
+          <p className="text-xs text-fg-dim">Seu gesto ativa o desvio cromático. A leitura continua no centro.</p>
+        </Surface>
+      </div>
+    </section>
   );
 }
 
 const ROLE_GROUPS: Array<{ title: string; roles: SemanticRole[] }> = [
   { title: 'Superfícies', roles: ['stage', 'surface-1', 'surface-2', 'surface-3'] },
   { title: 'Texto', roles: ['fg', 'fg-2', 'fg-muted', 'fg-dim', 'fg-faint'] },
-  { title: 'Acento da cena', roles: ['accent', 'accent-bright', 'accent-ink', 'accent-soft', 'accent-contrast'] },
+  { title: 'Assinatura combinada', roles: [] },
   { title: 'Status & foco', roles: ['focus', 'success', 'warning', 'danger', 'info'] },
 ];
 
+const BRAND_TOKENS = [
+  { name: 'spectrum', label: 'As cinco cores da marca juntas.', background: 'var(--cm-spectrum-gradient)' },
+  { name: 'spectrum-soft', label: 'Mistura clara para ações com texto Ink.', background: 'var(--cm-spectrum-soft)' },
+  { name: 'spectrum-glow', label: 'Luz difusa com os cinco canais.', background: 'rgb(var(--cm-surface-2))', boxShadow: 'var(--cm-spectrum-glow)' },
+  { name: 'brand-action', label: 'Ação com a paleta completa e contraste.', background: 'var(--cm-spectrum-soft)' },
+];
+
 export function LumenLab({ onSwitchToPrint }: { onSwitchToPrint: () => void }) {
-  const [accent, setAccent] = useState<SceneAccent>('caramel');
   const [fieldError, setFieldError] = useState(false);
   const [lastAction, setLastAction] = useState<string | null>(null);
   const scrolled = useScrolled(40);
 
   return (
-    <div data-cm-accent={accent} className="cm-stage min-h-screen overflow-x-clip">
+    <div className="cm-stage min-h-screen overflow-x-clip">
       <SmoothScroll />
       <ScrollProgress />
       <SceneNav
         scenes={[
           { id: 'topo', label: 'Início' },
+          { id: 'paleta', label: 'Cores em movimento' },
           { id: 'interacoes', label: 'Interações' },
           { id: 'cinematico', label: 'Cinemático' },
           { id: 'motor', label: 'Motor MCP' },
@@ -124,10 +139,9 @@ export function LumenLab({ onSwitchToPrint }: { onSwitchToPrint: () => void }) {
       {/* ——— Barra superior ——— */}
       <header className="cm-header sticky top-0 z-40 bg-stage/80 backdrop-blur-md" data-scrolled={scrolled ? '' : undefined}>
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
-          <a href="#topo" className="flex items-center gap-2.5 rounded-cm-sm focus-visible:outline-none focus-visible:shadow-focus">
-            <span className="grid size-7 place-items-center rounded-cm-sm bg-accent font-display text-[11px] font-extrabold text-accent-contrast">UC</span>
+          <a href="#topo" aria-label="Um Cara Caramelo — início" className="flex items-center gap-2.5 rounded-cm-sm focus-visible:outline-none focus-visible:shadow-focus">
+            <Isotype size={38} decorative interactive />
             <span className="hidden font-display text-sm font-black tracking-title sm:inline">Caramelo DS</span>
-            <Chip>V1 · Lumen</Chip>
           </a>
           <GlideGroup as="nav" aria-label="Seções" className="hidden items-center gap-1 md:flex">
             <GlideItem as="a" href="#interacoes" className="px-3 py-1.5 text-sm text-fg-muted">Interações</GlideItem>
@@ -135,10 +149,7 @@ export function LumenLab({ onSwitchToPrint }: { onSwitchToPrint: () => void }) {
             <GlideItem as="a" href="#motor" className="px-3 py-1.5 text-sm text-fg-muted">Motor MCP</GlideItem>
             <GlideItem as="a" href="#tipografia" className="px-3 py-1.5 text-sm text-fg-muted">Tipografia</GlideItem>
           </GlideGroup>
-          <div className="flex items-center gap-2">
-            <AccentPicker value={accent} onChange={setAccent} />
-            <ThemeToggle />
-          </div>
+          <ThemeToggle />
         </div>
       </header>
 
@@ -153,10 +164,10 @@ export function LumenLab({ onSwitchToPrint }: { onSwitchToPrint: () => void }) {
         <Reveal variant="rise" delay={80}>
           <dl className="grid grid-cols-2 gap-x-8 gap-y-4 sm:grid-cols-4">
             {[
-              ['8', 'ferramentas MCP'],
+              ['9', 'ferramentas MCP'],
               [String(interactions.length), 'interações'],
               [String(Object.keys(semanticRoles).length), 'papéis'],
-              ['2 × 5', 'temas × acentos'],
+              ['5 em 1', 'cores da marca'],
             ].map(([n, l]) => (
               <div key={l}>
                 <dt className="text-[11px] font-medium uppercase tracking-meta text-fg-dim">{l}</dt>
@@ -168,6 +179,7 @@ export function LumenLab({ onSwitchToPrint }: { onSwitchToPrint: () => void }) {
       </div>
 
       <main id="conteudo" className="mx-auto flex max-w-6xl flex-col gap-28 px-4 pb-28 sm:px-6">
+        <SpectrumStudy />
         {/* ——— Interações ——— */}
         <section id="interacoes" aria-labelledby="interacoes-titulo" className="scroll-mt-20">
           <SectionHead
@@ -185,6 +197,9 @@ export function LumenLab({ onSwitchToPrint }: { onSwitchToPrint: () => void }) {
           />
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <Demo id="chromatic-glitch" index={0}>
+              <GlitchTrigger className="px-4 py-3 font-display text-2xl font-black text-fg">Sentiu a resposta?</GlitchTrigger>
+            </Demo>
             <Demo id="magnetic-fill" index={0}>
               <MagneticButton variant="accent" fill swap icon={<IconArrowRight />}>
                 Começar
@@ -278,7 +293,7 @@ export function LumenLab({ onSwitchToPrint }: { onSwitchToPrint: () => void }) {
                 <button
                   type="button"
                   onClick={() => setFieldError((v) => !v)}
-                  className="self-start rounded-cm-xs text-xs text-accent-ink underline-offset-4 hover:underline focus-visible:outline-none focus-visible:shadow-focus"
+                  className="self-start rounded-cm-xs text-xs text-fg-2 underline underline-offset-4 focus-visible:outline-none focus-visible:shadow-focus"
                 >
                   {fieldError ? 'Limpar erro' : 'Simular erro'}
                 </button>
@@ -287,9 +302,9 @@ export function LumenLab({ onSwitchToPrint }: { onSwitchToPrint: () => void }) {
 
             <Demo id="copy-swap" index={8}>
               <div className="flex items-center gap-3">
-                <code className="rounded-cm-sm border border-line bg-surface-2 px-3 py-1.5 font-mono text-xs text-fg-2">#FF701A</code>
-                <CopyButton value="#FF701A" />
-                <CopyButton value="rgb(var(--cm-accent))" label="Copiar token" />
+                <code className="rounded-cm-sm border border-line bg-surface-2 px-3 py-1.5 font-mono text-xs text-fg-2">--cm-spectrum</code>
+                <CopyButton value="var(--cm-spectrum-gradient)" />
+                <CopyButton value="cm-brand-action" label="Copiar classe" />
               </div>
             </Demo>
             <Demo id="theme-reveal" index={9}>
@@ -306,7 +321,7 @@ export function LumenLab({ onSwitchToPrint }: { onSwitchToPrint: () => void }) {
               <a href="#motor" className="cm-underline text-sm text-fg">
                 Manifesto
               </a>
-              <a href="#motor" className="inline-flex items-center gap-1 rounded-cm-xs text-sm text-accent-ink focus-visible:outline-none focus-visible:shadow-focus">
+              <a href="#motor" className="inline-flex items-center gap-1 rounded-cm-xs text-sm text-fg-2 underline underline-offset-4 focus-visible:outline-none focus-visible:shadow-focus">
                 Ver casos <span className="cm-arrow" aria-hidden="true">→</span>
               </a>
               <MagneticButton variant="accent" magnetic={false} fill={false} className="cm-shine">
@@ -332,9 +347,9 @@ export function LumenLab({ onSwitchToPrint }: { onSwitchToPrint: () => void }) {
                 Saia Caramelo.
               </>
             }
-            lead="O mesmo motor das tools do MCP, rodando aqui no navegador. Edite a entrada; troque o acento no topo e veja o resultado acompanhar."
+            lead="O mesmo motor das tools do MCP, rodando aqui no navegador. Edite a entrada e veja a identidade Caramelo preservar a paleta combinada nas camadas visuais."
           />
-          <EnginePlayground accent={accent} />
+          <EnginePlayground />
         </section>
 
         {/* ——— Tipografia ——— */}
@@ -353,7 +368,7 @@ export function LumenLab({ onSwitchToPrint }: { onSwitchToPrint: () => void }) {
                 não cores.
               </>
             }
-            lead="O código usa bg-surface-1, text-fg-muted, bg-accent. Tema e acento trocam tudo de uma vez — experimente os controles do topo."
+            lead="A assinatura combina as cinco cores nos botões, bordas, barras e luzes. Texto e superfícies acompanham o tema; os estados funcionais mantêm seus sinais de foco, sucesso, alerta e erro."
           />
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {ROLE_GROUPS.map((g, gi) => (
@@ -361,6 +376,15 @@ export function LumenLab({ onSwitchToPrint }: { onSwitchToPrint: () => void }) {
                 <Surface className="h-full p-4">
                   <h3 className="mb-3 text-[11px] font-medium uppercase tracking-meta text-fg-dim">{g.title}</h3>
                   <ul className="flex flex-col gap-2">
+                    {g.roles.length === 0 && BRAND_TOKENS.map((token) => (
+                      <li key={token.name} className="flex items-center gap-3">
+                        <span className="size-8 shrink-0 rounded-cm-sm border border-line" style={{ background: token.background, boxShadow: token.boxShadow }} aria-hidden="true" />
+                        <span className="min-w-0">
+                          <span className="block font-mono text-xs text-fg-2">{token.name}</span>
+                          <span className="block truncate text-[11px] text-fg-dim" title={token.label}>{token.label}</span>
+                        </span>
+                      </li>
+                    ))}
                     {g.roles.map((r) => (
                       <li key={r} className="flex items-center gap-3">
                         <span className="size-8 shrink-0 rounded-cm-sm border border-line" style={{ background: `rgb(var(--cm-${r}))` }} aria-hidden="true" />

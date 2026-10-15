@@ -6,7 +6,7 @@ export interface AvatarProps extends React.HTMLAttributes<HTMLDivElement> {
   alt?: string;
   fallback?: string;
   size?: 'sm' | 'md' | 'lg' | 'xl';
-  accentBorder?: 'caramel' | 'sky' | 'pink' | 'ink';
+  accentBorder?: 'spectrum' | 'caramel' | 'sky' | 'pink' | 'ink';
 }
 
 export const Avatar: React.FC<AvatarProps> = ({
@@ -14,7 +14,7 @@ export const Avatar: React.FC<AvatarProps> = ({
   alt = 'Avatar',
   fallback = 'UC',
   size = 'md',
-  accentBorder = 'caramel',
+  accentBorder = 'spectrum',
   className,
   ...props
 }) => {
@@ -26,6 +26,7 @@ export const Avatar: React.FC<AvatarProps> = ({
   }[size];
 
   const borderStyles = {
+    spectrum: 'cm-brand-badge border-2',
     caramel: 'border-2 border-[#FF701A] shadow-[2px_2px_0px_#FF701A]',
     sky: 'border-2 border-[#25BFFF] shadow-[2px_2px_0px_#25BFFF]',
     pink: 'border-2 border-[#FF3D8D] shadow-[2px_2px_0px_#FF3D8D]',
@@ -35,7 +36,8 @@ export const Avatar: React.FC<AvatarProps> = ({
   return (
     <div
       className={cn(
-        'relative inline-flex items-center justify-center bg-[#1F1F26] text-[#FFF4E8] font-display font-black select-none overflow-hidden',
+        'relative inline-flex items-center justify-center font-display font-black select-none overflow-hidden',
+        accentBorder !== 'spectrum' && 'bg-[#1F1F26] text-[#FFF4E8]',
         sizeStyles,
         borderStyles,
         className

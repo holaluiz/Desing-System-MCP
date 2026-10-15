@@ -2,7 +2,7 @@
  * Estilos Canônicos Unificados — Um Cara Caramelo (V2 2026)
  * @caramelo/design-system/styles.css
  *
- * Ordem: tipografia → tokens → texturas (Print) → motion → material Lumen → motion cinematográfico (LP).
+ * Ordem: tipografia → tokens → texturas (Print) → motion → Lumen → cinematográfico → expressão cromática.
  * No build, os @import locais são embutidos num único arquivo (dist/styles.css).
  */
 
@@ -12,3 +12,5 @@
 @import './motion.css';
 @import './lumen.css';
 @import './cinematic.css';
+@import './chromatic.css';
+@import './brand.css';
