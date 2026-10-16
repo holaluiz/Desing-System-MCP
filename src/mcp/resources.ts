@@ -26,10 +26,10 @@ Regra: **um material por superfície** — nunca sombra sólida e glow no mesmo 
 - Espectro de assinatura: Caramel #FF701A, Sky #25BFFF, Pink #FF3D8D, Violet #7657FF e Yellow #FFD52A atuam juntos.
 - Funcional: Signal Mint #3DDC97 — só sucesso, nunca decorativo.
 - **Combine as cinco cores sempre que a composição permitir:** glitch no gesto, misturas de luz com blur e liquid motion. Controle intensidade e área para manter conteúdo legível.
-- A base funcional padrão é neutra: accent Cream, accent-bright branco, accent-ink igual ao foreground e accent-soft igual à surface-2. Nenhuma cor isolada é principal.
-- Cores individuais são opt-in explícito com \`data-cm-accent="sky"\`; \`data-cm-accent="neutral"\` restaura a base neutra. A identidade continua combinada.
+- Caramel #FF701A é o destaque forte dos detalhes sólidos: links, pequenos marcadores, numeração, ícones e microestados. A assinatura mantém os degradês das cinco cores.
+- O padrão de accent é caramel; \`data-cm-accent="neutral"\` permite detalhes neutros, e cores alternativas continuam disponíveis por contêiner. No tema claro, texto pequeno usa Caramel deep para contraste.
 - CTAs de marca usam \`cm-brand-action\` (espectro suave + texto Ink); badges usam \`cm-brand-badge\` e barras/progresso usam \`cm-brand-meter\`.
-- Logo: isotipo C coroado do arquivo original, componente Isotype ou caramelo://brand/isotype.svg. Rastro: sempre as figurinhas canônicas de rastro mouse.png, disponíveis via get_brand_asset e caramelo://brand/identity. Preserve logos de terceiros fora do escopo.
+- Logo: isotipo C manuscrito com ponto do ícone LABCaramelo; variante principal caramel (Ink sobre bloco laranja), via Isotype ou caramelo://brand/isotype.svg. Spectrum, Ink e Cream usam o mesmo símbolo em fundo transparente. Rastro: sempre as figurinhas canônicas de rastro mouse.png, disponíveis via get_brand_asset e caramelo://brand/identity. Preserve logos de terceiros fora do escopo.
 - Superfícies e leitura usam **papéis semânticos** (stage, surface-1..3, line, fg, fg-muted, accent, accent-ink, accent-contrast…); gradientes combinam os tokens da marca.
 - Texto sobre Caramel é Ink (6.86:1) — **nunca Cream sobre Caramel (2.55:1)**.
 - fg-faint é só para não-texto (ícones decorativos, disabled).
@@ -86,7 +86,7 @@ const engineGuide = `# Como o motor transforma qualquer sistema em Caramelo
    preenchimentos e CTAs), material e tokens já existentes.
 2. **Cores → papéis**, com contexto do elemento:
    - neutros por polaridade (em design claro, bg-white = surface-1 e bg-gray-900 = elemento invertido = fg);
-   - acento da origem → papéis neutros accent / accent-ink (texto) / accent-soft (tons 50–200) / accent-bright (hover);
+   - acento da origem → accent / accent-ink (texto) / accent-soft (tons 50–200) / accent-bright (hover), com Caramel por padrão nos detalhes sólidos;
    - CTA preenchido de marca → classe cm-brand-action, combinando as cinco cores; CSS puro recebe a camada equivalente;
    - gradientes mantêm suas famílias cromáticas na paleta da marca, combinando as cores nas duas estratégias;
    - vermelho → danger, verde → success, amarelo → warning, azul secundário → info;
@@ -105,14 +105,14 @@ const engineGuide = `# Como o motor transforma qualquer sistema em Caramelo
 Estratégias para cores sólidas: **unify** (padrão — papéis funcionais) ou **preserve** (mantém matizes
 decorativos compatíveis na paleta da marca). Gradientes preservam o espectro nas duas estratégias:
 laranja→caramel, azul→sky, rosa/vermelho→pink, violeta→violet, amarelo→yellow; verde decorativo→sky.
-Mint continua exclusivo de sucesso. A opção accent tem padrão neutral; caramel/sky/pink/violet/yellow são
-cores funcionais opt-in. Nenhuma delas é a cor principal da marca. O espectro combinado define os CTAs de marca.`;
+Mint continua exclusivo de sucesso. A opção accent tem padrão caramel para detalhes sólidos; neutral/sky/pink/violet/yellow
+permanecem disponíveis explicitamente. O laranja #FF701A convive com os degradês combinados que definem a assinatura, o motion e os CTAs de marca.`;
 
 export const mcpResources = [
-  ...(['spectrum', 'ink', 'cream'] as const).map((variant) => ({
-    uri: `caramelo://brand/isotype${variant === 'spectrum' ? '' : `-${variant}`}.svg`,
+  ...(['caramel', 'spectrum', 'ink', 'cream'] as const).map((variant) => ({
+    uri: `caramelo://brand/isotype${variant === 'caramel' ? '' : `-${variant}`}.svg`,
     name: `Isotipo vetorial Caramelo — ${variant}`,
-    description: 'C coroado vetorizado da fonte original. Aplicar sem alterar geometria ou proporção.',
+    description: 'C manuscrito com ponto vetorizado do ícone LABCaramelo. Aplicar sem alterar geometria ou proporção.',
     mimeType: 'image/svg+xml',
     load: () => isotypeSvg({ variant }),
   })),
@@ -204,7 +204,7 @@ export const mcpResources = [
 - **Parallax** — transform dirigido pelo scroll (from/to, scrub).
 - **ScrollProgress / SceneNav** — progresso de leitura e cenas laterais.
 - **PointerTrail** — rastro das figurinhas canônicas; appearance="stickers", assets em public/caramelo/stickers, sem recorte ou moldura.
-- **Isotype** — logo C coroado em SVG vetorial, variantes spectrum/ink/cream/current e resposta cromática opcional.
+- **Isotype** — logo C manuscrito com ponto em SVG vetorial, variante principal caramel e alternativas spectrum/ink/cream/current, com resposta cromática opcional.
 - **TiltSurface** — cartaz que inclina com o ponteiro.
 - **StickyDeck** — pilha de cartões sticky (portfólio).
 - **StickyStack** — ofertas sticky que chegam.

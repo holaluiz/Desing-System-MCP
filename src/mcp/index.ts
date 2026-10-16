@@ -70,7 +70,7 @@ server.registerTool(
       code: codeArg,
       material: z.enum(['lumen', 'print']).optional().default('lumen').describe('lumen = produto digital (luz, glow, raios concêntricos) · print = editorial (sombra sólida, arestas retas).'),
       theme: z.enum(['dark', 'light']).optional().describe('Tema-alvo. Omitido = mantém a polaridade da origem (design claro → editorial Warm Cream).'),
-      accent: z.enum(ACCENTS).optional().default('neutral').describe('Base funcional neutra por padrão. Cores individuais somente por opt-in; CTAs de marca usam a camada combinada cm-brand-action.'),
+      accent: z.enum(ACCENTS).optional().default('caramel').describe('Caramel #FF701A por padrão para detalhes sólidos. neutral está disponível explicitamente; CTAs de marca e gradientes mantêm as cinco cores combinadas.'),
       strategy: z.enum(['unify', 'preserve']).optional().default('unify').describe('unify = papéis sólidos funcionais · preserve = preserva matizes decorativos. Gradientes mantêm as cores combinadas nas duas estratégias.'),
       enhanceInteractions: z.boolean().optional().default(true).describe('Adicionar a física de interação que estiver faltando.'),
       fixA11y: z.boolean().optional().default(true).describe('Aplicar correções de acessibilidade seguras.'),
@@ -197,7 +197,7 @@ server.registerTool(
     inputSchema: {
       asset: z.enum(['isotype', 'trail-stickers']).optional().default('isotype'),
       format: z.enum(['metadata', 'svg', 'react', 'html', 'file']).optional().default('metadata'),
-      variant: z.enum(['spectrum', 'ink', 'cream']).optional().default('spectrum'),
+      variant: z.enum(['caramel', 'spectrum', 'ink', 'cream']).optional().default('caramel').describe('Caramel: logo principal Ink sobre laranja; spectrum: símbolo em degradê; ink/cream: símbolo monocromático transparente.'),
       stickerId: z.string().optional().describe('Id canônico retornado no catálogo; obrigatório para obter o arquivo de uma figurinha.'),
     },
     annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
@@ -205,7 +205,7 @@ server.registerTool(
   async ({ asset, format, variant, stickerId }) => {
     if (format === 'metadata') return json(asset === 'isotype' ? brandAssetMetadata() : stickerCatalog());
     if (asset === 'isotype') {
-      if (format === 'file') return { content: [{ type: 'resource' as const, resource: { uri: `caramelo://brand/isotype${variant === 'spectrum' ? '' : `-${variant}`}.svg`, mimeType: 'image/svg+xml', text: isotypeSvg({ variant }) } }] };
+      if (format === 'file') return { content: [{ type: 'resource' as const, resource: { uri: `caramelo://brand/isotype${variant === 'caramel' ? '' : `-${variant}`}.svg`, mimeType: 'image/svg+xml', text: isotypeSvg({ variant }) } }] };
       return text(logoMarkup(format, variant));
     }
     if (format === 'file') {

@@ -23,7 +23,7 @@ export const colors = {
     surface: '#FDF7F0',
   },
 
-  // Caramel — uma das cinco cores do espectro de assinatura
+  // Caramel — destaque sólido dos detalhes e parte do espectro de assinatura
   caramel: {
     DEFAULT: '#FF701A',
     rgb: '255, 112, 26',
@@ -33,8 +33,8 @@ export const colors = {
     muted: '#FF9454',
     /** Hover luminoso em superfícies escuras (material Lumen) — 8.4:1 sobre Ink 950 */
     bright: '#FF8A3D',
-    /** Versão segura para TEXTO sobre Warm Cream — 5.37:1 (AA) */
-    deep: '#B23F00',
+    /** Texto sobre Warm Cream — 5.77:1; também AA sobre surface-3 claro (4.67:1). */
+    deep: '#AB3B00',
     /** Superfície tingida em modo escuro — texto caramel sobre ela: 6.2:1 */
     surface: '#2B1608',
   },
@@ -96,7 +96,8 @@ export const brandSpectrum = {
   colors: ['caramel', 'pink', 'violet', 'sky', 'yellow'],
   stops: [colors.caramel.DEFAULT, colors.pink.DEFAULT, colors.violet.DEFAULT, colors.sky.DEFAULT, colors.yellow.DEFAULT],
   gradient: `linear-gradient(110deg, ${colors.caramel.DEFAULT} 0%, ${colors.pink.DEFAULT} 24%, ${colors.violet.DEFAULT} 48%, ${colors.sky.DEFAULT} 72%, ${colors.yellow.DEFAULT} 100%)`,
-  interaction: 'As cinco cores formam uma assinatura combinada: glitch acionado por gesto, luz difusa e liquid motion. Preserve o contraste do conteúdo e uma versão estática com movimento reduzido.',
+  detailAccent: colors.caramel.DEFAULT,
+  interaction: 'As cinco cores formam uma assinatura combinada: glitch acionado por gesto, luz difusa e liquid motion. O laranja Caramel destaca detalhes, marcadores e anotações. Preserve o contraste do conteúdo e uma versão estática com movimento reduzido.',
 } as const;
 
 /**
@@ -131,7 +132,7 @@ export const contrastRatios = {
   'mint-on-ink': { ratio: 10.74, level: 'AAA', role: 'Estados de sucesso' },
   'ink-on-cream': { ratio: 17.5, level: 'AAA', role: 'Texto editorial em fundo claro' },
   'ink-on-caramel': { ratio: 6.86, level: 'AA', role: 'Contraste do ingrediente Caramel (NUNCA cream sobre caramel: 2.55)' },
-  'caramel-deep-on-cream': { ratio: 5.37, level: 'AA', role: 'Contraste da variante Caramel em fundo claro' },
+  'caramel-deep-on-cream': { ratio: 5.77, level: 'AA', role: 'Contraste da variante Caramel em fundo claro' },
   'muted-on-ink': { ratio: 7.61, level: 'AAA', role: 'Texto de apoio (neutral 300)' },
   'dim-on-ink': { ratio: 5.64, level: 'AA', role: 'Metadados e legendas (neutral 400)' },
 } as const;

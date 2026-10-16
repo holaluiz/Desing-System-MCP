@@ -50,7 +50,7 @@ export interface TransformOptions {
   theme?: Polarity;
   /** unify = papéis sólidos funcionais · preserve = preserva matizes decorativos. Gradientes combinam as cores nas duas estratégias. */
   strategy?: AccentStrategy;
-  /** Base funcional neutra por padrão; cores individuais são opt-in e não limitam a assinatura visual */
+  /** Caramel por padrão para detalhes sólidos; neutral é explícito. CTAs e gradientes mantêm o espectro combinado. */
   accent?: SceneAccent;
   enhanceInteractions?: boolean;
   fixA11y?: boolean;
@@ -143,7 +143,7 @@ const FAMILY_LABEL: Record<HueFamily, string> = {
 export function transform(code: string, options: TransformOptions = {}): TransformReport {
   const material = options.material ?? 'lumen';
   const strategy = options.strategy ?? 'unify';
-  const accent = options.accent ?? 'neutral';
+  const accent = options.accent ?? 'caramel';
   const enhanceInteractions = options.enhanceInteractions ?? true;
   const fixA11y = options.fixA11y ?? true;
   const language = detectLanguage(code);
@@ -452,8 +452,8 @@ function markupSetup(theme: Polarity, accent: SceneAccent, material: Material, c
   ];
   if (theme === 'light') out.push('Tema claro editorial: `data-caramelo-theme="light"` no <html> (ou no contêiner da cena).');
   else out.push('Tema escuro cinematográfico é o padrão — nada a configurar. Para alternar, use <ThemeToggle />.');
-  out.push('Papéis sólidos têm base neutra. cm-brand-action combina as cinco cores nos CTAs sem escolher uma cor principal.');
-  if (accent !== 'neutral') out.push(`Cor funcional opt-in: \`data-cm-accent="${accent}"\` no contêiner — afeta papéis sólidos; a assinatura dos CTAs continua combinada com cm-brand-action.`);
+  out.push('Caramel #FF701A destaca detalhes sólidos; cm-brand-action e os gradientes combinam as cinco cores na assinatura e no motion.');
+  if (accent !== 'caramel') out.push(`Cor dos detalhes: \`data-cm-accent="${accent}"\` no contêiner — afeta papéis sólidos; CTAs e gradientes continuam com o espectro combinado.`);
   if (changes.some((c) => c.reason.includes('dark: removida'))) out.push('Variantes dark: removidas — os papéis semânticos já trocam com o tema.');
   if (material === 'lumen') out.push('Para o ponto focal da cena, troque o CTA principal por <MagneticButton variant="accent" fill> ou <GlowButton> (get_interaction: magnetic-fill / edge-glow).');
   else out.push('Material Print: use <Button> e <LayerSplit> do pacote para a física de clique completa (get_interaction: press-physics).');
@@ -465,6 +465,6 @@ function cssSetup(theme: Polarity, accent: SceneAccent, changes: Change[]): stri
   const out = ["Carregue `@caramelo/design-system/styles.css` antes desta folha (define --cm-*, --caramelo-font-* e motion)."];
   if (changes.some((c) => c.kind === 'theme')) out.push('Variáveis de tema mantiveram o formato original (ex.: triplets HSL do shadcn) — componentes existentes não precisam mudar.');
   if (theme === 'light') out.push('Tema claro: `data-caramelo-theme="light"` no <html> para os papéis --cm-* acompanharem.');
-  if (accent !== 'neutral') out.push(`Cor funcional opt-in: \`data-cm-accent="${accent}"\` no contêiner. Gradientes mantêm o espectro combinado.`);
+  if (accent !== 'caramel') out.push(`Cor dos detalhes: \`data-cm-accent="${accent}"\` no contêiner. Gradientes mantêm o espectro combinado.`);
   return out;
 }

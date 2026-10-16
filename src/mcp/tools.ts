@@ -150,7 +150,7 @@ ${(['instant', 'micro', 'quick', 'base', 'smooth', 'cinematic'] as const).map((d
 ${semanticCss(lightTheme)}
 }
 
-/* Base neutra por padrão. Cores individuais são opt-in; a assinatura combina o espectro. */
+/* Caramel #FF701A destaca detalhes sólidos; assinatura e motion combinam as cinco cores. neutral é explícito. */
 ${accents}
 
 @media (prefers-reduced-motion: reduce) {
@@ -176,7 +176,7 @@ export function semanticTable() {
 
 export function tokensPayload(format: 'json' | 'css' | 'tailwind' | 'semantic' | 'all') {
   if (format === 'css') return tokensCss();
-  if (format === 'semantic') return { roles: semanticTable(), sceneAccents, brandSpectrum, usage: 'Base neutra: bg-surface-1, text-fg-muted, bg-accent, text-accent-contrast. CTAs de marca: cm-brand-action; badges: cm-brand-badge; barras: cm-brand-meter. data-cm-accent aplica uma cor individual somente por opt-in.' };
+  if (format === 'semantic') return { roles: semanticTable(), sceneAccents, brandSpectrum, usage: 'Superfícies neutras; Caramel #FF701A em detalhes sólidos via accent/accent-ink. CTAs de marca: cm-brand-action; badges: cm-brand-badge; barras: cm-brand-meter. Assinatura e motion preservam os degradês das cinco cores. data-cm-accent="neutral" aplica detalhes neutros explicitamente.' };
   if (format === 'tailwind')
     return {
       install: "import { carameloPreset } from '@caramelo/design-system/tailwind'; export default { presets: [carameloPreset], content: [...] }",
@@ -240,7 +240,7 @@ function lumenTemplate(type: ComponentType, t: string): string {
     case 'cinematic_hero':
       return `import { LineReveal, Parallax, PointerTrail, Reveal, MagneticButton, IconArrowRight } from '@caramelo/design-system';
 
-// Hero do LP: título Montserrat 900 linha a linha, recortes revelados, rastro de imagens no mouse
+// Hero Caramelo: copie assets/stickers para public/caramelo/stickers; rastro sempre com figurinhas canônicas.
 // e profundidade ao sair. Monte <SmoothScroll /> na raiz e defina --cm-header-height.
 export function CinematicHero({ posters }: { posters: string[] }) {
   return (
@@ -280,13 +280,13 @@ export function Portfolio({ projetos }: { projetos: Array<{ id: string; titulo: 
   );
 }`;
     case 'manifesto':
-      return `import { ScrubWords, Parallax } from '@caramelo/design-system';
+      return `import { ScrubWords, Parallax, Isotype } from '@caramelo/design-system';
 
 export function Manifesto() {
   return (
-    <section className="relative overflow-hidden bg-accent px-6 py-32 text-accent-contrast">
+    <section className="cm-chromatic-tile relative overflow-hidden px-6 py-32 text-cream">
       <ScrubWords as="p" className="cm-type-display-sm max-w-5xl" text="${t || 'Marca não é só o que ela diz. É o que ela faz você fazer.'}" />
-      <Parallax className="absolute -right-10 top-10 cm-type-hero opacity-20" from={{ rotate: -12 }} to={{ rotate: 18 }} aria-hidden="true">C.</Parallax>
+      <Parallax className="absolute -right-10 top-10 opacity-20" from={{ rotate: -12 }} to={{ rotate: 18 }} aria-hidden="true"><Isotype variant="cream" size={160} decorative /></Parallax>
     </section>
   );
 }`;

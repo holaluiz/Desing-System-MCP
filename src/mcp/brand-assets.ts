@@ -5,7 +5,9 @@ import { TRAIL_STICKERS } from '../brand/stickers';
 
 export const brandUsage = `# Arquivos canônicos Caramelo
 
-Logo: use o C coroado vetorizado do arquivo original, via Isotype ou isotipo.svg. Preserve geometria e proporção. Spectrum reúne as cinco cores; Ink e Cream atendem contraste. Não reconstruir com texto UC, C., emoji ou ícone genérico.
+Cores: use o laranja #FF701A como destaque forte em detalhes da interface; mantenha os degradês combinados das cinco cores para a assinatura e o motion. Superfícies e leitura preservam contraste; texto pequeno no tema claro usa a variante Caramel deep.
+
+Logo: use o C manuscrito com ponto vetorizado do ícone LABCaramelo, via Isotype ou isotipo.svg. A versão principal caramel tem símbolo Ink sobre bloco laranja #FF701A arredondado. Spectrum reúne as cinco cores em fundo transparente; Ink e Cream atendem contraste. Preserve geometria e proporção. Não reconstruir com texto, fonte, emoji ou ícone genérico.
 
 Rastro do mouse: em interfaces Caramelo, use sempre as figurinhas canônicas de rastro mouse.png, com transparência e object-fit:contain. Não substituir por pôsteres, cartões tipográficos, imagens de banco ou ícones. Copie os arquivos do pacote assets/stickers para public/caramelo/stickers. <PointerTrail appearance="stickers"> usa o conjunto por padrão; HTML: <section data-cm-trail data-cm-assets-base="/caramelo/stickers"> com initCaramelMotion(). O rastro é decorativo, ignora touch/movimento reduzido e não cobre controles.
 
@@ -37,9 +39,9 @@ export function brandAssetMetadata() {
   return { isotype: isotypeMeta, trail: stickerCatalog(), guidelines: brandUsage };
 }
 
-export function logoMarkup(format: 'react' | 'html' | 'svg', variant: IsotypeVariant = 'spectrum', title = 'Um Cara Caramelo') {
+export function logoMarkup(format: 'react' | 'html' | 'svg', variant: IsotypeVariant = 'caramel', title = 'Um Cara Caramelo') {
   if (format === 'svg') return isotypeSvg({ variant, title });
   if (format === 'react') return `import { Isotype } from '@caramelo/design-system';\n\n<a href="/" aria-label="Um Cara Caramelo — início"><Isotype variant="${variant}" size={40} decorative interactive /></a>`;
-  const filename = variant === 'spectrum' ? 'isotipo.svg' : `isotipo-${variant}.svg`;
+  const filename = variant === 'caramel' ? 'isotipo.svg' : `isotipo-${variant}.svg`;
   return `<a href="/" aria-label="Um Cara Caramelo — início"><img src="/caramelo/brand/${filename}" alt="" width="40" height="40" /></a>`;
 }

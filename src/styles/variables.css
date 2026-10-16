@@ -25,7 +25,7 @@
   --caramelo-color-caramel-hover: #E55E0D;
   --caramelo-color-caramel-light: #FFEFE6;
   --caramelo-color-caramel-bright: #FF8A3D;
-  --caramelo-color-caramel-deep: #B23F00;
+  --caramelo-color-caramel-deep: #AB3B00;
 
   --caramelo-color-sky: #25BFFF;
   --caramelo-color-sky-hover: #0DA8EA;
@@ -38,7 +38,7 @@
   --caramelo-bg: var(--caramelo-color-ink);
   --caramelo-text: var(--caramelo-color-cream);
   --caramelo-text-muted: #A3A3B0;
-  --caramelo-accent: rgb(var(--cm-fg));
+  --caramelo-accent: rgb(var(--cm-accent));
   --caramelo-accent-sky: var(--caramelo-color-sky);
   --caramelo-border: var(--caramelo-color-ink-border);
 
@@ -77,11 +77,11 @@
   --cm-fg-dim: 139 139 152;
   --cm-fg-faint: 90 90 102;
 
-  /* Base neutra: cor de marca aparece como composição --cm-spectrum-*. */
-  --cm-accent: 255 244 232;
-  --cm-accent-bright: 255 255 255;
-  --cm-accent-ink: 255 244 232;
-  --cm-accent-soft: 24 24 29;
+  /* Laranja nos detalhes; luz, degradês e ações combinam --cm-spectrum-*. */
+  --cm-accent: 255 112 26;
+  --cm-accent-bright: 255 138 61;
+  --cm-accent-ink: 255 112 26;
+  --cm-accent-soft: 43 22 8;
   --cm-accent-contrast: 16 16 20;
 
   --cm-focus: 37 191 255;
@@ -149,7 +149,7 @@
   --caramelo-bg: var(--caramelo-color-cream);
   --caramelo-text: var(--caramelo-color-ink);
   --caramelo-text-muted: #6B6862;
-  --caramelo-accent: rgb(var(--cm-fg));
+  --caramelo-accent: rgb(var(--cm-accent));
   --caramelo-border: var(--caramelo-color-cream-border);
 
   --cm-stage: 255 244 232;
@@ -167,10 +167,10 @@
   --cm-fg-dim: 107 104 98;
   --cm-fg-faint: 163 156 147;
 
-  --cm-accent: 255 244 232;
-  --cm-accent-bright: 255 255 255;
-  --cm-accent-ink: 16 16 20;
-  --cm-accent-soft: 245 230 212;
+  --cm-accent: 255 112 26;
+  --cm-accent-bright: 229 94 13;
+  --cm-accent-ink: 171 59 0;
+  --cm-accent-soft: 255 230 211;
   --cm-accent-contrast: 16 16 20;
 
   --cm-focus: 11 110 153;
@@ -203,7 +203,7 @@
 [data-cm-accent="violet"] { --cm-accent: 93 60 232; --cm-accent-bright: 118 87 255; --cm-accent-ink: 154 133 255; --cm-accent-soft: 25 18 56; --cm-accent-contrast: 255 244 232; }
 [data-cm-accent="yellow"] { --cm-accent: 255 213 42; --cm-accent-bright: 255 224 102; --cm-accent-ink: 255 213 42; --cm-accent-soft: 51 41 0; --cm-accent-contrast: 16 16 20; }
 
-[data-caramelo-theme="light"] [data-cm-accent="caramel"], [data-caramelo-theme="light"][data-cm-accent="caramel"] { --cm-accent-bright: 229 94 13; --cm-accent-ink: 178 63 0; --cm-accent-soft: 255 230 211; }
+[data-caramelo-theme="light"] [data-cm-accent="caramel"], [data-caramelo-theme="light"][data-cm-accent="caramel"] { --cm-accent-bright: 229 94 13; --cm-accent-ink: 171 59 0; --cm-accent-soft: 255 230 211; }
 [data-caramelo-theme="light"] [data-cm-accent="sky"], [data-caramelo-theme="light"][data-cm-accent="sky"] { --cm-accent-bright: 13 168 234; --cm-accent-ink: 11 110 153; --cm-accent-soft: 230 248 255; }
 [data-caramelo-theme="light"] [data-cm-accent="pink"], [data-caramelo-theme="light"][data-cm-accent="pink"] { --cm-accent-bright: 232 37 118; --cm-accent-ink: 192 24 94; --cm-accent-soft: 255 235 243; }
 [data-caramelo-theme="light"] [data-cm-accent="violet"], [data-caramelo-theme="light"][data-cm-accent="violet"] { --cm-accent-ink: 91 63 224; --cm-accent-soft: 241 239 255; }

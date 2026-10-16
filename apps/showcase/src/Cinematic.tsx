@@ -76,7 +76,7 @@ export function CinematicHero() {
               </Reveal>
             </div>
             <LineReveal as="div" trigger="load" delay={200} className="cm-type-hero whitespace-nowrap text-right text-[clamp(34px,9.6vw,150px)]">
-              INTERFACE<sup className="text-fg-2">®</sup>
+              INTERFACE<sup className="text-accent-ink">®</sup>
             </LineReveal>
           </Parallax>
           <LineReveal as="div" trigger="load" delay={320} className="cm-type-hero whitespace-nowrap text-[clamp(28px,7.2vw,112px)]">
@@ -116,7 +116,7 @@ export function SectionHead({ index, context, title, lead, id }: { index: string
     <div className="mb-12">
       <Reveal variant="rise">
         <p className="cm-type-meta mb-6 border-b border-line pb-4 text-fg-dim">
-          <span className="text-fg-2">{index}</span>
+          <span className="text-accent-ink">{index}</span>
           <span>{context}</span>
         </p>
       </Reveal>
@@ -230,7 +230,7 @@ export function CinematicSection() {
           to={{ rotate: 18 }}
           aria-hidden="true"
         >
-          C.
+          <Isotype size={160} variant="cream" decorative />
         </Parallax>
       </div>
 
@@ -332,7 +332,7 @@ export function CinematicSection() {
             ].map((o) => (
               <article key={o.n} className="rounded-cm-xl border border-line bg-surface-2 p-7 shadow-elev-3">
                 <div className="flex items-center gap-4 border-b border-line pb-5">
-                  <span className="cm-spectrum-text font-display text-4xl font-black">
+                  <span className="text-accent-ink font-display text-4xl font-black">
                     {o.n}
                   </span>
                   <h4 className="cm-type-heading">{o.t}</h4>

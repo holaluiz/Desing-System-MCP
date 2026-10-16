@@ -74,7 +74,7 @@ function SpectrumStudy() {
         index="00 · Identidade em movimento"
         context="Orange · Sky · Pink · Violet · Yellow"
         title={<>Cinco cores.<br /><span className="cm-spectrum-text">Uma assinatura.</span></>}
-        lead="As cores da marca se encontram, se misturam e respondem a você. Blur e movimento líquido dão corpo à paleta; o glitch separa suas camadas no instante da interação."
+        lead="As cinco cores se encontram nos degradês, no blur e no movimento líquido. O laranja dá força aos detalhes; o glitch separa as camadas de cor no instante da interação."
       />
       <div className="grid gap-4 md:grid-cols-[1.15fr_1fr]">
         <Surface className="relative isolate flex min-h-[320px] flex-col justify-between overflow-hidden p-6 sm:p-8">
@@ -102,6 +102,7 @@ const ROLE_GROUPS: Array<{ title: string; roles: SemanticRole[] }> = [
   { title: 'Superfícies', roles: ['stage', 'surface-1', 'surface-2', 'surface-3'] },
   { title: 'Texto', roles: ['fg', 'fg-2', 'fg-muted', 'fg-dim', 'fg-faint'] },
   { title: 'Assinatura combinada', roles: [] },
+  { title: 'Laranja de destaque', roles: ['accent', 'accent-bright', 'accent-ink', 'accent-soft', 'accent-contrast'] },
   { title: 'Status & foco', roles: ['focus', 'success', 'warning', 'danger', 'info'] },
 ];
 
@@ -368,7 +369,7 @@ export function LumenLab({ onSwitchToPrint }: { onSwitchToPrint: () => void }) {
                 não cores.
               </>
             }
-            lead="A assinatura combina as cinco cores nos botões, bordas, barras e luzes. Texto e superfícies acompanham o tema; os estados funcionais mantêm seus sinais de foco, sucesso, alerta e erro."
+            lead="Degradês, botões e luzes combinam as cinco cores. O laranja Caramel (#FF701A) marca detalhes, números e anotações. Texto e superfícies acompanham o tema; foco e status mantêm seus sinais funcionais."
           />
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {ROLE_GROUPS.map((g, gi) => (

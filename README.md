@@ -65,14 +65,16 @@ design-system/
 |---|---|---|---|
 | **Ink Black** | `#101014` | Base Principal (Fundo escuro, contraste) | Base |
 | **Warm Cream** | `#FFF4E8` | Base Clara (Editorial, respiro humano) | 17.50:1 (AAA) |
-| **Caramel Orange** | `#FF701A` | Assinatura Oficial (CTAs, momentos-chave) | 6.86:1 (AA) |
+| **Caramel Orange** | `#FF701A` | Destaque forte em detalhes, marcadores e microestados | 6.86:1 (AA) |
 | **Electric Sky** | `#25BFFF` | Acento Digital (Links, sinalização fria) | 9.02:1 (AAA) |
 | **Hot Pink** | `#FF3D8D` | Acento de Provocação (Comentários críticos) | 5.70:1 (AA) |
 | **Electric Violet** | `#7657FF` | Acento de Transição (Estados especiais) | 4.14:1 (AA Large) |
 | **Acid Yellow** | `#FFD52A` | Acento Alta Visibilidade (Alertas, humor) | 13.38:1 (AAA) |
 
 > [!IMPORTANT]
-> **Assinatura cromática:** Caramel, Sky, Pink, Violet e Yellow formam **um espectro combinado da marca**. Sempre que a composição permitir, use as cinco juntas em luz difusa, blur, liquid motion e glitch acionado pela interação. Controle intensidade e área para preservar a leitura. Nenhuma cor isolada é principal. `accent` tem base neutra por padrão; cores individuais via `data-cm-accent` são opt-in. CTAs usam `cm-brand-action`, badges `cm-brand-badge` e barras `cm-brand-meter`. Signal Mint permanece exclusivo de sucesso.
+> **Assinatura cromática:** Caramel, Sky, Pink, Violet e Yellow formam **um espectro combinado da marca**, presente em degradês, luz difusa, blur, liquid motion e glitch acionado pela interação. O **laranja #FF701A é o destaque forte dos detalhes sólidos**, como links, numeração, ícones e pequenos marcadores. `accent` tem padrão `caramel`; `data-cm-accent="neutral"` permite detalhes neutros explicitamente. CTAs usam `cm-brand-action`, badges `cm-brand-badge` e barras `cm-brand-meter`, preservando a composição das cinco cores. Signal Mint permanece exclusivo de sucesso.
+
+Os dois usos convivem: `<span className="text-accent-ink">01</span>` destaca a numeração, enquanto `<button className="cm-brand-action">Explorar</button>` mantém a assinatura combinada. No tema claro, `accent-ink` usa Caramel deep para preservar o contraste do texto.
 
 O glitch é feedback de gesto: `.cm-glitch` responde a hover e foco com um pulso de 400ms em steps, sem bloquear a ação. Com `prefers-reduced-motion`, mantenha a composição cromática estática. Gradientes multicolor são preservados pelo motor nas duas estratégias de transformação.
 
@@ -101,6 +103,26 @@ Tudo respeita `prefers-reduced-motion`, funciona sem JS e desliga com `?motion=o
 ---
 
 ## 05. Como Replicar e Usar em Qualquer App
+
+### Logo e figurinhas canônicas
+
+O isotipo oficial é o **C manuscrito com ponto do ícone LABCaramelo**, extraído estaticamente de `icone.exe`, sem executar o arquivo. O SVG preserva o gesto e as proporções do original. A variante padrão `caramel` usa Ink sobre bloco laranja `#FF701A` arredondado (`isotipo.svg`); `spectrum`, `ink` e `cream` têm fundo transparente. Todas estão em `@caramelo/design-system/assets/brand/`. Use `Isotype` como logo e `Lockup` para símbolo + assinatura; `withIsotype={false}` mantém uma assinatura só tipográfica. A fonte extraída fica em `artifacts/brand/isotipo-original-lab.png`; `scripts/trace-isotype.py` regenera os vetores.
+
+```tsx
+import { Isotype, PointerTrail } from '@caramelo/design-system';
+import '@caramelo/design-system/styles.css';
+
+<a href="/" aria-label="Um Cara Caramelo — início">
+  <Isotype size={40} decorative interactive />
+</a>
+<PointerTrail as="section" appearance="stickers">
+  <h1>Um Cara Caramelo</h1>
+</PointerTrail>
+```
+
+**Todo rastro de mouse Caramelo usa as 28 figurinhas fornecidas em `rastro mouse.png`.** Copie os WebP de `@caramelo/design-system/assets/stickers/` para `public/caramelo/stickers/`. `PointerTrail` usa o conjunto por padrão; `assetBasePath` configura outro caminho público. Preserve alpha e proporção, sem moldura nem recorte `cover`. Em HTML, `<section data-cm-trail data-cm-assets-base="/caramelo/stickers">` e `initCaramelMotion()` criam os slots oficiais. Touch e movimento reduzido mantêm o conteúdo sem o rastro.
+
+O MCP entrega SVG, exemplos React/HTML, catálogo e arquivos binários pela ferramenta `get_brand_asset`; recursos: `caramelo://brand/identity`, `caramelo://brand/isotype.svg` e `caramelo://brand/stickers/<id>`. `generate_caramelo_component` aceita `logo` e `isotype`. Logos de clientes e terceiros são preservados fora de um escopo autorizado de troca de marca.
 
 ### Passo 1: Instalar no app de destino
 No diretório do seu app (ex: um app Next.js ou Vite), instale a dependência:
@@ -206,6 +228,7 @@ Este repositório também funciona como um **Servidor MCP nativo (v2)**: assiste
 ### Ferramentas MCP
 | Tool | O que faz |
 |---|---|
+| `get_brand_asset` | Entrega logo SVG (caramel/spectrum/ink/cream), código de aplicação, catálogo e arquivos transparentes das 28 figurinhas canônicas. |
 | `transform_to_caramelo` | Converte JSX/TSX, HTML, Vue ou CSS. Cores sólidas viram **papéis semânticos**, e gradientes preservam o espectro combinado da marca; temas por variáveis (shadcn, Bootstrap, MUI, Material 3, Chakra) recebem valores Caramelo **no mesmo formato**; sombras, raios e motion viram tokens; adiciona só a interação que falta (press 80ms, hover luminoso, foco Electric Sky, halo em campos, reduced-motion) e corrige a11y segura. Devolve nota de auditoria antes → depois, cada mudança por linha e o que exige decisão humana. Opções: `material` (lumen/print), `theme`, `accent` (base funcional sólida), `strategy` (unify/preserve). |
 | `audit_ux_ui` | Nota 0–100 por categoria (acessibilidade, contraste, interação, motion, identidade, tipografia, UX), com contraste calculado por herança de fundo e achados por linha marcados como `auto` quando o transform resolve. |
 | `map_colors` | Cores de qualquer formato (hex, rgb, hsl, oklch, triplets shadcn) → tinta da marca mais próxima (ΔE OKLab), papel semântico equivalente e contraste. |

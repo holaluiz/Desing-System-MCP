@@ -46,8 +46,8 @@ export function isBrandColor(c: RGB, tolerance = 2.5): boolean {
 }
 
 /** Valor do papel semântico no tema escolhido (com a cor funcional de base aplicada) */
-export function roleHex(role: SemanticRole, theme: Polarity, accent: SceneAccent = 'neutral'): string {
-  if (accent !== 'neutral' && role.startsWith('accent')) {
+export function roleHex(role: SemanticRole, theme: Polarity, accent: SceneAccent = 'caramel'): string {
+  if (role.startsWith('accent')) {
     const a = sceneAccents[accent][theme];
     const key = role === 'accent' ? 'accent' : (role.slice('accent-'.length) as 'bright' | 'ink' | 'soft' | 'contrast');
     return a[key as keyof typeof a];

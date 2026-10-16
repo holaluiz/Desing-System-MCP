@@ -45,7 +45,7 @@ ${code}
 1. Chame \`transform_to_caramelo\` com material "${material === 'print' ? 'print' : 'lumen'}".
 2. Revise o relatório: confirme os aria-labels inferidos e resolva os itens de decisão humana.
 3. Se houver um CTA principal, troque-o pelo componente de assinatura (MagneticButton fill ou GlowButton).
-   Preserve gradientes multicolor e use as cinco cores juntas em luz, blur/liquid ou glitch no gesto, com leitura legível e movimento reduzido estático. accent tem base neutra por padrão; CTAs usam cm-brand-action. Não escolha uma cor isolada como principal.
+   Preserve gradientes multicolor e use as cinco cores juntas em luz, blur/liquid ou glitch no gesto, com leitura legível e movimento reduzido estático. Use Caramel #FF701A como destaque forte nos detalhes sólidos; accent tem padrão caramel e CTAs usam cm-brand-action com as cores combinadas.
 4. Entregue o código final completo e a lista de setup (preset Tailwind + styles.css).
 5. Para logo e rastro Caramelo, consulte get_brand_asset: use o isotipo canônico e sempre as figurinhas oficiais no rastro. Preserve marcas de terceiros que não façam parte do escopo de troca.
 

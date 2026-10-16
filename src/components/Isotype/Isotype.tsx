@@ -1,23 +1,23 @@
 import React from 'react';
-import { ISOTYPE_DOTS, ISOTYPE_PATHS, ISOTYPE_VIEWBOX } from '../../brand/isotype';
+import { ISOTYPE_DOTS, ISOTYPE_PATHS, ISOTYPE_VIEWBOX, ISOTYPE_TILE_RADIUS, type IsotypeVariant } from '../../brand/isotype';
 import { brandSpectrum } from '../../tokens/colors';
 import { cn } from '../../utils/cn';
 
 export interface IsotypeProps extends Omit<React.SVGProps<SVGSVGElement>, 'title'> {
-  variant?: 'spectrum' | 'ink' | 'cream' | 'current';
+  variant?: IsotypeVariant | 'current';
   size?: number | string;
   title?: string;
   decorative?: boolean;
   interactive?: boolean;
 }
 
-/** Canonical crowned C, traced from the supplied artwork. No embedded bitmap. */
+/** Canonical handwritten C and dot. No embedded bitmap. */
 export const Isotype = React.forwardRef<SVGSVGElement, IsotypeProps>(function Isotype(
-  { variant = 'spectrum', size = 40, title = 'Um Cara Caramelo', decorative = false, interactive = false, className, ...props },
+  { variant = 'caramel', size = 40, title = 'Um Cara Caramelo', decorative = false, interactive = false, className, ...props },
   ref,
 ) {
   const id = `cm-isotype-${React.useId().replace(/[^a-zA-Z0-9_-]/g, '')}`;
-  const fill = variant === 'spectrum' ? `url(#${id}-gradient)` : variant === 'ink' ? '#101014' : variant === 'cream' ? '#FFF4E8' : 'currentColor';
+  const fill = variant === 'spectrum' ? `url(#${id}-gradient)` : variant === 'ink' || variant === 'caramel' ? '#101014' : variant === 'cream' ? '#FFF4E8' : 'currentColor';
   return (
     <svg
       ref={ref}
@@ -42,6 +42,7 @@ export const Isotype = React.forwardRef<SVGSVGElement, IsotypeProps>(function Is
           {ISOTYPE_DOTS.map(({ cx, cy, r }, i) => <circle key={i} cx={cx} cy={cy} r={r} />)}
         </g>
       </defs>
+      {variant === 'caramel' && <rect width="256" height="256" rx={ISOTYPE_TILE_RADIUS} fill="#FF701A" />}
       {interactive && <g className="cm-isotype__echo" aria-hidden="true"><use href={`#${id}-shape`} fill={`url(#${id}-gradient)`} /></g>}
       <g className="cm-isotype__ink"><use href={`#${id}-shape`} fill={fill} /></g>
     </svg>

@@ -42,16 +42,16 @@ export const Lockup: React.FC<LockupProps> = ({
 
   return (
     <div className={cn('inline-flex items-center gap-3 select-none', className)} {...props}>
-      {withIsotype && <Isotype variant={isLight ? 'ink' : 'spectrum'} size={{ sm: 44, md: 60, lg: 80 }[size]} decorative />}
+      {withIsotype && <Isotype variant="caramel" size={{ sm: 44, md: 60, lg: 80 }[size]} decorative />}
       <div className="flex min-w-0 flex-col gap-1.5">
         <Wordmark variant={variant} size={size} />
         <span
-        className={cn(
-          'text-[0.65rem] md:text-xs font-bold tracking-[0.08em] uppercase font-sans border-t pt-1 border-current/20',
-          subtitleColor
-        )}
-      >
-        {taglines[type]}
+          className={cn(
+            'text-[0.65rem] md:text-xs font-bold tracking-[0.08em] uppercase font-sans border-t pt-1 border-current/20',
+            subtitleColor
+          )}
+        >
+          {taglines[type]}
         </span>
       </div>
     </div>

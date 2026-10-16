@@ -1,0 +1,13 @@
+{
+  "source": "icone.exe",
+  "sourceSha256": "31d607cb622a6f7f752844a416597f2d5aa27a27eb3ef3933f3871acc3600d60",
+  "product": "LABCaramelo 0.1.2",
+  "method": "Static PE resource extraction; executable never run",
+  "resource": { "type": 3, "id": 1, "language": 1033, "offset": 36584, "bytes": 14409 },
+  "resourceSha256": "6028d3e09d2d57d142531337375b534c72b636b3f9ae13874f61a0246bfed618",
+  "extractedSource": "artifacts/brand/isotipo-original-lab.png",
+  "dimensions": [256, 256],
+  "palette": { "caramel": "#FF701A", "ink": "#101014" },
+  "vectorization": "scripts/trace-isotype.py; smoothed contour of handwritten C and dot, preserving original proportions",
+  "previousLogoBackup": "artifacts/brand/previous-crowned-isotype.svg"
+}

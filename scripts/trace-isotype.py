@@ -1,17 +1,20 @@
-"""Trace the supplied ink mark into compact SVG paths without embedding the PNG."""
+"""Trace the LABCaramelo C-dot icon, statically extracted from the supplied EXE.
+
+The extracted PNG is retained as source; regeneration never executes the EXE.
+"""
 from collections import deque
 from pathlib import Path
 import json
 import math
 
 import numpy as np
-from PIL import Image, ImageFilter
+from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
-gray = Image.open(ROOT / 'isotipo.png').convert('L')
-# Closing joins the ink's small print pits while preserving its outer silhouette.
-ink = gray.point(lambda p: 255 if p < 130 else 0).filter(ImageFilter.MaxFilter(5)).filter(ImageFilter.MinFilter(5))
-mask = np.asarray(ink) > 0
+source = Image.open(ROOT / 'artifacts/brand/isotipo-original-lab.png').convert('RGBA')
+rgba = np.asarray(source)
+# Select the Ink glyph, excluding both the orange tile and transparent corners.
+mask = (rgba[:, :, :3].max(axis=2) < 90) & (rgba[:, :, 3] > 127)
 height, width = mask.shape
 labels = np.zeros(mask.shape, dtype=np.int32)
 components = []
@@ -32,7 +35,7 @@ for y, x in zip(*np.where(mask)):
     components.append(points)
 
 
-def simplify(points, epsilon=1.5):
+def simplify(points, epsilon=.7):
     if len(points) < 3:
         return points
     a, b = np.array(points[0]), np.array(points[-1])
@@ -75,15 +78,15 @@ def outer_contour(points):
                 break
         loops.append(loop)
     outline = max(loops, key=len)
+    # Average the pixel stair steps before fitting smooth vector curves.
+    outline = [tuple(np.mean([outline[(i + k) % len(outline)] for k in range(-4, 5)], axis=0)) for i in range(len(outline))]
     middle = len(outline) // 2
     return simplify(outline[:middle + 1])[:-1] + simplify(outline[middle:] + [outline[0]])[:-1]
 
 
-large = [p for p in components if len(p) >= 1500]
-small = [p for p in components if 60 <= len(p) < 1500]
-all_points = [point for component in large + small for point in component]
-left, top = min(p[0] for p in all_points) - 14, min(p[1] for p in all_points) - 14
-right, bottom = max(p[0] for p in all_points) + 15, max(p[1] for p in all_points) + 15
+large = [p for p in components if len(p) >= 100]
+# Keep the original square proportions and negative space. Trace the dot too.
+left, top, right, bottom = 0, 0, width, height
 
 
 def fmt(number):
@@ -96,11 +99,11 @@ def path_for(points):
     tangent = []
     for i, current in enumerate(contour):
         prev, following = contour[(i - 1) % n], contour[(i + 1) % n]
-        a = (current[0] - prev[0], current[1] - prev[1])
-        b = (following[0] - current[0], following[1] - current[1])
-        lengths = math.hypot(*a) * math.hypot(*b)
-        sharp = lengths and (a[0] * b[0] + a[1] * b[1]) / lengths < .35
-        tangent.append((0, 0) if sharp else ((following[0] - prev[0]) * .13, (following[1] - prev[1]) * .13))
+        # Bound handles by the shorter segment to avoid loops at uneven spacing.
+        dx, dy = following[0] - prev[0], following[1] - prev[1]
+        length = math.hypot(dx, dy)
+        handle = min(math.dist(prev, current), math.dist(current, following)) / 3
+        tangent.append((dx / length * handle, dy / length * handle) if length else (0, 0))
     commands = [f'M{fmt(contour[0][0])} {fmt(contour[0][1])}']
     for i in range(n):
         j = (i + 1) % n
@@ -113,11 +116,7 @@ def path_for(points):
 
 paths = [path_for(component) for component in sorted(large, key=len, reverse=True)]
 dots = []
-for points in sorted(small, key=len, reverse=True):
-    xs, ys = zip(*points)
-    dots.append({'cx': round(sum(xs) / len(xs) - left, 1), 'cy': round(sum(ys) / len(ys) - top, 1), 'r': round(math.sqrt(len(points) / math.pi), 1)})
-
-data = {'viewBox': f'0 0 {right - left} {bottom - top}', 'paths': paths, 'dots': dots, 'source': 'isotipo.png'}
+data = {'viewBox': f'0 0 {width} {height}', 'paths': paths, 'dots': dots, 'tileRadius': 64, 'source': 'artifacts/brand/isotipo-original-lab.png'}
 destination = ROOT / 'src' / 'brand'
 destination.mkdir(parents=True, exist_ok=True)
 (destination / 'isotype-geometry.json').write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
@@ -126,10 +125,11 @@ assets.mkdir(parents=True, exist_ok=True)
 stops = ['#FF701A', '#FF3D8D', '#7657FF', '#25BFFF', '#FFD52A']
 gradient = '<defs><linearGradient id="caramelo-isotype-spectrum" x1="0%" y1="15%" x2="100%" y2="85%">' + ''.join(f'<stop offset="{offset}%" stop-color="{color}"/>' for offset, color in zip([0, 24, 48, 72, 100], stops)) + '</linearGradient></defs>'
 shapes = ''.join(f'<path d="{p}"/>' for p in paths) + ''.join(f'<circle cx="{dot["cx"]}" cy="{dot["cy"]}" r="{dot["r"]}"/>' for dot in dots)
-for variant, fill in [('spectrum', 'url(#caramelo-isotype-spectrum)'), ('ink', '#101014'), ('cream', '#FFF4E8')]:
-    svg = f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{data["viewBox"]}" role="img" aria-labelledby="caramelo-isotype-title"><title id="caramelo-isotype-title">Um Cara Caramelo</title>{gradient if variant == "spectrum" else ""}<g fill="{fill}">{shapes}</g></svg>'
-    filename = 'isotipo.svg' if variant == 'spectrum' else f'isotipo-{variant}.svg'
+for variant, fill in [('caramel', '#101014'), ('spectrum', 'url(#caramelo-isotype-spectrum)'), ('ink', '#101014'), ('cream', '#FFF4E8')]:
+    tile = '<rect width="256" height="256" rx="64" fill="#FF701A"/>' if variant == 'caramel' else ''
+    svg = f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{data["viewBox"]}" role="img" aria-labelledby="caramelo-isotype-title"><title id="caramelo-isotype-title">Um Cara Caramelo</title>{gradient if variant == "spectrum" else ""}{tile}<g fill="{fill}">{shapes}</g></svg>'
+    filename = 'isotipo.svg' if variant == 'caramel' else f'isotipo-{variant}.svg'
     (assets / filename).write_text(svg + '\n', encoding='utf-8')
-    if variant == 'spectrum':
+    if variant == 'caramel':
         (ROOT / 'isotipo.svg').write_text(svg + '\n', encoding='utf-8')
 print(json.dumps({'viewBox': data['viewBox'], 'paths': len(paths), 'dots': len(dots), 'bytes': sum(map(len, paths)), 'source': [width, height]}))
