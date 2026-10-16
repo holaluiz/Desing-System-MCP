@@ -76,6 +76,8 @@ design-system/
 
 Os dois usos convivem: `<span className="text-accent-ink">01</span>` destaca a numeração, enquanto `<button className="cm-brand-action">Explorar</button>` mantém a assinatura combinada. No tema claro, `accent-ink` usa Caramel deep para preservar o contraste do texto.
 
+As barras de rolagem verticais e horizontais são estilizadas globalmente pelo `styles.css`: indicador Caramel arredondado, trilho `surface-2` e resposta ao hover e arraste nos navegadores com pseudo-elementos WebKit. A página, códigos, campos, tabelas e demais áreas roláveis usam os mesmos papéis locais de tema. Firefox recebe as cores pelas propriedades padrão; o modo de alto contraste preserva as barras do sistema. A rolagem permanece nativa.
+
 O glitch é feedback de gesto: `.cm-glitch` responde a hover e foco com um pulso de 400ms em steps, sem bloquear a ação. Com `prefers-reduced-motion`, mantenha a composição cromática estática. Gradientes multicolor são preservados pelo motor nas duas estratégias de transformação.
 
 ---
@@ -239,7 +241,15 @@ Este repositório também funciona como um **Servidor MCP nativo (v2)**: assiste
 
 ### Recursos & Prompts
 - **Recursos:** `caramelo://guidelines/manual`, `caramelo://guidelines/engine`, `caramelo://tokens/json`, `caramelo://tokens/css`, `caramelo://tokens/semantic`, `caramelo://interactions/catalog`, `caramelo://components/catalog`.
-- **Prompts:** `audit-ux-ui`, `transform-to-caramelo`, `convert-design-system`, `elevate-interaction`.
+- **Prompts:** `apply-to-project`, `audit-ux-ui`, `transform-to-caramelo`, `convert-design-system`, `elevate-interaction`.
+
+### Frase pronta para o projeto inteiro
+
+A seção **Motor MCP** da vitrine oferece esta frase para copiar. O preset MCP `apply-to-project` (**Aplicar Caramelo no projeto**) retorna o mesmo texto, sem argumentos:
+
+```text
+Use o MCP Caramelo para aplicar nossa identidade em todo este projeto, incluindo isotipo, favicon, cores, tipografia, componentes, animações e figurinhas do rastro. Preserve as funcionalidades existentes e valide as telas após as alterações.
+```
 
 ### Motor programático
 O mesmo motor está disponível para scripts e builds:

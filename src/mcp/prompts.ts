@@ -5,6 +5,7 @@
  */
 
 import { z } from 'zod';
+import { CARAMELO_PROJECT_PROMPT } from '../brand/project-prompt';
 
 export interface CarameloPrompt {
   name: string;
@@ -16,6 +17,13 @@ export interface CarameloPrompt {
 }
 
 export const mcpPrompts: CarameloPrompt[] = [
+  {
+    name: 'apply-to-project',
+    title: 'Aplicar Caramelo no projeto',
+    description: 'Frase pronta para aplicar a identidade Caramelo ao projeto inteiro, preservando funcionalidades e validando as telas.',
+    args: {},
+    text: () => CARAMELO_PROJECT_PROMPT,
+  },
   {
     name: 'audit-ux-ui',
     title: 'Auditar UX/UI',

@@ -33,6 +33,7 @@ Regra: **um material por superfície** — nunca sombra sólida e glow no mesmo 
 - Superfícies e leitura usam **papéis semânticos** (stage, surface-1..3, line, fg, fg-muted, accent, accent-ink, accent-contrast…); gradientes combinam os tokens da marca.
 - Texto sobre Caramel é Ink (6.86:1) — **nunca Cream sobre Caramel (2.55:1)**.
 - fg-faint é só para não-texto (ícones decorativos, disabled).
+- Rolagem vertical e horizontal: styles.css aplica barras nativas com indicador Caramel arredondado e trilho surface-2, inclusive nos painéis internos. Os papéis acompanham o tema local; alto contraste usa as barras do sistema. Preserve essa camada ao aplicar a identidade.
 
 ## Tipografia (fontes do LP — ADR-006)
 1. **Montserrat 800–900** (font-display): títulos de cena, números, wordmark. Entrelinha 0.88–1.03,

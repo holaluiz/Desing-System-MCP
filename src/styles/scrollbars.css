@@ -1,0 +1,53 @@
+/* Rolagem nativa nos dois eixos, inclusive em temas locais e painéis internos.
+   O modo de alto contraste mantém as barras fornecidas pelo sistema. */
+@media (forced-colors: none) {
+  :where(*) {
+    scrollbar-width: auto;
+    scrollbar-color: rgb(var(--cm-accent-ink)) rgb(var(--cm-surface-2));
+  }
+
+  /* Valores padrão não-auto prevalecem sobre os pseudo-elementos no Chromium.
+     Use uma implementação por navegador para preservar tamanho e estados. */
+  @supports selector(::-webkit-scrollbar) {
+    :where(*) {
+      scrollbar-color: auto;
+    }
+
+    :where(*)::-webkit-scrollbar {
+      width: 14px;
+      height: 14px;
+    }
+
+    :where(*)::-webkit-scrollbar-track {
+      border-radius: var(--cm-radius-pill);
+      background-color: rgb(var(--cm-surface-2));
+    }
+
+    :where(*)::-webkit-scrollbar-thumb {
+      min-width: 36px;
+      min-height: 36px;
+      border: 3px solid rgb(var(--cm-surface-2));
+      border-radius: var(--cm-radius-pill);
+      background-color: rgb(var(--cm-accent-ink));
+      background-clip: padding-box;
+    }
+
+    :where(*)::-webkit-scrollbar-thumb:hover {
+      box-shadow: inset 0 0 0 999px rgb(var(--cm-fg) / .15);
+    }
+
+    :where(*)::-webkit-scrollbar-thumb:active {
+      box-shadow: inset 0 0 0 999px rgb(var(--cm-fg) / .25);
+    }
+
+    :where(*)::-webkit-scrollbar-corner {
+      background-color: rgb(var(--cm-surface-2));
+    }
+
+    :where(*)::-webkit-scrollbar-button {
+      display: none;
+      width: 0;
+      height: 0;
+    }
+  }
+}

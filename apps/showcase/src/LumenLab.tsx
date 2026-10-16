@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from 'react';
 import {
+  CARAMELO_PROJECT_PROMPT,
   Chip,
   CommandCopy,
   CopyButton,
@@ -350,6 +351,17 @@ export function LumenLab({ onSwitchToPrint }: { onSwitchToPrint: () => void }) {
             }
             lead="O mesmo motor das tools do MCP, rodando aqui no navegador. Edite a entrada e veja a identidade Caramelo preservar a paleta combinada nas camadas visuais."
           />
+          <Surface as="article" aria-labelledby="prompt-projeto-titulo" className="mb-6 p-5 sm:p-6">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="font-mono text-[11px] uppercase tracking-meta text-accent-ink">Prompt pronto</p>
+                <h3 id="prompt-projeto-titulo" className="mt-2 font-display text-xl font-bold tracking-tight">Aplicar no projeto inteiro</h3>
+              </div>
+              <CopyButton value={CARAMELO_PROJECT_PROMPT} label="Copiar prompt" copiedLabel="Prompt copiado" className="h-11 shrink-0 self-start sm:self-auto" />
+            </div>
+            <p className="mt-5 select-text border-l-2 border-accent pl-4 text-sm leading-relaxed text-fg-2 sm:text-base">{CARAMELO_PROJECT_PROMPT}</p>
+            <p className="mt-4 text-xs leading-relaxed text-fg-dim">Com o MCP conectado, copie e cole no chat do seu projeto.</p>
+          </Surface>
           <EnginePlayground />
         </section>
 
